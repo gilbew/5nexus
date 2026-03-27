@@ -1,72 +1,117 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { NexusCard, type NexusSlot } from "@/components/NexusCard";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { applyBorrowFromDonors } from "@/lib/nexus-borrow";
+import {
+  distributeSeconds,
+  getAllocationPresets,
+  getDailyCount,
+  presetLabel,
+  type DayType,
+  type FocusDailySlots,
+  type HolidayDailySlots,
+} from "@/lib/nexus-allocations";
+import { NexusCard, type ChecklistItem, type NexusSlot } from "@/components/NexusCard";
+import { useTheme } from "@/components/ThemeProvider";
 
-const ENERGY_BUDGET_SECONDS = 12 * 60 * 60;
+const STORAGE_KEY = "nexus-dashboard-state-v5";
+const STORAGE_LEGACY_V4 = "nexus-dashboard-state-v4";
+const STORAGE_LEGACY_V3 = "nexus-dashboard-state-v3";
+const MAX_NEXUS = 10;
+/** Tailwind `md` default — used with JS viewport for orientation-aware UI. */
+const MD_PX = 768;
+/** Shared horizontal rhythm: dashboard island + nexus grid share one column width. */
+const SHELL_X = "mx-auto w-full max-w-[1680px] px-3 sm:px-4 md:px-8 lg:px-12 xl:px-14";
 
-const initialSlots: NexusSlot[] = [
-  {
-    id: "planning",
-    title: "Planning",
-    note: "Shape priorities and lock today outcomes.",
-    durationSeconds: 90 * 60,
+type EnergyHoursConfig = {
+  holiday: number;
+  default: number;
+  focus: number;
+};
+
+type PersistedV4 = {
+  v: 4;
+  entities: NexusSlot[];
+  fullOrder: string[];
+  mainSlotId: string;
+  activeId: string | null;
+  lastResetDate: string;
+  dayType: DayType;
+  holidayDaily: HolidayDailySlots;
+  focusDaily: FocusDailySlots;
+  allocatorIndex: number;
+  energyHours: EnergyHoursConfig;
+};
+
+type PersistedV5 = Omit<PersistedV4, "v"> & { v: 5; autoBorrow: boolean };
+
+const defaultEnergyHours: EnergyHoursConfig = {
+  holiday: 4,
+  default: 12,
+  focus: 10,
+};
+
+const seedIds = ["main-focus", "deep-work", "planning", "learning", "admin"] as const;
+
+function seedEntities(): NexusSlot[] {
+  const templates: Omit<NexusSlot, "durationSeconds" | "elapsedSeconds">[] = [
+    {
+      id: "main-focus",
+      title: "Main Focus",
+      note: "Highest-value mission for this day.",
+      checklist: [
+        { id: "m1", text: "Define success metric", done: false },
+        { id: "m2", text: "Execute core build", done: false },
+        { id: "m3", text: "Ship first iteration", done: false },
+      ],
+    },
+    {
+      id: "deep-work",
+      title: "Deep Work",
+      note: "Execute focused blocks with no context switching.",
+      checklist: [
+        { id: "d1", text: "Mute notifications", done: false },
+        { id: "d2", text: "Open only required tabs", done: false },
+        { id: "d3", text: "Complete key milestone", done: false },
+      ],
+    },
+    {
+      id: "planning",
+      title: "Planning",
+      note: "Shape priorities and lock today outcomes.",
+      checklist: [
+        { id: "p1", text: "Review backlog", done: false },
+        { id: "p2", text: "Define top 3 outcomes", done: false },
+        { id: "p3", text: "Timebox each outcome", done: false },
+      ],
+    },
+    {
+      id: "learning",
+      title: "Learning",
+      note: "Sharpen one key skill for leverage.",
+      checklist: [
+        { id: "l1", text: "Read one focused article", done: false },
+        { id: "l2", text: "Capture 3 notes", done: false },
+        { id: "l3", text: "Apply one insight", done: false },
+      ],
+    },
+    {
+      id: "admin",
+      title: "Admin",
+      note: "Handle low-cognitive operational tasks.",
+      checklist: [
+        { id: "a1", text: "Process inbox", done: false },
+        { id: "a2", text: "Update trackers", done: false },
+        { id: "a3", text: "Close loose ends", done: false },
+      ],
+    },
+  ];
+  return templates.map((t) => ({
+    ...t,
+    durationSeconds: 0,
     elapsedSeconds: 0,
-    checklist: [
-      { id: "p1", text: "Review backlog", done: false },
-      { id: "p2", text: "Define top 3 outcomes", done: false },
-      { id: "p3", text: "Timebox each outcome", done: false },
-    ],
-  },
-  {
-    id: "deep-work",
-    title: "Deep Work",
-    note: "Execute focused blocks with no context switching.",
-    durationSeconds: 120 * 60,
-    elapsedSeconds: 0,
-    checklist: [
-      { id: "d1", text: "Mute notifications", done: false },
-      { id: "d2", text: "Open only required tabs", done: false },
-      { id: "d3", text: "Complete key milestone", done: false },
-    ],
-  },
-  {
-    id: "learning",
-    title: "Learning",
-    note: "Sharpen one key skill for leverage.",
-    durationSeconds: 75 * 60,
-    elapsedSeconds: 0,
-    checklist: [
-      { id: "l1", text: "Read one focused article", done: false },
-      { id: "l2", text: "Capture 3 notes", done: false },
-      { id: "l3", text: "Apply one insight", done: false },
-    ],
-  },
-  {
-    id: "admin",
-    title: "Admin",
-    note: "Handle low-cognitive operational tasks.",
-    durationSeconds: 60 * 60,
-    elapsedSeconds: 0,
-    checklist: [
-      { id: "a1", text: "Process inbox", done: false },
-      { id: "a2", text: "Update trackers", done: false },
-      { id: "a3", text: "Close loose ends", done: false },
-    ],
-  },
-  {
-    id: "main-focus",
-    title: "Main Focus",
-    note: "Highest-value mission for this day.",
-    durationSeconds: 180 * 60,
-    elapsedSeconds: 0,
-    checklist: [
-      { id: "m1", text: "Define success metric", done: false },
-      { id: "m2", text: "Execute core build", done: false },
-      { id: "m3", text: "Ship first iteration", done: false },
-    ],
-  },
-];
+  }));
+}
 
 const formatSeconds = (value: number) => {
   const safeValue = Math.max(0, value);
@@ -79,178 +124,1849 @@ const formatSeconds = (value: number) => {
 };
 
 const formatClock = (value: Date) =>
-  value.toLocaleTimeString([], {
+  value.toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
     hour12: false,
   });
 
+const getDateKey = (value: Date) => {
+  const year = value.getFullYear();
+  const month = `${value.getMonth() + 1}`.padStart(2, "0");
+  const day = `${value.getDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const resetEntityDay = (e: NexusSlot): NexusSlot => ({
+  ...e,
+  elapsedSeconds: 0,
+  overspentAuto: false,
+  donorAutoBorrow: false,
+  checklist: e.checklist.map((item) => ({ ...item, done: false })),
+});
+
+function migrateFromV3(raw: string): Partial<PersistedV4> | null {
+  try {
+    const p = JSON.parse(raw) as Record<string, unknown>;
+    if (!Array.isArray(p.slots) || !Array.isArray(p.priorityOrder)) {
+      return null;
+    }
+    const slots = p.slots as NexusSlot[];
+    const order = p.priorityOrder as string[];
+    const parkedRaw = p.parkedInterests;
+    const parkedList = Array.isArray(parkedRaw) ? parkedRaw : [];
+    const parkedEntities: NexusSlot[] = parkedList
+      .map((row: unknown) => {
+        if (!row || typeof row !== "object") {
+          return null;
+        }
+        const r = row as Record<string, unknown>;
+        const id = typeof r.id === "string" ? r.id : "";
+        const title =
+          typeof r.title === "string"
+            ? r.title
+            : typeof r.text === "string"
+              ? r.text
+              : "Parked";
+        const note = typeof r.description === "string" ? r.description : "";
+        if (!id) {
+          return null;
+        }
+        return {
+          id,
+          title,
+          note,
+          durationSeconds: 0,
+          elapsedSeconds: 0,
+          checklist: [] as ChecklistItem[],
+        } satisfies NexusSlot;
+      })
+      .filter((x): x is NexusSlot => Boolean(x));
+
+    const fullOrder = [...order, ...parkedEntities.map((e) => e.id)];
+    const entityById = new Map<string, NexusSlot>();
+    slots.forEach((s) => entityById.set(s.id, s));
+    parkedEntities.forEach((e) => entityById.set(e.id, e));
+
+    const entities = fullOrder.map((id) => entityById.get(id)).filter(Boolean) as NexusSlot[];
+
+    return {
+      v: 4,
+      entities,
+      fullOrder,
+      mainSlotId: typeof p.mainSlotId === "string" ? p.mainSlotId : "main-focus",
+      activeId: typeof p.activeId === "string" ? p.activeId : null,
+      lastResetDate: typeof p.lastResetDate === "string" ? p.lastResetDate : getDateKey(new Date()),
+      dayType: p.dayType === "holiday" || p.dayType === "focus" ? p.dayType : "default",
+      holidayDaily: 1,
+      focusDaily: 3,
+      allocatorIndex: 0,
+      energyHours: defaultEnergyHours,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Samsung-style segmented bar for one preset row. */
+function PresetMemoryBar({
+  percentages,
+  selected,
+  onSelect,
+  isDark,
+}: {
+  percentages: number[];
+  selected: boolean;
+  onSelect: () => void;
+  isDark: boolean;
+}) {
+  /** Emerald / teal / green ramp — last slot is deep green (not zinc) so card progress stays visible. */
+  const colorsLight = [
+    "bg-emerald-800",
+    "bg-emerald-600",
+    "bg-teal-700",
+    "bg-emerald-500",
+    "bg-green-800",
+  ];
+  /** Dark mode: stronger separation (hue + luminance) than light ramp. */
+  const colorsDark = [
+    "bg-emerald-600",
+    "bg-teal-500",
+    "bg-cyan-400",
+    "bg-lime-400",
+    "bg-emerald-800",
+  ];
+  const seg = isDark ? colorsDark : colorsLight;
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      className={[
+        "flex w-full flex-col gap-0.5 rounded-lg border p-1.5 text-left transition-colors",
+        selected
+          ? isDark
+            ? "border-emerald-400/70 bg-emerald-500/10"
+            : "border-emerald-700 bg-emerald-100/80"
+          : isDark
+            ? "border-zinc-700 hover:border-zinc-600"
+            : "border-zinc-200 hover:border-zinc-300",
+      ].join(" ")}
+    >
+      <div
+        className={[
+          "flex h-3.5 w-full overflow-hidden rounded-md ring-1 sm:h-4",
+          isDark ? "ring-zinc-600" : "ring-black/15",
+        ].join(" ")}
+      >
+        {percentages.map((pct, i) => (
+          <div
+            key={i}
+            className={[
+              seg[i % seg.length],
+              "min-w-0 border-r last:border-r-0",
+              isDark ? "border-black/40" : "border-emerald-950/25",
+            ].join(" ")}
+            style={{ width: `${pct}%` }}
+            title={`P${i + 1}: ${pct}%`}
+          />
+        ))}
+      </div>
+      <span
+        className={["text-[9px] sm:text-[10px]", isDark ? "text-zinc-300" : "text-zinc-600"].join(" ")}
+      >
+        {presetLabel(percentages)}
+      </span>
+    </button>
+  );
+}
+
 export default function Home() {
-  const [slots, setSlots] = useState<NexusSlot[]>(initialSlots);
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
+
+  /** Portrait iff height > width (resizing desktop window matches user expectation). */
+  const [viewport, setViewport] = useState(() => {
+    if (typeof window === "undefined") {
+      return { w: 1280, h: 800, portrait: false };
+    }
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    return { w, h, portrait: h > w };
+  });
+
+  useEffect(() => {
+    const sync = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      setViewport({ w, h, portrait: h > w });
+    };
+    sync();
+    window.addEventListener("resize", sync);
+    return () => window.removeEventListener("resize", sync);
+  }, []);
+
+  const isNarrowViewport = viewport.w < MD_PX;
+  /** Phone-sized + tall viewport: extra-compact header chrome. */
+  const tightPhonePortrait = isNarrowViewport && viewport.portrait;
+  /** Short wide phone: slightly roomier header than portrait; title may truncate. */
+  const narrowLandscape = isNarrowViewport && !viewport.portrait;
+  /** PC / tablet landscape: show tasks between description and timer on Main Focus. */
+  const wideInlineChecklist = !viewport.portrait && viewport.w >= MD_PX;
+
+  const [entities, setEntities] = useState<NexusSlot[]>(seedEntities);
+  const [fullOrder, setFullOrder] = useState<string[]>([...seedIds]);
+  const [mainSlotId, setMainSlotId] = useState("main-focus");
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [mainSlotId, setMainSlotId] = useState<string>("main-focus");
+  const [lastResetDate, setLastResetDate] = useState(getDateKey(new Date()));
+  const [dayType, setDayType] = useState<DayType>("default");
+  const [holidayDaily, setHolidayDaily] = useState<HolidayDailySlots>(1);
+  const [focusDaily, setFocusDaily] = useState<FocusDailySlots>(3);
+  const [allocatorIndex, setAllocatorIndex] = useState(0);
+  const [energyHours, setEnergyHours] = useState<EnergyHoursConfig>(defaultEnergyHours);
+
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  /** Settings drawer: only one of Daily / App / Account expanded at a time (accordion). */
+  const [settingsAccordion, setSettingsAccordion] = useState<
+    "daily" | "app" | "account" | null
+  >("daily");
+  const [clock, setClock] = useState<Date | null>(null);
+
+  const [editingCardId, setEditingCardId] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState({ title: "", note: "" });
   const [draggingId, setDraggingId] = useState<string | null>(null);
-  const [clock, setClock] = useState<Date>(new Date());
+  const [reorderDragId, setReorderDragId] = useState<string | null>(null);
+
+  const [showAddParkedForm, setShowAddParkedForm] = useState(false);
+  const [addTitle, setAddTitle] = useState("");
+  const [addNote, setAddNote] = useState("");
+
+  const [parkedTasksForId, setParkedTasksForId] = useState<string | null>(null);
+
+  const [swapModal, setSwapModal] = useState<{ sourceId: string } | null>(null);
+  const [autoBorrow, setAutoBorrow] = useState(true);
+  /** Long-press donor card → share its unused allocation with a chosen recipient. */
+  const [transferDonorId, setTransferDonorId] = useState<string | null>(null);
+  const [transferRecipientId, setTransferRecipientId] = useState<string | null>(null);
+  const [transferH, setTransferH] = useState("0");
+  const [transferM, setTransferM] = useState("0");
+  const [transferS, setTransferS] = useState("0");
+
+  /** First “Apply allocation” in this tab is instant; later ones need confirm + 2s cooldown (running nexus). */
+  const hasAppliedAllocationOnceRef = useRef(false);
+  const [allocationConfirmOpen, setAllocationConfirmOpen] = useState(false);
+  const [allocationConfirmCooldown, setAllocationConfirmCooldown] = useState(0);
+
+  const energyBudgetSeconds = Math.max(60, Math.round(energyHours[dayType] * 3600));
+
+  const k = useMemo(
+    () => getDailyCount(dayType, holidayDaily, focusDaily, entities.length),
+    [dayType, holidayDaily, focusDaily, entities.length]
+  );
+
+  const activeIds = useMemo(() => fullOrder.slice(0, k), [fullOrder, k]);
+  const activeIdsKey = `${k}|${fullOrder.slice(0, k).join(",")}`;
+
+  const presets = useMemo(() => getAllocationPresets(dayType, k), [dayType, k]);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setClock(new Date());
-      setSlots((prev) =>
-        prev.map((slot) =>
-          slot.id === activeId && slot.elapsedSeconds < slot.durationSeconds
-            ? { ...slot, elapsedSeconds: slot.elapsedSeconds + 1 }
-            : slot
-        )
-      );
-    }, 1000);
+    setAllocatorIndex((i) => Math.min(i, Math.max(0, presets.length - 1)));
+  }, [presets.length]);
 
-    return () => window.clearInterval(timer);
-  }, [activeId]);
+  const safeAllocatorIndex = Math.min(allocatorIndex, Math.max(0, presets.length - 1));
+
+  const entityById = useMemo(
+    () => new Map(entities.map((e) => [e.id, e])),
+    [entities]
+  );
+
+  /** Demoted nexus (not in first k of fullOrder): clear timers until next Apply. */
+  useEffect(() => {
+    const active = new Set(fullOrder.slice(0, k));
+    setEntities((prev) =>
+      prev.map((e) =>
+        active.has(e.id)
+          ? e
+          : { ...e, durationSeconds: 0, elapsedSeconds: 0, overspentAuto: false, donorAutoBorrow: false }
+      )
+    );
+    setActiveId((cur) => (cur && active.has(cur) ? cur : null));
+  }, [k, fullOrder.join("|")]);
 
   useEffect(() => {
-    // Automatically stop a timer when it reaches 0.
-    if (!activeId) {
+    const active = fullOrder.slice(0, k);
+    setMainSlotId((mid) => (active.includes(mid) ? mid : active[0] ?? mid));
+  }, [activeIdsKey, fullOrder, k]);
+
+  useEffect(() => {
+    setClock(new Date());
+  }, []);
+
+  useEffect(() => {
+    const raw =
+      window.localStorage.getItem(STORAGE_KEY) ??
+      window.localStorage.getItem(STORAGE_LEGACY_V4) ??
+      (() => {
+        const legacy = window.localStorage.getItem(STORAGE_LEGACY_V3);
+        if (legacy) {
+          const m = migrateFromV3(legacy);
+          if (m?.entities?.length) {
+            return JSON.stringify(m);
+          }
+        }
+        return null;
+      })();
+
+    if (!raw) {
       return;
     }
 
-    const activeSlot = slots.find((slot) => slot.id === activeId);
-    if (activeSlot && activeSlot.elapsedSeconds >= activeSlot.durationSeconds) {
-      setActiveId(null);
+    try {
+      const p = JSON.parse(raw) as Partial<PersistedV5> & { v?: number };
+      const current = getDateKey(new Date());
+      const shouldReset = p.lastResetDate !== current;
+
+      if (Array.isArray(p.entities) && p.entities.length && Array.isArray(p.fullOrder)) {
+        setEntities(
+          shouldReset ? p.entities.map(resetEntityDay) : p.entities
+        );
+        setFullOrder(p.fullOrder);
+        setMainSlotId(
+          typeof p.mainSlotId === "string" ? p.mainSlotId : "main-focus"
+        );
+        setActiveId(shouldReset ? null : p.activeId ?? null);
+        setLastResetDate(current);
+        setDayType(
+          p.dayType === "holiday" || p.dayType === "focus" ? p.dayType : "default"
+        );
+        setHolidayDaily(p.holidayDaily === 0 || p.holidayDaily === 1 ? p.holidayDaily : 1);
+        setFocusDaily(
+          p.focusDaily === 1 || p.focusDaily === 2 || p.focusDaily === 3 ? p.focusDaily : 3
+        );
+        setAllocatorIndex(typeof p.allocatorIndex === "number" ? p.allocatorIndex : 0);
+        if (p.energyHours) {
+          setEnergyHours({
+            holiday: Number(p.energyHours.holiday) || defaultEnergyHours.holiday,
+            default: Number(p.energyHours.default) || defaultEnergyHours.default,
+            focus: Number(p.energyHours.focus) || defaultEnergyHours.focus,
+          });
+        }
+        if (typeof p.autoBorrow === "boolean") {
+          setAutoBorrow(p.autoBorrow);
+        }
+      }
+    } catch {
+      /* ignore */
     }
-  }, [activeId, slots]);
+  }, []);
 
-  const slotById = useMemo(
-    () => new Map(slots.map((slot) => [slot.id, slot])),
-    [slots]
-  );
+  useEffect(() => {
+    const payload: PersistedV5 = {
+      v: 5,
+      entities,
+      fullOrder,
+      mainSlotId,
+      activeId,
+      lastResetDate,
+      dayType,
+      holidayDaily,
+      focusDaily,
+      allocatorIndex: safeAllocatorIndex,
+      energyHours,
+      autoBorrow,
+    };
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  }, [
+    entities,
+    fullOrder,
+    mainSlotId,
+    activeId,
+    lastResetDate,
+    dayType,
+    holidayDaily,
+    focusDaily,
+    safeAllocatorIndex,
+    energyHours,
+    autoBorrow,
+  ]);
 
-  const mainSlot = slotById.get(mainSlotId) ?? slots[slots.length - 1];
-  const supportSlots = slots.filter((slot) => slot.id !== mainSlot.id);
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      const now = new Date();
+      setClock(now);
+      const dk = getDateKey(now);
+      setLastResetDate((prev) => {
+        if (prev === dk) {
+          return prev;
+        }
+        setEntities((e) => e.map(resetEntityDay));
+        setActiveId(null);
+        return dk;
+      });
+      if (!activeId || !fullOrder.slice(0, k).includes(activeId)) {
+        return;
+      }
+      const activeSlice = fullOrder.slice(0, k);
+      setEntities((prev) => {
+        const slot = prev.find((s) => s.id === activeId);
+        if (!slot || slot.durationSeconds <= 0 || !activeSlice.includes(activeId)) {
+          return prev;
+        }
+
+        let next = prev.map((e) => ({ ...e }));
+        const cur = () => next.find((s) => s.id === activeId)!;
+
+        if (cur().elapsedSeconds >= cur().durationSeconds) {
+          if (!autoBorrow) {
+            setTimeout(() => setActiveId(null), 0);
+            return prev;
+          }
+          const borrowed = applyBorrowFromDonors(next, activeId, activeSlice, 1, {
+            markOverspent: true,
+          });
+          if (!borrowed) {
+            setTimeout(() => setActiveId(null), 0);
+            return prev;
+          }
+          next = borrowed;
+        }
+
+        const s = cur();
+        if (s.elapsedSeconds < s.durationSeconds) {
+          return next.map((x) =>
+            x.id === activeId ? { ...x, elapsedSeconds: x.elapsedSeconds + 1 } : x
+          );
+        }
+        return next;
+      });
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [activeId, k, fullOrder.join("|"), autoBorrow]);
 
   const totals = useMemo(() => {
-    const spent = slots.reduce((acc, slot) => acc + slot.elapsedSeconds, 0);
-    const remainingEnergy = Math.max(0, ENERGY_BUDGET_SECONDS - spent);
-    const progress = Math.min((spent / ENERGY_BUDGET_SECONDS) * 100, 100);
-    return { spent, remainingEnergy, progress };
-  }, [slots]);
+    const activeSet = new Set(activeIds);
+    const spent = entities.reduce(
+      (acc, e) => acc + (activeSet.has(e.id) ? e.elapsedSeconds : 0),
+      0
+    );
+    const remainingEnergy = Math.max(0, energyBudgetSeconds - spent);
+    const progress =
+      energyBudgetSeconds <= 0 ? 0 : Math.min((spent / energyBudgetSeconds) * 100, 100);
+    const energyDepletedWhileRunning = Boolean(activeId && spent >= energyBudgetSeconds);
+    return { spent, remainingEnergy, progress, energyDepletedWhileRunning };
+  }, [entities, activeIds, energyBudgetSeconds, activeId]);
+
+  useEffect(() => {
+    if (!activeId) {
+      return;
+    }
+    if (!activeIds.includes(activeId)) {
+      setActiveId(null);
+      return;
+    }
+    const slot = entityById.get(activeId);
+    if (!slot || slot.durationSeconds <= 0) {
+      setActiveId(null);
+    }
+  }, [activeId, entityById, activeIds]);
+
+  /** Donor highlight only for the current run session; clear when switching/pausing timer. */
+  useEffect(() => {
+    setEntities((prev) => {
+      if (!prev.some((e) => e.donorAutoBorrow)) {
+        return prev;
+      }
+      return prev.map((e) => ({ ...e, donorAutoBorrow: false }));
+    });
+  }, [activeId]);
+
+  const mainSlot = entityById.get(mainSlotId) ?? entities[0];
+  const supportSlots = activeIds
+    .filter((id) => id !== mainSlotId)
+    .map((id) => entityById.get(id))
+    .filter(Boolean) as NexusSlot[];
+
+  const parkedIds = fullOrder.slice(k);
+
+  const applyAllocation = useCallback(() => {
+    if (k <= 0 || presets.length === 0) {
+      return;
+    }
+    const pct = presets[safeAllocatorIndex];
+    if (!pct || pct.length !== k) {
+      return;
+    }
+    const seconds = distributeSeconds(energyBudgetSeconds, pct);
+    const idToSec = new Map(activeIds.map((id, i) => [id, seconds[i] ?? 0]));
+    setEntities((prev) =>
+      prev.map((e) => {
+        const d = idToSec.get(e.id);
+        if (d === undefined) {
+          return {
+            ...e,
+            durationSeconds: 0,
+            elapsedSeconds: 0,
+            overspentAuto: false,
+            donorAutoBorrow: false,
+          };
+        }
+        return {
+          ...e,
+          durationSeconds: d,
+          elapsedSeconds: Math.min(e.elapsedSeconds, d),
+          overspentAuto: false,
+          donorAutoBorrow: false,
+        };
+      })
+    );
+  }, [k, presets, safeAllocatorIndex, energyBudgetSeconds, activeIds]);
+
+  useEffect(() => {
+    if (!allocationConfirmOpen) {
+      return;
+    }
+    const id = window.setInterval(() => {
+      setAllocationConfirmCooldown((t) => {
+        if (t <= 1) {
+          window.clearInterval(id);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [allocationConfirmOpen]);
+
+  const requestApplyAllocation = useCallback(() => {
+    if (k <= 0 || presets.length === 0) {
+      return;
+    }
+    const pct = presets[safeAllocatorIndex];
+    if (!pct || pct.length !== k) {
+      return;
+    }
+    if (!hasAppliedAllocationOnceRef.current) {
+      applyAllocation();
+      hasAppliedAllocationOnceRef.current = true;
+      return;
+    }
+    setAllocationConfirmCooldown(2);
+    setAllocationConfirmOpen(true);
+  }, [k, presets, safeAllocatorIndex, applyAllocation]);
 
   const toggleTimer = (slotId: string) => {
-    const candidate = slotById.get(slotId);
-    if (!candidate || candidate.elapsedSeconds >= candidate.durationSeconds) {
+    if (!activeIds.includes(slotId)) {
+      return;
+    }
+    const candidate = entityById.get(slotId);
+    if (
+      !candidate ||
+      candidate.durationSeconds <= 0 ||
+      candidate.elapsedSeconds >= candidate.durationSeconds
+    ) {
       return;
     }
     setActiveId((prev) => (prev === slotId ? null : slotId));
   };
 
-  const toggleChecklistItem = (slotId: string, itemId: string) => {
-    setSlots((prev) =>
-      prev.map((slot) =>
-        slot.id === slotId
-          ? {
-              ...slot,
-              checklist: slot.checklist.map((item) =>
-                item.id === itemId ? { ...item, done: !item.done } : item
-              ),
-            }
-          : slot
-      )
+  /** End auto-borrow overspend session: pause + clear rose on recipient & donors (same as pause, plus flags). */
+  const finishOverspendSession = () => {
+    setActiveId(null);
+    setEntities((prev) =>
+      prev.map((e) => ({ ...e, overspentAuto: false, donorAutoBorrow: false }))
     );
   };
 
+  const handleStartPauseForSlot = (slotId: string) => {
+    if (activeId === slotId) {
+      const slot = entityById.get(slotId);
+      if (slot?.overspentAuto) {
+        finishOverspendSession();
+        return;
+      }
+    }
+    toggleTimer(slotId);
+  };
+
+  /** Minutes & seconds 0–60 (inclusive) per UI; applied on blur and when moving time. */
+  const clampHmsSegment = (raw: string, max: number) => {
+    const n = Math.floor(Number(String(raw).replace(/\D/g, "")) || 0);
+    return Math.max(0, Math.min(max, n));
+  };
+
+  const openTransferModal = (donorId: string) => {
+    if (!activeIds.includes(donorId)) {
+      return;
+    }
+    setTransferDonorId(donorId);
+    setTransferRecipientId(
+      activeIds.find((id) => id !== donorId) ?? null
+    );
+    setTransferH("0");
+    setTransferM("00");
+    setTransferS("00");
+  };
+
+  const applyManualTransfer = () => {
+    if (!transferDonorId || !transferRecipientId || transferDonorId === transferRecipientId) {
+      setTransferDonorId(null);
+      return;
+    }
+    const hh = Math.max(0, Math.floor(Number(transferH.replace(/\D/g, "")) || 0));
+    const mm = clampHmsSegment(transferM, 60);
+    const ss = clampHmsSegment(transferS, 60);
+    const requested = hh * 3600 + mm * 60 + ss;
+    if (requested <= 0) {
+      return;
+    }
+    setEntities((prev) => {
+      const from = prev.find((e) => e.id === transferDonorId);
+      const to = prev.find((e) => e.id === transferRecipientId);
+      if (!from || !to) {
+        return prev;
+      }
+      const avail = from.durationSeconds - from.elapsedSeconds;
+      const amount = Math.min(requested, avail);
+      if (amount <= 0) {
+        return prev;
+      }
+      return prev.map((e) => {
+        if (e.id === transferDonorId) {
+          return { ...e, durationSeconds: e.durationSeconds - amount, donorAutoBorrow: false };
+        }
+        if (e.id === transferRecipientId) {
+          return {
+            ...e,
+            durationSeconds: e.durationSeconds + amount,
+            overspentAuto: false,
+            donorAutoBorrow: false,
+          };
+        }
+        return e;
+      });
+    });
+    setTransferDonorId(null);
+  };
+
+  const slotCanStart = (slot: NexusSlot) =>
+    slot.durationSeconds > 0 && slot.elapsedSeconds < slot.durationSeconds;
+
+  const updateEntity = (id: string, fn: (e: NexusSlot) => NexusSlot) => {
+    setEntities((prev) => prev.map((e) => (e.id === id ? fn(e) : e)));
+  };
+
+  const getPriorityRankForActive = (id: string) => {
+    const idx = activeIds.indexOf(id);
+    return idx >= 0 ? idx + 1 : 0;
+  };
+
   const handleDropOnMain = () => {
-    if (!draggingId || draggingId === mainSlot.id) {
+    if (!draggingId || draggingId === mainSlotId || !activeIds.includes(draggingId)) {
       return;
     }
     setMainSlotId(draggingId);
     setDraggingId(null);
   };
 
+  const onParkedDrop = (event: React.DragEvent) => {
+    event.preventDefault();
+    const raw = event.dataTransfer.getData("application/x-nexus-parked");
+    if (!raw) {
+      return;
+    }
+    try {
+      const { id } = JSON.parse(raw) as { id: string };
+      if (id && parkedIds.includes(id)) {
+        setSwapModal({ sourceId: id });
+      }
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const onMainColumnDrop = (event: React.DragEvent) => {
+    event.preventDefault();
+    const raw = event.dataTransfer.getData("application/x-nexus-parked");
+    if (raw) {
+      try {
+        const { id } = JSON.parse(raw) as { id: string };
+        if (id && parkedIds.includes(id)) {
+          setSwapModal({ sourceId: id });
+        }
+      } catch {
+        /* ignore */
+      }
+      return;
+    }
+    handleDropOnMain();
+  };
+
+  const applyParkedOntoDaily = (parkedEntityId: string, dailyEntityId: string) => {
+    const parked = entityById.get(parkedEntityId);
+    if (!parked || !parkedIds.includes(parkedEntityId)) {
+      setSwapModal(null);
+      return;
+    }
+    setEntities((prev) => {
+      const next = prev
+        .filter((e) => e.id !== parkedEntityId)
+        .map((e) =>
+          e.id === dailyEntityId
+            ? {
+                ...e,
+                title: parked.title,
+                note: parked.note,
+                checklist: parked.checklist.map((c) => ({ ...c })),
+              }
+            : e
+        );
+      return next;
+    });
+    setFullOrder((o) => o.filter((id) => id !== parkedEntityId));
+    if (mainSlotId === parkedEntityId) {
+      setMainSlotId(dailyEntityId);
+    }
+    setActiveId((cur) => (cur === parkedEntityId ? null : cur));
+    setSwapModal(null);
+  };
+
+  const startEditCard = (slot: NexusSlot) => {
+    setEditingCardId(slot.id);
+    setEditDraft({ title: slot.title, note: slot.note });
+  };
+
+  const saveEditCard = (slotId: string) => {
+    const t = editDraft.title.trim();
+    const n = editDraft.note.trim();
+    updateEntity(slotId, (e) => ({
+      ...e,
+      title: t || e.title,
+      note: n || e.note,
+    }));
+    setEditingCardId(null);
+  };
+
+  const moveReorder = (fromId: string, toId: string) => {
+    if (fromId === toId) {
+      return;
+    }
+    setFullOrder((order) => {
+      const next = [...order];
+      const fi = next.indexOf(fromId);
+      const ti = next.indexOf(toId);
+      if (fi < 0 || ti < 0) {
+        return order;
+      }
+      next.splice(fi, 1);
+      next.splice(ti, 0, fromId);
+      return next;
+    });
+  };
+
+  const addParkedNexus = () => {
+    const title = addTitle.trim();
+    if (!title || entities.length >= MAX_NEXUS) {
+      return;
+    }
+    const id = `nx-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    setEntities((prev) => [
+      ...prev,
+      {
+        id,
+        title,
+        note: addNote.trim(),
+        durationSeconds: 0,
+        elapsedSeconds: 0,
+        checklist: [],
+      },
+    ]);
+    setFullOrder((o) => [...o, id]);
+    setAddTitle("");
+    setAddNote("");
+    setShowAddParkedForm(false);
+  };
+
+  const deleteParkedEntity = (id: string) => {
+    if (!parkedIds.includes(id)) {
+      return;
+    }
+    setEntities((prev) => prev.filter((e) => e.id !== id));
+    setFullOrder((o) => o.filter((x) => x !== id));
+    setActiveId((cur) => (cur === id ? null : cur));
+  };
+
+  const reorderDropOnRow = (targetId: string) => {
+    if (reorderDragId) {
+      moveReorder(reorderDragId, targetId);
+      setReorderDragId(null);
+    }
+  };
+
+  // Nested control strip: between page (zinc-950) and header face (zinc-900).
+  const panelMuted = isDark ? "border-zinc-700/45 bg-zinc-800/65" : "border-zinc-300 bg-white/80";
+  const inputCls = isDark
+    ? "border-zinc-700 bg-zinc-900 text-zinc-100"
+    : "border-zinc-300 bg-zinc-50 text-zinc-900";
+  /** Accordion top-level rows: larger type than submenu; no color swap when open. */
+  const settingsSectionHeaderCls = [
+    "flex w-full items-center justify-between rounded-lg border px-2 py-2 text-left text-xs font-semibold uppercase tracking-wide transition-colors sm:px-2.5 sm:py-2 sm:text-sm",
+    panelMuted,
+  ].join(" ");
+  /** Submenu: right gutter + slight left inset so it reads one step below the section title. */
+  const settingsSubPanelCls = "mt-2 space-y-2 pl-2 pr-4 sm:pl-2.5 sm:pr-5";
+
+  const checklistFns = (slotId: string) => ({
+    toggle: (itemId: string) =>
+      updateEntity(slotId, (e) => ({
+        ...e,
+        checklist: e.checklist.map((item) =>
+          item.id === itemId ? { ...item, done: !item.done } : item
+        ),
+      })),
+    add: (text: string) =>
+      updateEntity(slotId, (e) => {
+        if (e.checklist.length >= 5) {
+          return e;
+        }
+        return {
+          ...e,
+          checklist: [
+            ...e.checklist,
+            { id: `${Date.now()}-${Math.random()}`, text, done: false },
+          ],
+        };
+      }),
+    update: (itemId: string, text: string) =>
+      updateEntity(slotId, (e) => ({
+        ...e,
+        checklist: e.checklist.map((item) =>
+          item.id === itemId ? { ...item, text } : item
+        ),
+      })),
+    del: (itemId: string) =>
+      updateEntity(slotId, (e) => ({
+        ...e,
+        checklist: e.checklist.filter((item) => item.id !== itemId),
+      })),
+  });
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 to-zinc-950 p-4 text-zinc-100 sm:p-6 lg:p-8">
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-        <header className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-4 shadow-2xl shadow-black/30 backdrop-blur sm:p-5">
-          <div className="grid gap-4 md:grid-cols-3 md:items-center">
-            <div>
-              <p className="text-xs uppercase tracking-[0.22em] text-zinc-500">The 5-Slot Nexus</p>
-              <h1 className="mt-1 text-xl font-semibold text-zinc-100 sm:text-2xl">
-                Productivity Dashboard
-              </h1>
-            </div>
+    <div
+      className={[
+        "flex h-dvh max-h-dvh w-full flex-col overflow-hidden transition-colors",
+        isDark
+          ? "bg-zinc-950 text-zinc-100"
+          : "bg-gradient-to-b from-zinc-100 to-slate-100 text-zinc-900",
+      ].join(" ")}
+    >
+      {settingsOpen ? (
+        <button
+          type="button"
+          aria-label="Close settings"
+          className="fixed inset-0 z-40 cursor-default bg-black/45 backdrop-blur-[1px]"
+          onClick={() => setSettingsOpen(false)}
+        />
+      ) : null}
 
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-3 text-center">
-              <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Digital Clock</p>
-              <p className="mt-1 font-mono text-2xl text-zinc-100">{formatClock(clock)}</p>
-            </div>
+      <aside
+        className={[
+          "fixed z-50 flex flex-col overflow-hidden border shadow-2xl transition-transform duration-300",
+          "inset-0 w-full md:inset-y-2 md:left-2 md:h-[calc(100dvh-1rem)] md:w-[min(100%,22rem)] md:rounded-2xl",
+          isDark ? "border-zinc-800 bg-zinc-950" : "border-zinc-300 bg-white",
+          settingsOpen ? "translate-x-0" : "-translate-x-full",
+        ].join(" ")}
+      >
+        <div
+          className={[
+            "flex shrink-0 items-center justify-between border-b px-2.5 py-2",
+            isDark ? "border-zinc-800" : "border-zinc-200",
+          ].join(" ")}
+        >
+          <h2 className="text-[10px] font-semibold uppercase tracking-[0.2em]">Settings</h2>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className={[
+                "flex h-8 w-8 items-center justify-center rounded-lg border text-sm",
+                isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-300 bg-zinc-50",
+              ].join(" ")}
+              title={isDark ? "Light" : "Dark"}
+              aria-label="Toggle theme"
+            >
+              {isDark ? "☀" : "☾"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setSettingsOpen(false)}
+              className={["rounded-lg border px-2 py-1 text-[10px]", inputCls].join(" ")}
+            >
+              Close
+            </button>
+          </div>
+        </div>
 
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-3">
-              <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Remaining Energy</p>
-              <p className="mt-1 font-mono text-xl text-emerald-300">
-                {formatSeconds(totals.remainingEnergy)}
-              </p>
-            </div>
+        <div className="hide-scrollbar min-h-0 flex-1 overflow-y-auto px-2.5 py-2">
+          <div className="mb-1.5">
+            <button
+              type="button"
+              aria-expanded={settingsAccordion === "daily"}
+              onClick={() =>
+                setSettingsAccordion((cur) => (cur === "daily" ? null : "daily"))
+              }
+              className={settingsSectionHeaderCls}
+            >
+              Daily
+              <span className="tabular-nums">{settingsAccordion === "daily" ? "−" : "+"}</span>
+            </button>
+            {settingsAccordion === "daily" ? (
+              <div className={settingsSubPanelCls}>
+                <div>
+                  <label className="text-[9px] uppercase text-zinc-500">Day type</label>
+                  <select
+                    value={dayType}
+                    onChange={(e) => setDayType(e.target.value as DayType)}
+                    className={["mt-0.5 w-full rounded-lg border px-2 py-1 text-xs", inputCls].join(
+                      " "
+                    )}
+                  >
+                    <option value="default">Default (max 5 today)</option>
+                    <option value="focus">Focus (max 3 today)</option>
+                    <option value="holiday">Holiday (0–1 today)</option>
+                  </select>
+                </div>
+
+                {dayType === "holiday" ? (
+                  <div>
+                    <label className="text-[9px] uppercase text-zinc-500">Holiday · nexus today</label>
+                    <select
+                      value={holidayDaily}
+                      onChange={(e) =>
+                        setHolidayDaily(Number(e.target.value) as HolidayDailySlots)
+                      }
+                      className={["mt-0.5 w-full rounded-lg border px-2 py-1 text-xs", inputCls].join(
+                        " "
+                      )}
+                    >
+                      <option value={0}>0 — no nexus</option>
+                      <option value={1}>1 — 100% allocation</option>
+                    </select>
+                  </div>
+                ) : null}
+
+                {dayType === "focus" ? (
+                  <div>
+                    <label className="text-[9px] uppercase text-zinc-500">Focus · slots today</label>
+                    <select
+                      value={focusDaily}
+                      onChange={(e) =>
+                        setFocusDaily(Number(e.target.value) as FocusDailySlots)
+                      }
+                      className={["mt-0.5 w-full rounded-lg border px-2 py-1 text-xs", inputCls].join(
+                        " "
+                      )}
+                    >
+                      <option value={1}>1</option>
+                      <option value={2}>2</option>
+                      <option value={3}>3</option>
+                    </select>
+                  </div>
+                ) : null}
+
+                <p className="text-[9px] text-zinc-500">
+                  Today <b>{k}</b> · Energy {energyHours[dayType]}h (
+                  {formatSeconds(energyBudgetSeconds)})
+                </p>
+
+                {presets.length > 0 ? (
+                  <div>
+                    <label className="text-[9px] uppercase text-zinc-500">
+                      Allocation (tap bar)
+                    </label>
+                    <div className="mt-1 space-y-1.5">
+                      {presets.map((pct, idx) => (
+                        <PresetMemoryBar
+                          key={idx}
+                          percentages={pct}
+                          selected={idx === safeAllocatorIndex}
+                          onSelect={() => setAllocatorIndex(idx)}
+                          isDark={isDark}
+                        />
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={requestApplyAllocation}
+                      className="mt-2 w-full rounded-lg border border-emerald-500/50 bg-emerald-500/10 py-1.5 text-[10px] text-emerald-500"
+                    >
+                      Apply allocation
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-[9px] text-zinc-500">No allocation for this day setup.</p>
+                )}
+
+                <div>
+                  <label className="text-[9px] uppercase text-zinc-500">
+                    Priority (drag ⋮⋮) · {entities.length}/{MAX_NEXUS} nexus
+                  </label>
+                  <ul className="mt-1 max-h-48 space-y-1 overflow-y-auto pr-0.5">
+                    {fullOrder.map((id, idx) => {
+                      const e = entityById.get(id);
+                      if (!e) {
+                        return null;
+                      }
+                      const isToday = idx < k;
+                      return (
+                        <li
+                          key={id}
+                          draggable
+                          onDragStart={() => setReorderDragId(id)}
+                          onDragEnd={() => setReorderDragId(null)}
+                          onDragOver={(ev) => ev.preventDefault()}
+                          onDrop={() => reorderDropOnRow(id)}
+                          className={[
+                            "flex items-center gap-1 rounded-lg border px-1.5 py-1 text-[10px]",
+                            isToday
+                              ? isDark
+                                ? "border-emerald-800/50 bg-emerald-950/20"
+                                : "border-emerald-200 bg-emerald-50/50"
+                              : isDark
+                                ? "border-zinc-800"
+                                : "border-zinc-200",
+                          ].join(" ")}
+                        >
+                          <span className="cursor-grab text-zinc-500" title="Drag">
+                            ⋮⋮
+                          </span>
+                          <span className="w-4 shrink-0 text-zinc-500">#{idx + 1}</span>
+                          <span className="min-w-0 flex-1 truncate font-medium">{e.title}</span>
+                          <span
+                            className={[
+                              "shrink-0 rounded px-1 py-0.5 text-[8px] uppercase",
+                              isToday ? "bg-emerald-500/20 text-emerald-500" : "bg-zinc-500/10",
+                            ].join(" ")}
+                          >
+                            {isToday ? "today" : "parked"}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between gap-2">
+                    <label className="text-[9px] uppercase text-zinc-500">Parked (extra)</label>
+                    <button
+                      type="button"
+                      onClick={() => setShowAddParkedForm((s) => !s)}
+                      className="text-[10px] text-emerald-500"
+                    >
+                      {showAddParkedForm ? "Cancel" : "+ Add nexus"}
+                    </button>
+                  </div>
+                  {showAddParkedForm ? (
+                    <div className="mt-1 space-y-1 rounded-lg border border-zinc-700/40 p-2">
+                      <input
+                        value={addTitle}
+                        onChange={(e) => setAddTitle(e.target.value)}
+                        placeholder="Title"
+                        className={["w-full rounded border px-2 py-1 text-xs", inputCls].join(" ")}
+                      />
+                      <textarea
+                        value={addNote}
+                        onChange={(e) => setAddNote(e.target.value)}
+                        placeholder="Description"
+                        rows={2}
+                        className={["w-full resize-none rounded border px-2 py-1 text-xs", inputCls].join(
+                          " "
+                        )}
+                      />
+                      <button
+                        type="button"
+                        disabled={entities.length >= MAX_NEXUS}
+                        onClick={addParkedNexus}
+                        className="w-full rounded border border-emerald-500/40 py-1 text-[10px] text-emerald-500 disabled:opacity-40"
+                      >
+                        Save nexus
+                      </button>
+                    </div>
+                  ) : null}
+                  <ul className="mt-1 max-h-40 space-y-1 overflow-y-auto">
+                    {parkedIds.map((id) => {
+                      const e = entityById.get(id);
+                      if (!e) {
+                        return null;
+                      }
+                      const fns = checklistFns(id);
+                      return (
+                        <li
+                          key={id}
+                          draggable
+                          onDragStart={(ev) => {
+                            ev.dataTransfer.setData(
+                              "application/x-nexus-parked",
+                              JSON.stringify({ id })
+                            );
+                            ev.dataTransfer.effectAllowed = "copyMove";
+                          }}
+                          className={[
+                            "rounded-lg border p-1.5",
+                            isDark ? "border-zinc-800" : "border-zinc-200",
+                          ].join(" ")}
+                        >
+                          <div className="flex items-start justify-between gap-1">
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-[10px] font-medium">{e.title}</p>
+                              <p className="line-clamp-2 text-[9px] text-zinc-500">{e.note}</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setParkedTasksForId((cur) => (cur === id ? null : id))
+                              }
+                              className="shrink-0 rounded border px-1.5 py-0.5 text-[9px]"
+                            >
+                              Tasks
+                            </button>
+                          </div>
+                          {parkedTasksForId === id ? (
+                            <div className="mt-1 space-y-0.5 border-t border-zinc-800/30 pt-1">
+                              {e.checklist.map((item) => (
+                                <label
+                                  key={item.id}
+                                  className="flex items-center gap-1 text-[9px]"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={item.done}
+                                    onChange={() => fns.toggle(item.id)}
+                                  />
+                                  <span className={item.done ? "line-through opacity-60" : ""}>
+                                    {item.text}
+                                  </span>
+                                </label>
+                              ))}
+                              <button
+                                type="button"
+                                onClick={() => deleteParkedEntity(id)}
+                                className="mt-1 w-full text-[9px] text-rose-500"
+                              >
+                                Remove from pool
+                              </button>
+                            </div>
+                          ) : null}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+            ) : null}
           </div>
 
-          <div className="mt-4 rounded-xl border border-zinc-800 bg-zinc-950/60 p-3">
-            <div className="mb-2 flex items-center justify-between text-sm text-zinc-400">
-              <span>Today Progress</span>
-              <span>{totals.progress.toFixed(1)}%</span>
-            </div>
-            <div className="h-3 overflow-hidden rounded-full bg-zinc-800">
-              <div
-                className="h-full rounded-full bg-emerald-500 transition-all duration-500"
-                style={{ width: `${totals.progress}%` }}
-              />
-            </div>
-            <p className="mt-2 text-xs text-zinc-500">
-              Total tracked time: {formatSeconds(totals.spent)} / 12:00:00
-            </p>
+          <div className="mb-1.5">
+            <button
+              type="button"
+              aria-expanded={settingsAccordion === "app"}
+              onClick={() => setSettingsAccordion((cur) => (cur === "app" ? null : "app"))}
+              className={settingsSectionHeaderCls}
+            >
+              App
+              <span className="tabular-nums">{settingsAccordion === "app" ? "−" : "+"}</span>
+            </button>
+            {settingsAccordion === "app" ? (
+              <div className={`${settingsSubPanelCls} space-y-1.5 text-[10px]`}>
+                {(["holiday", "default", "focus"] as const).map((key) => (
+                  <label key={key} className="flex items-center justify-between gap-2">
+                    <span className="capitalize text-zinc-500">{key} hours</span>
+                    <input
+                      type="number"
+                      min={0.5}
+                      step={0.5}
+                      value={energyHours[key]}
+                      onChange={(e) =>
+                        setEnergyHours((prev) => ({
+                          ...prev,
+                          [key]: Number(e.target.value) || prev[key],
+                        }))
+                      }
+                      className={["w-16 rounded border px-1 py-0.5 text-right", inputCls].join(" ")}
+                    />
+                  </label>
+                ))}
+                <label className="flex cursor-pointer items-center justify-between gap-2">
+                  <span className="text-zinc-500">Auto-borrow time</span>
+                  <input
+                    type="checkbox"
+                    checked={autoBorrow}
+                    onChange={(e) => setAutoBorrow(e.target.checked)}
+                    className="h-4 w-4 accent-emerald-600"
+                  />
+                </label>
+                <p className="text-[9px] text-zinc-500">
+                  When a running nexus hits zero, take 1s at a time from lowest priority slots.
+                  Long-press a donor card (giving nexus) to move unused time; never marks overspend.
+                </p>
+                <p className="text-[9px] text-zinc-500">
+                  Day type controls max nexus today + which allocation presets appear.
+                </p>
+              </div>
+            ) : null}
           </div>
-        </header>
 
-        <section className="grid gap-4 lg:grid-cols-[2fr_1.35fr]">
-          <div className="grid gap-4 sm:grid-cols-2">
-            {supportSlots.map((slot) => (
-              <NexusCard
-                key={slot.id}
-                slot={slot}
-                variant="support"
-                isActive={activeId === slot.id}
-                isExpanded={expandedId === slot.id}
-                onStartPause={() => toggleTimer(slot.id)}
-                onToggleExpand={() =>
-                  setExpandedId((prev) => (prev === slot.id ? null : slot.id))
-                }
-                onToggleChecklist={(itemId) => toggleChecklistItem(slot.id, itemId)}
-                onDragStart={() => setDraggingId(slot.id)}
-                onDragEnd={() => setDraggingId(null)}
-              />
-            ))}
+          <div>
+            <button
+              type="button"
+              aria-expanded={settingsAccordion === "account"}
+              onClick={() =>
+                setSettingsAccordion((cur) => (cur === "account" ? null : "account"))
+              }
+              className={settingsSectionHeaderCls}
+            >
+              Account
+              <span className="tabular-nums">{settingsAccordion === "account" ? "−" : "+"}</span>
+            </button>
+            {settingsAccordion === "account" ? (
+              <div className={`${settingsSubPanelCls} space-y-1.5 text-[10px]`}>
+                <button
+                  type="button"
+                  className="w-full rounded-lg border py-1.5"
+                  onClick={() => window.alert("Profile — demo")}
+                >
+                  Profile
+                </button>
+                <button
+                  type="button"
+                  className="w-full rounded-lg border border-rose-500/40 py-1.5 text-rose-500"
+                  onClick={() => window.alert("Log out — demo")}
+                >
+                  Log out
+                </button>
+              </div>
+            ) : null}
           </div>
+        </div>
+      </aside>
 
+      {allocationConfirmOpen ? (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-3">
           <div
-            onDragOver={(event) => event.preventDefault()}
-            onDrop={handleDropOnMain}
             className={[
-              "rounded-2xl border border-zinc-800 bg-zinc-900/40 p-1 transition-colors duration-300",
-              draggingId ? "border-emerald-500/70 bg-emerald-500/5" : "",
+              "w-full max-w-sm rounded-2xl border p-3 sm:p-4",
+              isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-300 bg-white",
+            ].join(" ")}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="allocation-confirm-title"
+          >
+            <p id="allocation-confirm-title" className="text-sm font-semibold">
+              Re-apply allocation?
+            </p>
+            <p className="mt-1.5 text-[10px] leading-snug text-zinc-500">
+              Budgets for each today nexus will update. The same slot keeps running if a timer is
+              on; elapsed time is capped to the new limit.
+            </p>
+            {activeId ? (
+              <p
+                className={[
+                  "mt-2 rounded-lg border px-2 py-1.5 text-[10px]",
+                  panelMuted,
+                ].join(" ")}
+              >
+                Running: <span className="font-medium">{entityById.get(activeId)?.title}</span>
+              </p>
+            ) : null}
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row-reverse sm:justify-end">
+              <button
+                type="button"
+                disabled={allocationConfirmCooldown > 0}
+                onClick={() => {
+                  applyAllocation();
+                  setAllocationConfirmOpen(false);
+                }}
+                className="w-full rounded-lg border border-emerald-500/50 bg-emerald-500/15 py-2 text-xs font-semibold text-emerald-600 disabled:cursor-not-allowed disabled:opacity-45 dark:text-emerald-400 sm:w-auto sm:min-w-[8rem]"
+              >
+                {allocationConfirmCooldown > 0
+                  ? `Apply (${allocationConfirmCooldown}s)`
+                  : "Apply"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setAllocationConfirmOpen(false)}
+                className={[
+                  "w-full rounded-lg border py-2 text-xs sm:w-auto sm:min-w-[8rem]",
+                  isDark ? "border-zinc-600" : "border-zinc-300",
+                ].join(" ")}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {swapModal ? (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-3">
+          <div
+            className={[
+              "w-full max-w-sm rounded-2xl border p-3",
+              isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-300 bg-white",
             ].join(" ")}
           >
-            <NexusCard
-              slot={mainSlot}
-              variant="focus"
-              isActive={activeId === mainSlot.id}
-              isExpanded={expandedId === mainSlot.id}
-              onStartPause={() => toggleTimer(mainSlot.id)}
-              onToggleExpand={() =>
-                setExpandedId((prev) => (prev === mainSlot.id ? null : mainSlot.id))
-              }
-              onToggleChecklist={(itemId) => toggleChecklistItem(mainSlot.id, itemId)}
+            <p className="text-sm font-semibold">Replace which today nexus?</p>
+            <p className="mt-0.5 text-[10px] text-zinc-500">
+              Timers stay on that slot; title, note & tasks come from parked item. Parked entry is
+              removed.
+            </p>
+            <div className="mt-2 max-h-40 space-y-1 overflow-y-auto">
+              {activeIds.map((id) => {
+                const s = entityById.get(id);
+                if (!s) {
+                  return null;
+                }
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => applyParkedOntoDaily(swapModal.sourceId, id)}
+                    className={[
+                      "w-full rounded-lg border px-2 py-1.5 text-left text-xs",
+                      isDark ? "border-zinc-700 hover:bg-zinc-800" : "border-zinc-200",
+                    ].join(" ")}
+                  >
+                    {s.title}
+                    <span className="block text-[9px] text-zinc-500">
+                      {formatSeconds(s.elapsedSeconds)} / {formatSeconds(s.durationSeconds)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <button
+              type="button"
+              onClick={() => setSwapModal(null)}
+              className="mt-2 w-full rounded-lg border py-1.5 text-xs"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {transferDonorId ? (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-3">
+          <div
+            className={[
+              "hide-scrollbar w-full max-w-sm rounded-2xl border p-3",
+              isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-300 bg-white",
+            ].join(" ")}
+          >
+            <p className="text-sm font-semibold">Transfer time</p>
+            <p className="mt-0.5 text-[10px] text-zinc-500">
+              Give unused allocation from this nexus — the donor you long-pressed — to another
+              slot. Amount is capped by what this donor still has left (down to the second).
+            </p>
+            <label className="mt-3 block text-[10px] font-semibold uppercase text-zinc-500">
+              From (donor — this card)
+            </label>
+            <div
+              className={[
+                "mt-1 rounded-lg border px-2 py-1.5 text-sm font-medium",
+                panelMuted,
+              ].join(" ")}
+            >
+              {entityById.get(transferDonorId)?.title}
+              <span className="mt-0.5 block text-[10px] font-normal tabular-nums text-zinc-500">
+                unused:{" "}
+                {(() => {
+                  const s = entityById.get(transferDonorId);
+                  if (!s) {
+                    return "—";
+                  }
+                  return formatSeconds(Math.max(0, s.durationSeconds - s.elapsedSeconds));
+                })()}
+              </span>
+            </div>
+            <label className="mt-3 block text-[10px] font-semibold uppercase text-zinc-500">
+              To
+            </label>
+            <select
+              value={transferRecipientId ?? ""}
+              onChange={(e) => setTransferRecipientId(e.target.value || null)}
+              className={["mt-1 w-full rounded-lg border px-2 py-1.5 text-sm", inputCls].join(" ")}
+            >
+              {activeIds
+                .filter((id) => id !== transferDonorId)
+                .map((id) => {
+                  const s = entityById.get(id);
+                  if (!s) {
+                    return null;
+                  }
+                  return (
+                    <option key={id} value={id}>
+                      {s.title}
+                    </option>
+                  );
+                })}
+            </select>
+            <label className="mt-2 block text-[10px] font-semibold uppercase text-zinc-500">
+              Time (h : min : sec, min/sec 0–60)
+            </label>
+            <div className="mt-1 flex items-center gap-1.5">
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={4}
+                value={transferH}
+                onChange={(e) => setTransferH(e.target.value.replace(/\D/g, ""))}
+                placeholder="00"
+                className={["min-w-0 flex-1 rounded-lg border px-2 py-1.5 text-center text-sm", inputCls].join(
+                  " "
+                )}
+                aria-label="Hours"
+              />
+              <span className="text-zinc-400">:</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={2}
+                value={transferM}
+                onChange={(e) => setTransferM(e.target.value.replace(/\D/g, "").slice(0, 2))}
+                onBlur={() =>
+                  setTransferM(String(clampHmsSegment(transferM, 60)).padStart(2, "0"))
+                }
+                placeholder="00"
+                className={["w-12 rounded-lg border px-1 py-1.5 text-center text-sm", inputCls].join(
+                  " "
+                )}
+                aria-label="Minutes"
+              />
+              <span className="text-zinc-400">:</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={2}
+                value={transferS}
+                onChange={(e) => setTransferS(e.target.value.replace(/\D/g, "").slice(0, 2))}
+                onBlur={() =>
+                  setTransferS(String(clampHmsSegment(transferS, 60)).padStart(2, "0"))
+                }
+                placeholder="00"
+                className={["w-12 rounded-lg border px-1 py-1.5 text-center text-sm", inputCls].join(
+                  " "
+                )}
+                aria-label="Seconds"
+              />
+            </div>
+            <div className="mt-3 flex gap-2">
+              <button
+                type="button"
+                onClick={() => setTransferDonorId(null)}
+                className={["flex-1 rounded-lg border py-2 text-xs", inputCls].join(" ")}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={applyManualTransfer}
+                className="flex-1 rounded-lg border border-emerald-500/50 bg-emerald-500/15 py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400"
+              >
+                Move time
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="flex min-h-0 flex-1 flex-col overflow-x-hidden">
+        <div className={[SHELL_X, "flex min-h-0 flex-1 flex-col"].join(" ")}>
+          {/* Productivity header: own island; same width as nexus grid below (not merged into one mega-card). */}
+          <header
+            className={[
+              "sticky top-2 z-30 mb-4 flex w-full shrink-0 flex-col rounded-2xl border md:mb-6",
+              tightPhonePortrait ? "gap-0.5 px-2.5 py-1.5" : "gap-1 px-3 py-2 md:px-4 md:py-2.5",
+              isDark
+                ? "border-zinc-700/55 bg-zinc-900 shadow-xl shadow-black/35"
+                : "border-zinc-300/90 bg-white/95 shadow-md backdrop-blur-md",
+            ].join(" ")}
+          >
+        <div className="hidden items-center gap-3 md:flex md:gap-4 lg:gap-6">
+          <button
+            type="button"
+            onClick={() => setSettingsOpen(true)}
+            className={[
+              "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-base lg:h-11 lg:w-11 lg:text-lg",
+              isDark ? "border-zinc-600/50 bg-zinc-800 text-zinc-100" : "border-zinc-300 bg-white text-zinc-800",
+            ].join(" ")}
+            aria-label="Open menu"
+            title="Menu"
+          >
+            <svg className="h-[1.1rem] w-[1.1rem] lg:h-5 lg:w-5" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          </button>
+          <div className="min-w-0 flex-1">
+            <p
+              className={[
+                "text-[11px] uppercase tracking-[0.14em] sm:text-xs lg:text-sm",
+                isDark ? "text-zinc-400" : "text-zinc-500",
+              ].join(" ")}
+            >
+              5Nexus
+            </p>
+            <h1
+              className={[
+                "truncate text-xl font-semibold leading-tight tracking-tight lg:text-2xl xl:text-3xl",
+                isDark ? "text-zinc-50" : "text-zinc-900",
+              ].join(" ")}
+            >
+              Productivity Dashboard
+            </h1>
+          </div>
+          {/* Remaining energy = hero: label left of counter. */}
+          <div className="flex shrink-0 items-stretch gap-3 md:gap-4 lg:gap-5">
+            <div
+              className={[
+                "flex min-w-0 flex-row items-center gap-2 rounded-xl border-2 px-3 py-2 shadow-md md:gap-3 md:px-4 md:py-2.5",
+                totals.energyDepletedWhileRunning
+                  ? [
+                      "border-rose-500/70 bg-rose-500/10 shadow-rose-950/20",
+                      isDark ? "border-rose-400/55 bg-rose-600/15" : "",
+                    ].join(" ")
+                  : [
+                      "border-emerald-500/70 bg-emerald-500/15 shadow-emerald-500/15",
+                      isDark ? "border-emerald-400/45 bg-emerald-500/10 shadow-emerald-950/20" : "",
+                    ].join(" "),
+              ].join(" ")}
+            >
+              <span
+                className={[
+                  "max-w-[9rem] shrink text-left font-sans font-bold uppercase leading-none tracking-tight text-lg lg:max-w-[10rem] lg:text-xl xl:text-2xl",
+                  totals.energyDepletedWhileRunning
+                    ? isDark
+                      ? "text-rose-100"
+                      : "text-rose-800"
+                    : isDark
+                      ? "text-white"
+                      : "text-emerald-950",
+                ].join(" ")}
+              >
+                Remaining energy
+              </span>
+              <span
+                className={[
+                  "shrink-0 font-mono tabular-nums text-lg font-bold tracking-tight lg:text-xl xl:text-2xl",
+                  totals.energyDepletedWhileRunning
+                    ? isDark
+                      ? "text-rose-100"
+                      : "text-rose-800"
+                    : isDark
+                      ? "text-white"
+                      : "text-emerald-950",
+                ].join(" ")}
+              >
+                {formatSeconds(totals.remainingEnergy)}
+              </span>
+            </div>
+            <div
+              className={[
+                "flex flex-col items-end justify-center border-l pl-3 font-mono leading-none opacity-90 md:pl-4 lg:pl-5",
+              isDark ? "border-zinc-600/50" : "border-zinc-300",
+            ].join(" ")}
+          >
+            <span
+              className={[
+                "text-[8px] font-sans uppercase tracking-wide lg:text-[9px]",
+                isDark ? "text-zinc-400" : "text-zinc-500",
+              ].join(" ")}
+            >
+              Clock
+            </span>
+              <span
+                className={[
+                  "tabular-nums text-[11px] font-medium lg:text-xs",
+                  isDark ? "text-zinc-300" : "text-zinc-600",
+                ].join(" ")}
+              >
+                {clock ? formatClock(clock) : "—"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className={[
+            "flex items-center md:hidden",
+            tightPhonePortrait ? "gap-1.5" : "gap-2",
+          ].join(" ")}
+        >
+          <button
+            type="button"
+            onClick={() => setSettingsOpen(true)}
+            className={[
+              "flex shrink-0 items-center justify-center rounded-lg border",
+              tightPhonePortrait ? "h-7 w-7 text-xs" : narrowLandscape ? "h-8 w-8 text-sm" : "h-8 w-8 text-sm",
+              isDark ? "border-zinc-600/50 bg-zinc-800 text-zinc-100" : "border-zinc-300 bg-white text-zinc-800",
+            ].join(" ")}
+            aria-label="Open menu"
+          >
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />
+            </svg>
+          </button>
+          <div className="min-w-0 flex-1">
+            <h1
+              className={[
+                "truncate font-semibold leading-tight tracking-tight",
+                tightPhonePortrait ? "text-lg" : "text-xl",
+                isDark ? "text-zinc-50" : "text-zinc-800",
+              ].join(" ")}
+            >
+              5Nexus
+            </h1>
+            <p
+              className={[
+                "truncate font-medium",
+                tightPhonePortrait ? "hidden" : "text-sm sm:text-base",
+                isDark ? "text-zinc-400" : "text-zinc-500",
+              ].join(" ")}
+            >
+              Productivity Dashboard
+            </p>
+          </div>
+          <div
+            className={[
+              "shrink-0 font-mono tabular-nums",
+              tightPhonePortrait ? "flex gap-2 text-right" : "flex gap-2.5 text-right",
+            ].join(" ")}
+          >
+            <div
+              className={[
+                "flex min-w-0 shrink items-center gap-1.5 rounded-lg border-2 px-2 py-1",
+                totals.energyDepletedWhileRunning
+                  ? isDark
+                    ? "border-rose-400/55 bg-rose-600/15"
+                    : "border-rose-500/70 bg-rose-100/80"
+                  : isDark
+                    ? "border-emerald-300/50 bg-emerald-400/12"
+                    : "border-emerald-500/65 bg-emerald-500/12",
+              ].join(" ")}
+            >
+              <span
+                className={[
+                  "max-w-[5.75rem] shrink text-left font-bold uppercase leading-none tracking-tight sm:max-w-[6.5rem]",
+                  tightPhonePortrait ? "text-[11px]" : "text-xs",
+                  totals.energyDepletedWhileRunning
+                    ? isDark
+                      ? "text-rose-100"
+                      : "text-rose-900"
+                    : isDark
+                      ? "text-white"
+                      : "text-emerald-950",
+                ].join(" ")}
+              >
+                Remaining energy
+              </span>
+              <span
+                className={[
+                  "shrink-0 font-mono font-bold leading-none tabular-nums",
+                  tightPhonePortrait ? "text-[11px]" : "text-xs",
+                  totals.energyDepletedWhileRunning
+                    ? isDark
+                      ? "text-rose-100"
+                      : "text-rose-900"
+                    : isDark
+                      ? "text-white"
+                      : "text-emerald-950",
+                ].join(" ")}
+              >
+                {formatSeconds(totals.remainingEnergy)}
+              </span>
+            </div>
+            <div
+              className={[
+                "min-w-0 shrink border-l text-right opacity-80",
+                isDark ? "border-zinc-600/50" : "border-zinc-300",
+                "pl-2",
+              ].join(" ")}
+            >
+              <div
+                className={[
+                  "text-[6px] uppercase tracking-wide",
+                  isDark ? "text-zinc-400" : "text-zinc-500",
+                ].join(" ")}
+              >
+                Clock
+              </div>
+              <div
+                className={[
+                  tightPhonePortrait ? "text-[10px] leading-tight" : "text-[11px] leading-tight",
+                  isDark ? "text-zinc-300" : "text-zinc-600",
+                ].join(" ")}
+              >
+                {clock ? formatClock(clock) : "—"}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className={[
+            "flex items-center rounded-md px-0.5 py-0.5 md:mt-1 md:gap-2 md:rounded-lg md:px-1 md:py-1.5",
+            tightPhonePortrait ? "gap-1 py-0" : "gap-1.5",
+            panelMuted,
+          ].join(" ")}
+        >
+          <span
+            className={[
+              tightPhonePortrait ? "text-[8px]" : "text-[10px] md:text-xs",
+              isDark ? "text-zinc-400" : "text-zinc-500",
+            ].join(" ")}
+          >
+            Today
+          </span>
+          <div
+            className={[
+              "flex-1 overflow-hidden rounded-full",
+              tightPhonePortrait ? "h-1" : "h-1.5 md:h-2.5 lg:h-3",
+              isDark ? "bg-zinc-900/90 ring-1 ring-zinc-600/30" : "bg-zinc-400",
+            ].join(" ")}
+          >
+            <div
+              className={[
+                "h-full rounded-full",
+                isDark ? "bg-emerald-400" : "bg-emerald-600",
+              ].join(" ")}
+              style={{ width: `${totals.progress}%` }}
             />
           </div>
-        </section>
-      </main>
+          <span
+            className={[
+              "tabular-nums",
+              tightPhonePortrait ? "text-[8px]" : "text-[10px] md:text-xs",
+              isDark ? "text-zinc-400" : "text-zinc-500",
+            ].join(" ")}
+          >
+            {Math.round(totals.progress)}%
+          </span>
+        </div>
+      </header>
+
+            <div
+              className={[
+                "hide-scrollbar flex min-h-0 flex-1 flex-col gap-1.5 pb-2 pt-2 sm:gap-2 sm:pt-3 md:pb-3 md:pt-4 lg:pt-5",
+                // Below lg: scroll the whole dashboard (main + supports) — avoids nested scroll + clipping.
+                "max-lg:overflow-y-auto max-lg:overscroll-contain max-lg:pb-[max(2.5rem,env(safe-area-inset-bottom))]",
+                "lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain",
+              ].join(" ")}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={onParkedDrop}
+            >
+        {k === 0 ? (
+          <div
+            className={[
+              "flex flex-1 items-center justify-center rounded-xl border p-4 text-center text-xs",
+              panelMuted,
+            ].join(" ")}
+          >
+            No nexus today (holiday). Open Settings to change day type or add nexus.
+          </div>
+        ) : (
+          <div
+            className={[
+              "hide-scrollbar flex flex-col gap-2 sm:gap-2",
+              "max-lg:min-h-0 max-lg:flex-none",
+              // items-start: columns don’t share one stretched height (no empty card bellies when Main Focus is tall).
+              "lg:grid lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.65fr)] lg:grid-rows-1 lg:items-start lg:content-start lg:gap-3 lg:overflow-y-auto lg:overscroll-contain",
+            ].join(" ")}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={onParkedDrop}
+          >
+            {/* Main focus: full width stacked above supports; right column on lg */}
+            <div
+              className={[
+                "order-1 flex w-full min-w-0 shrink-0 flex-col lg:order-2 lg:self-start lg:h-auto lg:min-h-0",
+                "rounded-xl p-0.5 lg:p-1",
+                isDark ? "bg-zinc-900/70 ring-1 ring-zinc-600/40" : "bg-white/40 ring-1 ring-zinc-300/50",
+                draggingId ? "ring-emerald-500/50" : "",
+              ].join(" ")}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={onMainColumnDrop}
+            >
+              {mainSlot ? (
+                <NexusCard
+                  slot={mainSlot}
+                  variant="focus"
+                  theme={theme}
+                  wideInlineChecklist={wideInlineChecklist}
+                  truncateTitle={narrowLandscape}
+                  isActive={activeId === mainSlot.id}
+                  isEditing={editingCardId === mainSlot.id}
+                  canStart={slotCanStart(mainSlot)}
+                  editDraft={editDraft}
+                  priorityRank={getPriorityRankForActive(mainSlot.id)}
+                  onStartPause={() => handleStartPauseForSlot(mainSlot.id)}
+                  onStartEdit={() => startEditCard(mainSlot)}
+                  onEditDraftChange={setEditDraft}
+                  onSaveEdit={() => saveEditCard(mainSlot.id)}
+                  onCancelEdit={() => setEditingCardId(null)}
+                  onToggleChecklist={(itemId) => checklistFns(mainSlot.id).toggle(itemId)}
+                  onAddChecklist={(text) => checklistFns(mainSlot.id).add(text)}
+                  onUpdateChecklist={(itemId, text) =>
+                    checklistFns(mainSlot.id).update(itemId, text)
+                  }
+                  onDeleteChecklist={(itemId) => checklistFns(mainSlot.id).del(itemId)}
+                  onOuterDrop={onMainColumnDrop}
+                  onRequestTransfer={() => openTransferModal(mainSlot.id)}
+                />
+              ) : null}
+            </div>
+
+            <div
+              className={[
+                // Slight inset so active card ring never kisses the scroll viewport edge.
+                "order-2 grid w-full min-w-0 auto-rows-auto items-start gap-2 px-0.5 sm:px-0 lg:order-1 lg:self-start lg:min-h-0",
+                supportSlots.length <= 1 ? "grid-cols-1" : "grid-cols-2",
+              ].join(" ")}
+            >
+              {supportSlots.map((slot) => (
+                <div key={slot.id} className="min-h-0 self-start">
+                  <NexusCard
+                    slot={slot}
+                    variant="support"
+                    theme={theme}
+                    truncateTitle={narrowLandscape}
+                    isActive={activeId === slot.id}
+                    isEditing={editingCardId === slot.id}
+                    canStart={slotCanStart(slot)}
+                    editDraft={editDraft}
+                    priorityRank={getPriorityRankForActive(slot.id)}
+                    onStartPause={() => handleStartPauseForSlot(slot.id)}
+                    onStartEdit={() => startEditCard(slot)}
+                    onEditDraftChange={setEditDraft}
+                    onSaveEdit={() => saveEditCard(slot.id)}
+                    onCancelEdit={() => setEditingCardId(null)}
+                    onToggleChecklist={(itemId) => checklistFns(slot.id).toggle(itemId)}
+                    onAddChecklist={(text) => checklistFns(slot.id).add(text)}
+                    onUpdateChecklist={(itemId, text) =>
+                      checklistFns(slot.id).update(itemId, text)
+                    }
+                    onDeleteChecklist={(itemId) => checklistFns(slot.id).del(itemId)}
+                    onDragStart={() => setDraggingId(slot.id)}
+                    onDragEnd={() => setDraggingId(null)}
+                    onOuterDrop={onParkedDrop}
+                    onRequestTransfer={() => openTransferModal(slot.id)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+            </div>
+      </div>
+      </div>
     </div>
   );
 }
