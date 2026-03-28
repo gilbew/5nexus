@@ -29,13 +29,16 @@ type NexusCardProps = {
   wideInlineChecklist?: boolean;
   /** Narrow phone in landscape: shorten titles so the row doesn’t collide with countdown. */
   truncateTitle?: boolean;
+  /** Narrow viewport: checklist Edit opens the mobile sheet (same as title), not inline inputs. */
+  isNarrowViewport?: boolean;
   isActive: boolean;
   isEditing: boolean;
   canStart: boolean;
   editDraft: { title: string; note: string };
   priorityRank: number;
   onStartPause: () => void;
-  onStartEdit: () => void;
+  /** Optional `focusTasks`: narrow screen + checklist Edit → same sheet, tasks section expanded. */
+  onStartEdit: (opts?: { focusTasks?: boolean }) => void;
   onEditDraftChange: (next: { title: string; note: string }) => void;
   onSaveEdit: () => void;
   onCancelEdit: () => void;
@@ -45,11 +48,15 @@ type NexusCardProps = {
   onDeleteChecklist: (itemId: string) => void;
   onDragStart?: (e: React.DragEvent) => void;
   onDragEnd?: () => void;
+  /** Touch/pen: pointer-up hit-test drop zones (HTML5 drag does not run on most mobile browsers). */
+  onTouchDragStart?: (e: React.PointerEvent) => void;
   /** Parked-item drops need preventDefault on the actual element under cursor. */
   onOuterDragOver?: (e: React.DragEvent) => void;
   onOuterDrop?: (e: React.DragEvent) => void;
   /** Press-and-hold on this card as donor opens transfer dialog (not on buttons/tasks/drag). */
   onRequestTransfer?: () => void;
+  /** HTML5 / touch drag: dim source so the floating preview reads as “lifted”. */
+  isDragSource?: boolean;
 };
 
 const formatSeconds = (value: number) => {
@@ -95,6 +102,7 @@ export function NexusCard({
   theme,
   wideInlineChecklist = false,
   truncateTitle = false,
+  isNarrowViewport = false,
   isActive,
   isEditing,
   canStart,
@@ -111,9 +119,11 @@ export function NexusCard({
   onDeleteChecklist,
   onDragStart,
   onDragEnd,
+  onTouchDragStart,
   onOuterDragOver,
   onOuterDrop,
   onRequestTransfer,
+  isDragSource = false,
 }: NexusCardProps) {
   /** Parked with no slice budget but elapsed kept for “already ran today” + energy accounting. */
   const isParkedRunHold = slot.durationSeconds <= 0 && slot.elapsedSeconds > 0;
@@ -217,6 +227,7 @@ export function NexusCard({
             ? "shadow-sm ring-1 ring-zinc-400/20 dark:ring-zinc-600/25"
             : "shadow-md ring-1 ring-emerald-500/15 dark:ring-emerald-400/20"
           : "",
+        isDragSource ? "scale-[0.98] opacity-50 shadow-lg ring-2 ring-emerald-500/40" : "",
       ].join(" ")}
     >
       {/* Support: full-width rows so Run time can align with the card’s right edge (same column as Drag). */}
@@ -279,13 +290,14 @@ export function NexusCard({
               <span
                 data-no-toggle
                 draggable
+                onPointerDown={(e) => onTouchDragStart?.(e)}
                 onDragStart={(e) => {
                   e.stopPropagation();
                   onDragStart?.(e);
                 }}
                 onDragEnd={() => onDragEnd?.()}
                 className={[
-                  "shrink-0 cursor-grab rounded-md border px-1.5 py-0.5 text-[10px] active:cursor-grabbing sm:text-xs",
+                  "shrink-0 touch-none cursor-grab rounded-md border px-1.5 py-0.5 text-[10px] select-none active:cursor-grabbing sm:text-xs",
                   isDark
                     ? "border-zinc-700 text-zinc-400"
                     : "border-zinc-300 text-zinc-600",
@@ -297,6 +309,7 @@ export function NexusCard({
           ) : (
             <>
               <div className="flex items-start justify-between gap-2">
+                {/* Title only opens editor — not full row width (flex-1 made empty space hit edit). */}
                 <button
                   type="button"
                   data-no-toggle
@@ -305,7 +318,7 @@ export function NexusCard({
                     onStartEdit();
                   }}
                   className={[
-                    "min-w-0 flex-1 text-left font-semibold transition-colors",
+                    "min-w-0 w-fit max-w-[calc(100%-4.5rem)] text-left font-semibold transition-colors",
                     truncateTitle ? "truncate" : "",
                     "text-base leading-snug sm:text-lg md:text-xl lg:text-2xl xl:text-[1.65rem]",
                     isDark
@@ -315,16 +328,22 @@ export function NexusCard({
                 >
                   {slot.title}
                 </button>
+                {/* Taps here bubble to the card shell → counter / tasks toggle. */}
+                <span
+                  className="min-h-9 min-w-4 flex-1 self-stretch"
+                  aria-hidden
+                />
                 <span
                   data-no-toggle
                   draggable
+                  onPointerDown={(e) => onTouchDragStart?.(e)}
                   onDragStart={(e) => {
                     e.stopPropagation();
                     onDragStart?.(e);
                   }}
                   onDragEnd={() => onDragEnd?.()}
                   className={[
-                    "shrink-0 cursor-grab rounded-md border px-1.5 py-0.5 text-[10px] active:cursor-grabbing sm:text-xs",
+                    "shrink-0 touch-none cursor-grab rounded-md border px-1.5 py-0.5 text-[10px] select-none active:cursor-grabbing sm:text-xs",
                     isDark
                       ? "border-zinc-700 text-zinc-400"
                       : "border-zinc-300 text-zinc-600",
@@ -471,25 +490,27 @@ export function NexusCard({
               </div>
             ) : (
               <>
-                <button
-                  type="button"
-                  data-no-toggle
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onStartEdit();
-                  }}
-                  className={[
-                    "block w-full text-left font-semibold transition-colors",
-                    "mt-0.5 sm:mt-1",
-                    truncateTitle ? "truncate" : "",
-                    "text-base leading-snug sm:text-lg md:text-xl lg:text-2xl xl:text-[1.65rem]",
-                    isDark
-                      ? "text-zinc-100 hover:text-emerald-300"
-                      : "text-zinc-900 hover:text-emerald-700",
-                  ].join(" ")}
-                >
-                  {slot.title}
-                </button>
+                <div className="mt-0.5 flex w-full items-start gap-1 sm:mt-1">
+                  <button
+                    type="button"
+                    data-no-toggle
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onStartEdit();
+                    }}
+                    className={[
+                      "min-w-0 w-fit max-w-[min(100%,18rem)] shrink text-left font-semibold transition-colors sm:max-w-[min(100%,24rem)]",
+                      truncateTitle ? "truncate" : "",
+                      "text-base leading-snug sm:text-lg md:text-xl lg:text-2xl xl:text-[1.65rem]",
+                      isDark
+                        ? "text-zinc-100 hover:text-emerald-300"
+                        : "text-zinc-900 hover:text-emerald-700",
+                    ].join(" ")}
+                  >
+                    {slot.title}
+                  </button>
+                  <span className="min-h-9 min-w-4 flex-1 self-stretch" aria-hidden />
+                </div>
                 <div className="mt-0.5 flex flex-wrap items-baseline justify-between gap-2">
                   <p
                     className={[
@@ -681,7 +702,14 @@ export function NexusCard({
             {!tasksEdit ? (
               <button
                 type="button"
-                onClick={() => setTasksEdit(true)}
+                onClick={() => {
+                  // Small screens: reuse mobile bottom sheet (title + notes + tasks) — inline fields stay tiny.
+                  if (isNarrowViewport) {
+                    onStartEdit({ focusTasks: true });
+                    return;
+                  }
+                  setTasksEdit(true);
+                }}
                 className={[
                   "rounded-md border px-2 py-0.5 text-[10px] sm:text-xs",
                   isDark
@@ -750,9 +778,9 @@ export function NexusCard({
                           }
                           setEditingTaskId(null);
                         }}
-                        className="shrink-0 rounded border border-emerald-500/50 px-1.5 py-0.5 text-[10px] text-emerald-500"
+                        className="shrink-0 rounded border border-emerald-500/50 bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400"
                       >
-                        Save
+                        Done
                       </button>
                       <button
                         type="button"
@@ -823,14 +851,9 @@ export function NexusCard({
                   setEditingTaskId(null);
                   setTaskDraft("");
                 }}
-                className={[
-                  "mt-3 w-full rounded-lg border py-1.5 text-[10px] font-semibold uppercase tracking-wide sm:text-xs",
-                  isDark
-                    ? "border-zinc-600 text-zinc-200"
-                    : "border-zinc-400 text-zinc-800",
-                ].join(" ")}
+                className="mt-3 w-full rounded-lg border border-emerald-500/50 bg-emerald-500/10 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-emerald-600 sm:text-xs dark:text-emerald-400"
               >
-                Save
+                Done
               </button>
             </>
           ) : null}

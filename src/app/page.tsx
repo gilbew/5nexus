@@ -15,6 +15,7 @@ import {
 } from "@/lib/nexus-allocations";
 import { useAuth } from "@/components/AuthProvider";
 import { NexusCard, type ChecklistItem, type NexusSlot } from "@/components/NexusCard";
+import { NexusMobileEditSheet } from "@/components/NexusMobileEditSheet";
 import { useTheme } from "@/components/ThemeProvider";
 import { applyDashboardFromPersisted } from "@/lib/nexus-dashboard-hydrate";
 import {
@@ -454,6 +455,25 @@ function PresetMemoryBar({
   );
 }
 
+/** Hit-test drop zones under pointer (touch drag preview / highlights). */
+function sampleTouchDragHit(clientX: number, clientY: number) {
+  const hit = document.elementFromPoint(clientX, clientY);
+  let overDrop: "main" | "parked" | null = null;
+  let overPriorityRowId: string | null = null;
+  if (hit) {
+    if (hit.closest("[data-drop-main-column]")) {
+      overDrop = "main";
+    } else if (hit.closest("[data-drop-parked-zone]")) {
+      overDrop = "parked";
+    }
+    const pr = hit.closest("[data-priority-row]");
+    if (pr) {
+      overPriorityRowId = pr.getAttribute("data-priority-row");
+    }
+  }
+  return { overDrop, overPriorityRowId };
+}
+
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
   const { user, isLoading: authLoading, signOut } = useAuth();
@@ -508,7 +528,12 @@ export default function Home() {
   /** Settings drawer: only one of Daily / App / Account expanded at a time (accordion). */
   const [settingsAccordion, setSettingsAccordion] = useState<
     "daily" | "app" | "account" | null
-  >("daily");
+  >(null);
+  /** Open drawer with all sections collapsed (day-roll flow still expands Daily on purpose). */
+  const openSettingsDrawer = useCallback(() => {
+    setSettingsAccordion(null);
+    setSettingsOpen(true);
+  }, []);
   const [clock, setClock] = useState<Date | null>(null);
   /** Seconds already charged to today’s energy (ticks up while a today nexus runs; not reduced by parking). */
   const [dayConsumedRunSeconds, setDayConsumedRunSeconds] = useState(0);
@@ -516,9 +541,22 @@ export default function Home() {
   const [runWallAnchorMs, setRunWallAnchorMs] = useState<number | null>(null);
 
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
+  /** Mobile sheet: open tasks block immediately when user tapped checklist Edit (vs title). */
+  const [mobileSheetFocusTasks, setMobileSheetFocusTasks] = useState(false);
   const [editDraft, setEditDraft] = useState({ title: "", note: "" });
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [reorderDragId, setReorderDragId] = useState<string | null>(null);
+  /** Mouse + touch: floating chip, drop highlights, source dim (same UX for both). */
+  const [dragLiftPreview, setDragLiftPreview] = useState<{
+    x: number;
+    y: number;
+    title: string;
+    kind: "support" | "parked" | "priority";
+    sourceId: string;
+    overDrop: "main" | "parked" | null;
+    overPriorityRowId: string | null;
+  } | null>(null);
+  const html5DragLiftActiveRef = useRef(false);
 
   const [showAddParkedForm, setShowAddParkedForm] = useState(false);
   const [addTitle, setAddTitle] = useState("");
@@ -783,22 +821,30 @@ export default function Home() {
     }
   }, []);
 
-  /** After local hydrate or tab visible again: apply wall-clock catch-up for an active runner. */
+  /**
+   * Runner wall-clock: catch up when returning visible, and flush on hidden/freeze so anchor + elapsed
+   * stay aligned before mobile OS suspends JS (timers often don’t run in background).
+   */
   useEffect(() => {
     if (!localHydrated) {
       return;
     }
     const onVis = () => {
-      if (document.visibilityState === "visible") {
-        flushRunnerWallCatchUp();
+      if (document.visibilityState === "hidden") {
+        flushRunnerWallCatchUp({ force: true });
+        return;
       }
+      flushRunnerWallCatchUp();
     };
+    const onFreeze = () => flushRunnerWallCatchUp({ force: true });
     onVis();
     document.addEventListener("visibilitychange", onVis);
     window.addEventListener("pageshow", onVis);
+    document.addEventListener("freeze", onFreeze);
     return () => {
       document.removeEventListener("visibilitychange", onVis);
       window.removeEventListener("pageshow", onVis);
+      document.removeEventListener("freeze", onFreeze);
     };
   }, [localHydrated, flushRunnerWallCatchUp]);
 
@@ -1583,9 +1629,8 @@ export default function Home() {
         }
       }
 
-      // Advance run timer while this browser tab is selected (`visible`). `hasFocus()` is omitted so
-      // switching to another app (IDE, chat) does not pause — only switching away in the browser does.
-      // Inactive tabs are `hidden`, so they do not double-tick in one window.
+      // Advance run timer only while the document is visible. Background time is applied via
+      // `flushRunnerWallCatchUp` on visibility/freeze/pagehide (mobile suspends this interval).
       if (document.visibilityState !== "visible") {
         return;
       }
@@ -1623,9 +1668,10 @@ export default function Home() {
         if (s.elapsedSeconds < s.durationSeconds) {
           setDayConsumedRunSeconds((c) => c + 1);
           const tickAt = Date.now();
+          // Sync ref immediately so pagehide / visibility:hidden flush sees the latest anchor.
+          runWallAnchorMsRef.current = tickAt;
           queueMicrotask(() => {
             setRunWallAnchorMs(tickAt);
-            runWallAnchorMsRef.current = tickAt;
           });
           return next.map((x) =>
             x.id === activeId ? { ...x, elapsedSeconds: x.elapsedSeconds + 1 } : x
@@ -1716,6 +1762,7 @@ export default function Home() {
     .filter(Boolean) as NexusSlot[];
 
   const parkedIds = fullOrder.slice(k);
+  const parkedIdSet = useMemo(() => new Set(fullOrder.slice(k)), [fullOrder, k]);
 
   const applyAllocation = useCallback(() => {
     if (k <= 0 || presets.length === 0) {
@@ -1995,9 +2042,9 @@ export default function Home() {
         return null;
       }
       const t = Date.now();
+      runWallAnchorMsRef.current = t;
       queueMicrotask(() => {
         setRunWallAnchorMs(t);
-        runWallAnchorMsRef.current = t;
       });
       return slotId;
     });
@@ -2094,13 +2141,21 @@ export default function Home() {
     return idx >= 0 ? idx + 1 : 0;
   };
 
-  const handleDropOnMain = () => {
-    if (!draggingId || draggingId === mainSlotId || !activeIds.includes(draggingId)) {
-      return;
-    }
-    setMainSlotId(draggingId);
+  /** Promote support nexus to main (mouse HTML5 drop + touch pointer-up hit test). */
+  const commitPromoteToMain = useCallback(
+    (id: string | null) => {
+      if (!id || id === mainSlotId || !activeIds.includes(id)) {
+        return;
+      }
+      setMainSlotId(id);
+    },
+    [mainSlotId, activeIds]
+  );
+
+  const handleDropOnMain = useCallback(() => {
+    commitPromoteToMain(draggingId);
     setDraggingId(null);
-  };
+  }, [commitPromoteToMain, draggingId]);
 
   const onParkedDrop = (event: React.DragEvent) => {
     event.preventDefault();
@@ -2164,9 +2219,10 @@ export default function Home() {
     setSwapModal(null);
   };
 
-  const startEditCard = (slot: NexusSlot) => {
+  const startEditCard = (slot: NexusSlot, opts?: { focusTasks?: boolean }) => {
     setEditingCardId(slot.id);
     setEditDraft({ title: slot.title, note: slot.note });
+    setMobileSheetFocusTasks(Boolean(opts?.focusTasks));
   };
 
   const saveEditCard = (slotId: string) => {
@@ -2178,9 +2234,15 @@ export default function Home() {
       note: n || e.note,
     }));
     setEditingCardId(null);
+    setMobileSheetFocusTasks(false);
   };
 
-  const moveReorder = (fromId: string, toId: string) => {
+  const closeCardEdit = () => {
+    setEditingCardId(null);
+    setMobileSheetFocusTasks(false);
+  };
+
+  const moveReorder = useCallback((fromId: string, toId: string) => {
     if (fromId === toId) {
       return;
     }
@@ -2195,7 +2257,7 @@ export default function Home() {
       next.splice(ti, 0, fromId);
       return next;
     });
-  };
+  }, []);
 
   const addParkedNexus = () => {
     const title = addTitle.trim();
@@ -2236,11 +2298,195 @@ export default function Home() {
     }
   };
 
+  /** Shared pointermove + floating preview for all touch drags. */
+  const runTouchDragSession = useCallback(
+    (
+      e: React.PointerEvent,
+      meta: { title: string; kind: "support" | "parked" | "priority"; sourceId: string },
+      onCommit: (ev: PointerEvent) => void
+    ) => {
+      const pid = e.pointerId;
+      const init = sampleTouchDragHit(e.clientX, e.clientY);
+      setDragLiftPreview({
+        x: e.clientX,
+        y: e.clientY,
+        title: meta.title,
+        kind: meta.kind,
+        sourceId: meta.sourceId,
+        overDrop: init.overDrop,
+        overPriorityRowId: init.overPriorityRowId,
+      });
+      const move = (ev: PointerEvent) => {
+        if (ev.pointerId !== pid) {
+          return;
+        }
+        const { overDrop, overPriorityRowId } = sampleTouchDragHit(ev.clientX, ev.clientY);
+        setDragLiftPreview((prev) =>
+          prev
+            ? {
+                ...prev,
+                x: ev.clientX,
+                y: ev.clientY,
+                overDrop,
+                overPriorityRowId,
+              }
+            : null
+        );
+      };
+      const finish = (ev: PointerEvent) => {
+        if (ev.pointerId !== pid) {
+          return;
+        }
+        window.removeEventListener("pointermove", move);
+        window.removeEventListener("pointerup", finish);
+        window.removeEventListener("pointercancel", finish);
+        setDragLiftPreview(null);
+        onCommit(ev);
+      };
+      window.addEventListener("pointermove", move);
+      window.addEventListener("pointerup", finish);
+      window.addEventListener("pointercancel", finish);
+    },
+    []
+  );
+
+  /** HTML5 drag: same floating chip + zone highlights as touch (hide default drag ghost). */
+  const bindHtml5DragLiftPreview = useCallback(
+    (
+      e: DragEvent,
+      meta: { title: string; kind: "support" | "parked" | "priority"; sourceId: string }
+    ) => {
+      html5DragLiftActiveRef.current = true;
+      try {
+        const empty = new Image();
+        empty.src =
+          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+        e.dataTransfer?.setDragImage(empty, 0, 0);
+      } catch {
+        /* ignore */
+      }
+      const init = sampleTouchDragHit(e.clientX, e.clientY);
+      setDragLiftPreview({
+        x: e.clientX,
+        y: e.clientY,
+        title: meta.title,
+        kind: meta.kind,
+        sourceId: meta.sourceId,
+        overDrop: init.overDrop,
+        overPriorityRowId: init.overPriorityRowId,
+      });
+      const dragOver = (ev: DragEvent) => {
+        if (!html5DragLiftActiveRef.current) {
+          return;
+        }
+        ev.preventDefault();
+        const { overDrop, overPriorityRowId } = sampleTouchDragHit(ev.clientX, ev.clientY);
+        setDragLiftPreview((prev) =>
+          prev
+            ? {
+                ...prev,
+                x: ev.clientX,
+                y: ev.clientY,
+                overDrop,
+                overPriorityRowId,
+              }
+            : null
+        );
+      };
+      const cleanup = () => {
+        if (!html5DragLiftActiveRef.current) {
+          return;
+        }
+        html5DragLiftActiveRef.current = false;
+        document.removeEventListener("dragover", dragOver, true);
+        document.removeEventListener("dragend", cleanup, true);
+        document.removeEventListener("drop", cleanup, true);
+        setDragLiftPreview(null);
+      };
+      document.addEventListener("dragover", dragOver, true);
+      document.addEventListener("dragend", cleanup, true);
+      document.addEventListener("drop", cleanup, true);
+    },
+    []
+  );
+
+  /** Touch: drag support card → release over main column to promote (mirrors HTML5 drop). */
+  const onSupportTouchDragStart = useCallback(
+    (e: React.PointerEvent, slotId: string) => {
+      if (e.pointerType === "mouse") {
+        return;
+      }
+      e.preventDefault();
+      setDraggingId(slotId);
+      const title = entityById.get(slotId)?.title ?? "Nexus";
+      runTouchDragSession(e, { title, kind: "support", sourceId: slotId }, (ev) => {
+        setDraggingId(null);
+        const el = document.elementFromPoint(ev.clientX, ev.clientY);
+        if (el?.closest("[data-drop-main-column]")) {
+          commitPromoteToMain(slotId);
+        }
+      });
+    },
+    [commitPromoteToMain, entityById, runTouchDragSession]
+  );
+
+  /** Touch: drag parked row handle → release over dashboard to open swap modal. */
+  const onParkedTouchDragStart = useCallback(
+    (e: React.PointerEvent, parkedId: string) => {
+      if (e.pointerType === "mouse") {
+        return;
+      }
+      e.preventDefault();
+      e.stopPropagation();
+      const title = entityById.get(parkedId)?.title ?? "Nexus";
+      runTouchDragSession(e, { title, kind: "parked", sourceId: parkedId }, (ev) => {
+        if (!parkedIdSet.has(parkedId)) {
+          return;
+        }
+        const el = document.elementFromPoint(ev.clientX, ev.clientY);
+        if (
+          el?.closest("[data-drop-main-column]") ||
+          el?.closest("[data-drop-parked-zone]")
+        ) {
+          setSwapModal({ sourceId: parkedId });
+        }
+      });
+    },
+    [entityById, parkedIdSet, runTouchDragSession]
+  );
+
+  /** Touch: drag ⋮⋮ on priority row → release on another row to reorder. */
+  const onPriorityTouchDragStart = useCallback(
+    (e: React.PointerEvent, id: string) => {
+      if (e.pointerType === "mouse") {
+        return;
+      }
+      e.preventDefault();
+      e.stopPropagation();
+      setReorderDragId(id);
+      const title = entityById.get(id)?.title ?? "Nexus";
+      runTouchDragSession(e, { title, kind: "priority", sourceId: id }, (ev) => {
+        setReorderDragId(null);
+        const row = document
+          .elementFromPoint(ev.clientX, ev.clientY)
+          ?.closest("[data-priority-row]");
+        const targetId = row?.getAttribute("data-priority-row");
+        if (targetId && targetId !== id) {
+          moveReorder(id, targetId);
+        }
+      });
+    },
+    [entityById, moveReorder, runTouchDragSession]
+  );
+
   // Nested control strip: between page (zinc-950) and header face (zinc-900).
   const panelMuted = isDark ? "border-zinc-700/45 bg-zinc-800/65" : "border-zinc-300 bg-white/80";
   const inputCls = isDark
     ? "border-zinc-700 bg-zinc-900 text-zinc-100"
     : "border-zinc-300 bg-zinc-50 text-zinc-900";
+  /** Settings drawer header: theme toggle + Close share size. */
+  const settingsDrawerHeaderBtn =
+    "inline-flex h-9 min-h-9 shrink-0 items-center justify-center rounded-lg border px-3 text-xs font-semibold";
   /** Accordion top-level rows: larger type than submenu; no color swap when open. */
   const settingsSectionHeaderCls = [
     "flex w-full items-center justify-between rounded-lg border px-2 py-2 text-left text-xs font-semibold uppercase tracking-wide transition-colors sm:px-2.5 sm:py-2 sm:text-sm",
@@ -2283,6 +2529,26 @@ export default function Home() {
         checklist: e.checklist.filter((item) => item.id !== itemId),
       })),
   });
+
+  const editingSlotForMobileSheet =
+    isNarrowViewport && editingCardId ? entityById.get(editingCardId) : undefined;
+
+  const dragMainDropGlow =
+    dragLiftPreview &&
+    (dragLiftPreview.kind === "support" || dragLiftPreview.kind === "parked") &&
+    dragLiftPreview.overDrop === "main";
+  const showMainDragChrome = Boolean(
+    draggingId ||
+      (dragLiftPreview &&
+        (dragLiftPreview.kind === "support" || dragLiftPreview.kind === "parked"))
+  );
+  const mainColumnDragRingClass = !showMainDragChrome
+    ? ""
+    : dragMainDropGlow
+      ? "ring-2 ring-emerald-300/90 shadow-lg shadow-emerald-400/25 transition-[box-shadow,ring-color] duration-200"
+      : "ring-2 ring-emerald-500/45 transition-[box-shadow,ring-color] duration-200";
+  const dragParkedZoneGlow =
+    dragLiftPreview?.kind === "parked" && dragLiftPreview.overDrop === "parked";
 
   return (
     <div
@@ -2359,7 +2625,8 @@ export default function Home() {
               type="button"
               onClick={toggleTheme}
               className={[
-                "flex h-8 w-8 items-center justify-center rounded-lg border text-sm",
+                settingsDrawerHeaderBtn,
+                "min-w-9",
                 isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-300 bg-zinc-50",
               ].join(" ")}
               title={isDark ? "Light" : "Dark"}
@@ -2370,7 +2637,7 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setSettingsOpen(false)}
-              className={["rounded-lg border px-2 py-1 text-[10px]", inputCls].join(" ")}
+              className={[settingsDrawerHeaderBtn, inputCls].join(" ")}
             >
               Close
             </button>
@@ -2491,8 +2758,16 @@ export default function Home() {
                       return (
                         <li
                           key={id}
+                          data-priority-row={id}
                           draggable
-                          onDragStart={() => setReorderDragId(id)}
+                          onDragStart={(ev) => {
+                            setReorderDragId(id);
+                            bindHtml5DragLiftPreview(ev.nativeEvent, {
+                              title: e.title,
+                              kind: "priority",
+                              sourceId: id,
+                            });
+                          }}
                           onDragEnd={() => setReorderDragId(null)}
                           onDragOver={(ev) => ev.preventDefault()}
                           onDrop={() => reorderDropOnRow(id)}
@@ -2505,9 +2780,19 @@ export default function Home() {
                               : isDark
                                 ? "border-zinc-800"
                                 : "border-zinc-200",
+                            reorderDragId === id ? "opacity-70" : "",
+                            dragLiftPreview?.kind === "priority" &&
+                            dragLiftPreview.overPriorityRowId === id &&
+                            id !== dragLiftPreview.sourceId
+                              ? "ring-2 ring-emerald-400/70"
+                              : "",
                           ].join(" ")}
                         >
-                          <span className="cursor-grab text-zinc-500" title="Drag">
+                          <span
+                            className="cursor-grab touch-none select-none text-zinc-500"
+                            title="Drag"
+                            onPointerDown={(ev) => onPriorityTouchDragStart(ev, id)}
+                          >
                             ⋮⋮
                           </span>
                           <span className="w-4 shrink-0 text-zinc-500">#{idx + 1}</span>
@@ -2581,10 +2866,19 @@ export default function Home() {
                               JSON.stringify({ id })
                             );
                             ev.dataTransfer.effectAllowed = "copyMove";
+                            bindHtml5DragLiftPreview(ev.nativeEvent, {
+                              title: e.title,
+                              kind: "parked",
+                              sourceId: id,
+                            });
                           }}
                           className={[
                             "rounded-lg border p-1.5",
                             isDark ? "border-zinc-800" : "border-zinc-200",
+                            dragLiftPreview?.kind === "parked" &&
+                            dragLiftPreview.sourceId === id
+                              ? "opacity-40"
+                              : "",
                           ].join(" ")}
                         >
                           <div className="flex items-start justify-between gap-1">
@@ -2592,15 +2886,24 @@ export default function Home() {
                               <p className="truncate text-[10px] font-medium">{e.title}</p>
                               <p className="line-clamp-2 text-[9px] text-zinc-500">{e.note}</p>
                             </div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setParkedTasksForId((cur) => (cur === id ? null : id))
-                              }
-                              className="shrink-0 rounded border px-1.5 py-0.5 text-[9px]"
-                            >
-                              Tasks
-                            </button>
+                            <div className="flex shrink-0 flex-col items-end gap-0.5">
+                              <span
+                                className="cursor-grab touch-none select-none rounded border px-1 py-0.5 text-[8px] text-zinc-500"
+                                title="Drag to dashboard"
+                                onPointerDown={(ev) => onParkedTouchDragStart(ev, id)}
+                              >
+                                ⋮⋮
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setParkedTasksForId((cur) => (cur === id ? null : id))
+                                }
+                                className="rounded border px-1.5 py-0.5 text-[9px]"
+                              >
+                                Tasks
+                              </button>
+                            </div>
                           </div>
                           {parkedTasksForId === id ? (
                             <div className="mt-1 space-y-0.5 border-t border-zinc-800/30 pt-1">
@@ -3256,6 +3559,61 @@ export default function Home() {
         </div>
       ) : null}
 
+      {dragLiftPreview ? (
+        <div
+          className="pointer-events-none fixed z-[95]"
+          style={{
+            left: dragLiftPreview.x,
+            top: dragLiftPreview.y,
+            transform: "translate(-50%, calc(-100% - 16px))",
+          }}
+          aria-hidden
+        >
+          <div
+            className={[
+              "max-w-[min(88vw,272px)] rounded-xl border-2 px-3 py-2 shadow-2xl",
+              isDark
+                ? "border-emerald-500/55 bg-zinc-900/95 text-zinc-100 shadow-emerald-500/15"
+                : "border-emerald-600/45 bg-white text-zinc-900 shadow-emerald-600/20",
+            ].join(" ")}
+          >
+            <p className="truncate text-sm font-semibold">{dragLiftPreview.title}</p>
+            <p className="mt-0.5 text-[10px] opacity-80">
+              {dragLiftPreview.kind === "priority"
+                ? dragLiftPreview.overPriorityRowId &&
+                    dragLiftPreview.overPriorityRowId !== dragLiftPreview.sourceId
+                  ? "Release to reorder"
+                  : "Move over another row…"
+                : dragLiftPreview.kind === "parked"
+                  ? dragLiftPreview.overDrop === "main"
+                    ? "Release on Main Focus"
+                    : dragLiftPreview.overDrop === "parked"
+                      ? "Release to swap…"
+                      : "Drag to dashboard…"
+                  : dragLiftPreview.overDrop === "main"
+                    ? "Release to set Main Focus"
+                    : "Drag onto Main Focus…"}
+            </p>
+          </div>
+        </div>
+      ) : null}
+
+      {editingSlotForMobileSheet && editingCardId ? (
+        <NexusMobileEditSheet
+          slot={editingSlotForMobileSheet}
+          isDark={isDark}
+          startWithTasksEdit={mobileSheetFocusTasks}
+          editDraft={editDraft}
+          onEditDraftChange={setEditDraft}
+          onSave={() => saveEditCard(editingCardId)}
+          onClose={closeCardEdit}
+          onToggleChecklist={(itemId) => checklistFns(editingCardId).toggle(itemId)}
+          onAddChecklist={(text) => checklistFns(editingCardId).add(text)}
+          onUpdateChecklist={(itemId, text) => checklistFns(editingCardId).update(itemId, text)}
+          onDeleteChecklist={(itemId) => checklistFns(editingCardId).del(itemId)}
+        />
+      ) : null}
+
       {transferDonorId ? (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-3">
           <div
@@ -3396,7 +3754,7 @@ export default function Home() {
         <div className="hidden items-center gap-3 md:flex md:gap-4 lg:gap-6">
           <button
             type="button"
-            onClick={() => setSettingsOpen(true)}
+            onClick={openSettingsDrawer}
             className={[
               "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-base lg:h-11 lg:w-11 lg:text-lg",
               isDark ? "border-zinc-600/50 bg-zinc-800 text-zinc-100" : "border-zinc-300 bg-white text-zinc-800",
@@ -3505,7 +3863,7 @@ export default function Home() {
         >
           <button
             type="button"
-            onClick={() => setSettingsOpen(true)}
+            onClick={openSettingsDrawer}
             className={[
               "flex shrink-0 items-center justify-center rounded-lg border",
               tightPhonePortrait ? "h-7 w-7 text-xs" : narrowLandscape ? "h-8 w-8 text-sm" : "h-8 w-8 text-sm",
@@ -3656,11 +4014,13 @@ export default function Home() {
       </header>
 
             <div
+              data-drop-parked-zone
               className={[
                 "hide-scrollbar flex min-h-0 flex-1 flex-col gap-1.5 pb-2 pt-2 sm:gap-2 sm:pt-3 md:pb-3 md:pt-4 lg:pt-5",
                 // Below lg: scroll the whole dashboard (main + supports) — avoids nested scroll + clipping.
                 "max-lg:overflow-y-auto max-lg:overscroll-contain max-lg:pb-[max(2.5rem,env(safe-area-inset-bottom))]",
                 "lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain",
+                dragParkedZoneGlow ? "rounded-xl ring-2 ring-sky-400/45 transition-[box-shadow] duration-200" : "",
               ].join(" ")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={onParkedDrop}
@@ -3676,22 +4036,25 @@ export default function Home() {
           </div>
         ) : (
           <div
+            data-drop-parked-zone
             className={[
               "hide-scrollbar flex flex-col gap-2 sm:gap-2",
               "max-lg:min-h-0 max-lg:flex-none",
               // items-start: columns don’t share one stretched height (no empty card bellies when Main Focus is tall).
               "lg:grid lg:min-h-0 lg:flex-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.65fr)] lg:grid-rows-1 lg:items-start lg:content-start lg:gap-3 lg:overflow-y-auto lg:overscroll-contain",
+              dragParkedZoneGlow ? "rounded-xl ring-2 ring-sky-400/45 transition-[box-shadow] duration-200" : "",
             ].join(" ")}
             onDragOver={(e) => e.preventDefault()}
             onDrop={onParkedDrop}
           >
             {/* Main focus: full width stacked above supports; right column on lg */}
             <div
+              data-drop-main-column
               className={[
                 "order-1 flex w-full min-w-0 shrink-0 flex-col lg:order-2 lg:self-start lg:h-auto lg:min-h-0",
                 "rounded-xl p-0.5 lg:p-1",
                 isDark ? "bg-zinc-900/70 ring-1 ring-zinc-600/40" : "bg-white/40 ring-1 ring-zinc-300/50",
-                draggingId ? "ring-emerald-500/50" : "",
+                mainColumnDragRingClass,
               ].join(" ")}
               onDragOver={(e) => e.preventDefault()}
               onDrop={onMainColumnDrop}
@@ -3704,15 +4067,16 @@ export default function Home() {
                   wideInlineChecklist={wideInlineChecklist}
                   truncateTitle={narrowLandscape}
                   isActive={activeId === mainSlot.id}
-                  isEditing={editingCardId === mainSlot.id}
+                  isEditing={editingCardId === mainSlot.id && !isNarrowViewport}
                   canStart={slotCanStart(mainSlot)}
                   editDraft={editDraft}
                   priorityRank={getPriorityRankForActive(mainSlot.id)}
                   onStartPause={() => handleStartPauseForSlot(mainSlot.id)}
-                  onStartEdit={() => startEditCard(mainSlot)}
+                  isNarrowViewport={isNarrowViewport}
+                  onStartEdit={(opts) => startEditCard(mainSlot, opts)}
                   onEditDraftChange={setEditDraft}
                   onSaveEdit={() => saveEditCard(mainSlot.id)}
-                  onCancelEdit={() => setEditingCardId(null)}
+                  onCancelEdit={closeCardEdit}
                   onToggleChecklist={(itemId) => checklistFns(mainSlot.id).toggle(itemId)}
                   onAddChecklist={(text) => checklistFns(mainSlot.id).add(text)}
                   onUpdateChecklist={(itemId, text) =>
@@ -3740,25 +4104,35 @@ export default function Home() {
                     theme={theme}
                     truncateTitle={narrowLandscape}
                     isActive={activeId === slot.id}
-                    isEditing={editingCardId === slot.id}
+                    isEditing={editingCardId === slot.id && !isNarrowViewport}
                     canStart={slotCanStart(slot)}
                     editDraft={editDraft}
                     priorityRank={getPriorityRankForActive(slot.id)}
                     onStartPause={() => handleStartPauseForSlot(slot.id)}
-                    onStartEdit={() => startEditCard(slot)}
+                    isNarrowViewport={isNarrowViewport}
+                    onStartEdit={(opts) => startEditCard(slot, opts)}
                     onEditDraftChange={setEditDraft}
                     onSaveEdit={() => saveEditCard(slot.id)}
-                    onCancelEdit={() => setEditingCardId(null)}
+                    onCancelEdit={closeCardEdit}
                     onToggleChecklist={(itemId) => checklistFns(slot.id).toggle(itemId)}
                     onAddChecklist={(text) => checklistFns(slot.id).add(text)}
                     onUpdateChecklist={(itemId, text) =>
                       checklistFns(slot.id).update(itemId, text)
                     }
                     onDeleteChecklist={(itemId) => checklistFns(slot.id).del(itemId)}
-                    onDragStart={() => setDraggingId(slot.id)}
+                    onDragStart={(ev) => {
+                      setDraggingId(slot.id);
+                      bindHtml5DragLiftPreview(ev.nativeEvent, {
+                        title: entityById.get(slot.id)?.title ?? "Nexus",
+                        kind: "support",
+                        sourceId: slot.id,
+                      });
+                    }}
                     onDragEnd={() => setDraggingId(null)}
+                    onTouchDragStart={(ev) => onSupportTouchDragStart(ev, slot.id)}
                     onOuterDrop={onParkedDrop}
                     onRequestTransfer={() => openTransferModal(slot.id)}
+                    isDragSource={draggingId === slot.id}
                   />
                 </div>
               ))}
