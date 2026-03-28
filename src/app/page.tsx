@@ -27,8 +27,8 @@ import {
   clearNexusDashboardLocalState,
   clearPreferServerAfterLogout,
   getLastServerUpdatedAt,
-  getLocalDashboardWriteTs,
   hasCloudVersionConflict,
+  isServerNewerThanClientAck,
   NO_SERVER_ACK_ISO,
   setLastServerUpdatedAt,
   setLocalDashboardWriteTs,
@@ -1184,11 +1184,9 @@ export default function Home() {
         }
 
         const preferServer = shouldPreferServerAfterLogout();
-        const localTs = getLocalDashboardWriteTs();
-        const localMs = new Date(localTs).getTime();
-        /** Guest / new device bumps local write time constantly — must not beat server until we’ve ack’d this user once. */
-        const neverAckedServerForUser =
-          getLastServerUpdatedAt(uid) === NO_SERVER_ACK_ISO;
+        /** Last Supabase `updated_at` we merged or pushed — not `LOCAL_WRITE_TS_KEY` (that bumps on every localStorage persist). */
+        const lastServerAck = getLastServerUpdatedAt(uid);
+        const neverAckedServerForUser = lastServerAck === NO_SERVER_ACK_ISO;
         const snap = persistSnapshotRef.current;
         if (!snap) {
           return;
@@ -1197,8 +1195,12 @@ export default function Home() {
         const iso = new Date().toISOString();
 
         if (data?.payload && typeof data.updated_at === "string") {
-          const serverMs = new Date(data.updated_at).getTime();
-          if (preferServer || neverAckedServerForUser || serverMs > localMs) {
+          const shouldApplyServer =
+            preferServer ||
+            neverAckedServerForUser ||
+            (!neverAckedServerForUser &&
+              isServerNewerThanClientAck(data.updated_at, lastServerAck));
+          if (shouldApplyServer) {
             const ok = applyDashboardFromPersisted(data.payload, {
               todayKey: hydrateTodayKeyFromPayload(data.payload),
               resetEntityDay,
