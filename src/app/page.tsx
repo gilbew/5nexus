@@ -28,6 +28,7 @@ import {
   getLastServerUpdatedAt,
   getLocalDashboardWriteTs,
   hasCloudVersionConflict,
+  NO_SERVER_ACK_ISO,
   setLastServerUpdatedAt,
   setLocalDashboardWriteTs,
   markPreferServerAfterLogout,
@@ -1139,6 +1140,9 @@ export default function Home() {
         const preferServer = shouldPreferServerAfterLogout();
         const localTs = getLocalDashboardWriteTs();
         const localMs = new Date(localTs).getTime();
+        /** Guest / new device bumps local write time constantly — must not beat server until we’ve ack’d this user once. */
+        const neverAckedServerForUser =
+          getLastServerUpdatedAt(uid) === NO_SERVER_ACK_ISO;
         const snap = persistSnapshotRef.current;
         if (!snap) {
           return;
@@ -1148,7 +1152,7 @@ export default function Home() {
 
         if (data?.payload && typeof data.updated_at === "string") {
           const serverMs = new Date(data.updated_at).getTime();
-          if (preferServer || serverMs > localMs) {
+          if (preferServer || neverAckedServerForUser || serverMs > localMs) {
             const ok = applyDashboardFromPersisted(data.payload, {
               todayKey: hydrateTodayKeyFromPayload(data.payload),
               resetEntityDay,
