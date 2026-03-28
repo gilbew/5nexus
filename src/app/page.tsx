@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { applyBorrowFromDonors } from "@/lib/nexus-borrow";
+import { computeRunnerWallCatchUp } from "@/lib/nexus-runner-catchup";
 import {
   distributeSeconds,
   getAllocationPresets,
@@ -11,13 +13,43 @@ import {
   type FocusDailySlots,
   type HolidayDailySlots,
 } from "@/lib/nexus-allocations";
+import { useAuth } from "@/components/AuthProvider";
 import { NexusCard, type ChecklistItem, type NexusSlot } from "@/components/NexusCard";
 import { useTheme } from "@/components/ThemeProvider";
+import { applyDashboardFromPersisted } from "@/lib/nexus-dashboard-hydrate";
+import {
+  NEXUS_DASHBOARD_STORAGE_V3,
+  NEXUS_DASHBOARD_STORAGE_V4,
+  NEXUS_DASHBOARD_STORAGE_V5,
+  USER_DASHBOARD_TABLE,
+  bumpLocalDashboardWriteTs,
+  clearNexusDashboardLocalState,
+  clearPreferServerAfterLogout,
+  getLastServerUpdatedAt,
+  getLocalDashboardWriteTs,
+  hasCloudVersionConflict,
+  setLastServerUpdatedAt,
+  setLocalDashboardWriteTs,
+  markPreferServerAfterLogout,
+  shouldPreferServerAfterLogout,
+} from "@/lib/nexus-cloud-sync";
+import {
+  getDateKeyInTimeZone,
+  getDeviceTimeZone,
+  getEffectiveDashboardDayKey,
+  isValidIanaTimeZone,
+  normalizeClockHm,
+  parseClockHm,
+} from "@/lib/nexus-timezone";
+import { createClient } from "@/lib/supabase/client";
 
-const STORAGE_KEY = "nexus-dashboard-state-v5";
-const STORAGE_LEGACY_V4 = "nexus-dashboard-state-v4";
-const STORAGE_LEGACY_V3 = "nexus-dashboard-state-v3";
+const STORAGE_KEY = NEXUS_DASHBOARD_STORAGE_V5;
+const STORAGE_LEGACY_V4 = NEXUS_DASHBOARD_STORAGE_V4;
+const STORAGE_LEGACY_V3 = NEXUS_DASHBOARD_STORAGE_V3;
 const MAX_NEXUS = 10;
+/** Backup cloud pull: slower when idle; faster while a nexus is running (multi-device, no Realtime). */
+const CLOUD_PULL_INTERVAL_MS_IDLE = 120_000;
+const CLOUD_PULL_INTERVAL_MS_RUNNING = 30_000;
 /** Tailwind `md` default — used with JS viewport for orientation-aware UI. */
 const MD_PX = 768;
 /** Shared horizontal rhythm: dashboard island + nexus grid share one column width. */
@@ -43,7 +75,118 @@ type PersistedV4 = {
   energyHours: EnergyHoursConfig;
 };
 
-type PersistedV5 = Omit<PersistedV4, "v"> & { v: 5; autoBorrow: boolean };
+type PersistedV5 = Omit<PersistedV4, "v"> & {
+  v: 5;
+  autoBorrow: boolean;
+  /** Wall seconds counted against today’s energy budget (independent of park/demote). */
+  dayConsumedRunSeconds?: number;
+  /** Monotonic per-tab write counter for cross-tab localStorage merge (not authoritative for LWW). */
+  storageRevision?: number;
+  /** Which day type shows “(default)” and is chosen for new users / long-press default. */
+  preferredDefaultDayType?: DayType;
+  /** IANA timezone for clock + calendar “today”. */
+  appTimezone?: string;
+  /** When true, advance “app day” at `dayResetClock` in `appTimezone`. */
+  autoDayReset?: boolean;
+  /** Local wall time HH:mm (24h) in app timezone when the day rolls. */
+  dayResetClock?: string;
+  /** `Date.now()` when runner state was last aligned — used to catch up elapsed after tab sleep/close. */
+  runWallAnchorMs?: number | null;
+};
+
+function readStorageRevision(parsed: unknown): number {
+  if (!parsed || typeof parsed !== "object") {
+    return 0;
+  }
+  const n = Number((parsed as Record<string, unknown>).storageRevision);
+  return Number.isFinite(n) ? n : 0;
+}
+
+/** Persisted fields only (no storageRevision) — same string means no need to re-apply or re-write (stops cross-tab revision ping-pong). */
+function fingerprintPersistBody(parts: {
+  v: number;
+  entities: unknown;
+  fullOrder: unknown;
+  mainSlotId: unknown;
+  activeId: unknown;
+  lastResetDate: unknown;
+  dayType: unknown;
+  holidayDaily: unknown;
+  focusDaily: unknown;
+  allocatorIndex: unknown;
+  energyHours: unknown;
+  autoBorrow: unknown;
+  preferredDefaultDayType: unknown;
+  appTimezone: unknown;
+  autoDayReset: unknown;
+  dayResetClock: unknown;
+  dayConsumedRunSeconds: unknown;
+  runWallAnchorMs: unknown;
+}): string {
+  return JSON.stringify({
+    v: parts.v,
+    entities: parts.entities,
+    fullOrder: parts.fullOrder,
+    mainSlotId: parts.mainSlotId,
+    activeId: parts.activeId,
+    lastResetDate: parts.lastResetDate,
+    dayType: parts.dayType,
+    holidayDaily: parts.holidayDaily,
+    focusDaily: parts.focusDaily,
+    allocatorIndex: parts.allocatorIndex,
+    energyHours: parts.energyHours,
+    autoBorrow: parts.autoBorrow,
+    preferredDefaultDayType: parts.preferredDefaultDayType,
+    appTimezone: parts.appTimezone,
+    autoDayReset: parts.autoDayReset,
+    dayResetClock: parts.dayResetClock,
+    dayConsumedRunSeconds: parts.dayConsumedRunSeconds,
+    runWallAnchorMs: parts.runWallAnchorMs,
+  });
+}
+
+/** Returns null for legacy / unknown shapes so we always hydrate instead of skipping. */
+function fingerprintFromPersistedUnknown(parsed: unknown): string | null {
+  if (!parsed || typeof parsed !== "object") {
+    return null;
+  }
+  const r = parsed as Record<string, unknown>;
+  if (r.v === 5 && typeof r.autoBorrow === "boolean") {
+    const pref =
+      r.preferredDefaultDayType === "holiday" ||
+      r.preferredDefaultDayType === "focus" ||
+      r.preferredDefaultDayType === "default"
+        ? r.preferredDefaultDayType
+        : "default";
+    const tzRaw = typeof r.appTimezone === "string" ? r.appTimezone.trim() : "";
+    const tz =
+      tzRaw && isValidIanaTimeZone(tzRaw) ? tzRaw : null;
+    const autoR = typeof r.autoDayReset === "boolean" ? r.autoDayReset : true;
+    const drc =
+      typeof r.dayResetClock === "string" ? normalizeClockHm(r.dayResetClock) : "00:00";
+    return fingerprintPersistBody({
+      v: 5,
+      entities: r.entities,
+      fullOrder: r.fullOrder,
+      mainSlotId: r.mainSlotId,
+      activeId: r.activeId,
+      lastResetDate: r.lastResetDate,
+      dayType: r.dayType,
+      holidayDaily: r.holidayDaily,
+      focusDaily: r.focusDaily,
+      allocatorIndex: r.allocatorIndex,
+      energyHours: r.energyHours,
+      autoBorrow: r.autoBorrow,
+      preferredDefaultDayType: pref,
+      appTimezone: tz,
+      autoDayReset: autoR,
+      dayResetClock: drc,
+      dayConsumedRunSeconds: r.dayConsumedRunSeconds,
+      runWallAnchorMs: r.runWallAnchorMs,
+    });
+  }
+  return null;
+}
 
 const defaultEnergyHours: EnergyHoursConfig = {
   holiday: 4,
@@ -123,27 +266,53 @@ const formatSeconds = (value: number) => {
     .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 };
 
-const formatClock = (value: Date) =>
+const formatClock = (value: Date, timeZone: string) =>
   value.toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
     hour12: false,
+    timeZone: isValidIanaTimeZone(timeZone) ? timeZone : getDeviceTimeZone(),
   });
 
-const getDateKey = (value: Date) => {
-  const year = value.getFullYear();
-  const month = `${value.getMonth() + 1}`.padStart(2, "0");
-  const day = `${value.getDate()}`.padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
+/** UI label: internal `default` day type is shown as “Normal”. */
+function dayTypeDisplayName(dt: DayType): string {
+  if (dt === "default") {
+    return "Normal";
+  }
+  if (dt === "focus") {
+    return "Focus";
+  }
+  return "Holiday";
+}
 
+function dayTypeSubtitle(dt: DayType): string {
+  if (dt === "default") {
+    return "max 5 today";
+  }
+  if (dt === "focus") {
+    return "max 3 today";
+  }
+  return "0–1 today";
+}
+
+/** Effective “app day” key when applying a stored/remote payload (uses that blob’s TZ + reset settings). */
+function hydrateTodayKeyFromPayload(parsed: unknown): string {
+  const pObj = parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : null;
+  const tzRaw = pObj && typeof pObj.appTimezone === "string" ? pObj.appTimezone.trim() : "";
+  const tz = tzRaw && isValidIanaTimeZone(tzRaw) ? tzRaw : getDeviceTimeZone();
+  const auto = pObj && typeof pObj.autoDayReset === "boolean" ? pObj.autoDayReset : true;
+  const rawC = pObj && typeof pObj.dayResetClock === "string" ? pObj.dayResetClock.trim() : "00:00";
+  const clock = parseClockHm(rawC) ? normalizeClockHm(rawC) : "00:00";
+  return getEffectiveDashboardDayKey(new Date(), tz, clock, auto);
+}
+
+/** Per-slot daily reset: run timers + borrow flags only — keep titles, notes, checklist done (archive later). */
 const resetEntityDay = (e: NexusSlot): NexusSlot => ({
   ...e,
   elapsedSeconds: 0,
   overspentAuto: false,
   donorAutoBorrow: false,
-  checklist: e.checklist.map((item) => ({ ...item, done: false })),
 });
 
 function migrateFromV3(raw: string): Partial<PersistedV4> | null {
@@ -197,7 +366,10 @@ function migrateFromV3(raw: string): Partial<PersistedV4> | null {
       fullOrder,
       mainSlotId: typeof p.mainSlotId === "string" ? p.mainSlotId : "main-focus",
       activeId: typeof p.activeId === "string" ? p.activeId : null,
-      lastResetDate: typeof p.lastResetDate === "string" ? p.lastResetDate : getDateKey(new Date()),
+      lastResetDate:
+        typeof p.lastResetDate === "string"
+          ? p.lastResetDate
+          : getDateKeyInTimeZone(new Date(), getDeviceTimeZone()),
       dayType: p.dayType === "holiday" || p.dayType === "focus" ? p.dayType : "default",
       holidayDaily: 1,
       focusDaily: 3,
@@ -283,19 +455,14 @@ function PresetMemoryBar({
 
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
+  const { user, isLoading: authLoading, signOut } = useAuth();
   const isDark = theme === "dark";
 
   /** Portrait iff height > width (resizing desktop window matches user expectation). */
-  const [viewport, setViewport] = useState(() => {
-    if (typeof window === "undefined") {
-      return { w: 1280, h: 800, portrait: false };
-    }
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    return { w, h, portrait: h > w };
-  });
+  // SSR + first client paint must match — never read window in useState init (hydration mismatch).
+  const [viewport, setViewport] = useState({ w: 1280, h: 800, portrait: false });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const sync = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
@@ -318,12 +485,23 @@ export default function Home() {
   const [fullOrder, setFullOrder] = useState<string[]>([...seedIds]);
   const [mainSlotId, setMainSlotId] = useState("main-focus");
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [lastResetDate, setLastResetDate] = useState(getDateKey(new Date()));
+  const [appTimezone, setAppTimezone] = useState(getDeviceTimeZone);
+  /** When false, the 1s timer does not roll a new day (manual / toggle back on to resume). */
+  const [autoDayReset, setAutoDayReset] = useState(true);
+  /** 24h HH:mm in app timezone when the app day rolls (only if autoDayReset). Default midnight. */
+  const [dayResetClock, setDayResetClock] = useState("00:00");
+  const [lastResetDate, setLastResetDate] = useState(() =>
+    getDateKeyInTimeZone(new Date(), getDeviceTimeZone())
+  );
   const [dayType, setDayType] = useState<DayType>("default");
+  /** App-only: which day type shows “(default)” — set via long-press under Settings → App. */
+  const [preferredDefaultDayType, setPreferredDefaultDayType] = useState<DayType>("default");
   const [holidayDaily, setHolidayDaily] = useState<HolidayDailySlots>(1);
   const [focusDaily, setFocusDaily] = useState<FocusDailySlots>(3);
   const [allocatorIndex, setAllocatorIndex] = useState(0);
   const [energyHours, setEnergyHours] = useState<EnergyHoursConfig>(defaultEnergyHours);
+  /** Draft for App → energy hours until user saves (confirm + 2s like allocation). */
+  const [energyDraft, setEnergyDraft] = useState<EnergyHoursConfig>(defaultEnergyHours);
 
   const [settingsOpen, setSettingsOpen] = useState(false);
   /** Settings drawer: only one of Daily / App / Account expanded at a time (accordion). */
@@ -331,6 +509,10 @@ export default function Home() {
     "daily" | "app" | "account" | null
   >("daily");
   const [clock, setClock] = useState<Date | null>(null);
+  /** Seconds already charged to today’s energy (ticks up while a today nexus runs; not reduced by parking). */
+  const [dayConsumedRunSeconds, setDayConsumedRunSeconds] = useState(0);
+  /** Wall clock anchor for runner catch-up when the tab was hidden or the app was closed. */
+  const [runWallAnchorMs, setRunWallAnchorMs] = useState<number | null>(null);
 
   const [editingCardId, setEditingCardId] = useState<string | null>(null);
   const [editDraft, setEditDraft] = useState({ title: "", note: "" });
@@ -356,6 +538,51 @@ export default function Home() {
   const hasAppliedAllocationOnceRef = useRef(false);
   const [allocationConfirmOpen, setAllocationConfirmOpen] = useState(false);
   const [allocationConfirmCooldown, setAllocationConfirmCooldown] = useState(0);
+  const [energyHoursConfirmOpen, setEnergyHoursConfirmOpen] = useState(false);
+  const [energyHoursConfirmCooldown, setEnergyHoursConfirmCooldown] = useState(0);
+  const [timezoneEditOpen, setTimezoneEditOpen] = useState(false);
+  const [timezoneDraft, setTimezoneDraft] = useState("");
+  const [timezoneConfirmOpen, setTimezoneConfirmOpen] = useState(false);
+  const [timezoneConfirmCooldown, setTimezoneConfirmCooldown] = useState(0);
+  /** True while pushing latest dashboard to Supabase before ending session. */
+  const [signOutFlushing, setSignOutFlushing] = useState(false);
+  /** Server row newer than last ack — block push until user loads latest or dismisses. */
+  const [cloudConflictOpen, setCloudConflictOpen] = useState(false);
+  /** Logical day key pending user confirm (lembur / snooze) — does not change until they reset. */
+  const [dayRollModal, setDayRollModal] = useState<null | { newDayKey: string }>(null);
+  /** Wall-clock ms: while set and in the future, postpone day-roll prompt (timers keep running). */
+  const [dayRollSnoozeUntil, setDayRollSnoozeUntil] = useState<number | null>(null);
+  const dayRollSnoozeUntilRef = useRef<number | null>(null);
+  const lastResetDateRef = useRef(lastResetDate);
+  lastResetDateRef.current = lastResetDate;
+  dayRollSnoozeUntilRef.current = dayRollSnoozeUntil;
+  /** Avoid branching on `Notification` during SSR/first paint (hydration-safe). */
+  const [clientUiReady, setClientUiReady] = useState(false);
+  useEffect(() => setClientUiReady(true), []);
+  const [dayRollNotifRev, setDayRollNotifRev] = useState(0);
+  const dayTypeLongPressTimerRef = useRef<number | null>(null);
+  /** After sign-out, keep last signed-in id so we only wipe local cache when a *different* account signs in. */
+  const lastSignedInUserIdRef = useRef<string | null>(null);
+  /** Tracks session user id to run guest reset on SIGNED_OUT in every tab (not only the tab that clicked Sign out). */
+  const authSessionPrevUserRef = useRef<string | null | undefined>(undefined);
+
+  /** Local storage hydrate finished — cloud sync waits so snapshot matches saved state. */
+  const [localHydrated, setLocalHydrated] = useState(false);
+  /** Initial compare/upsert to Supabase finished; debounced push waits for this. */
+  const [cloudSyncReady, setCloudSyncReady] = useState(false);
+  const persistSnapshotRef = useRef<PersistedV5 | null>(null);
+  /** For `pagehide` keepalive upload — mirrors gates without re-subscribing on every state change. */
+  const localHydratedRef = useRef(false);
+  localHydratedRef.current = localHydrated;
+  const userIdRef = useRef<string | null>(null);
+  userIdRef.current = user?.id ?? null;
+  const cloudQuietUntilRef = useRef(0);
+  /** Cross-tab: higher revision wins when merging localStorage (see storage listener + focused timer). */
+  const storageRevRef = useRef(0);
+  /** Fingerprint of current React dashboard (layout) — redundant storage events skip setState when data already matches. */
+  const currentPersistFingerprintRef = useRef("");
+  /** Fingerprint last written to STORAGE_KEY — avoids re-writing the same blob (revision ping-pong between tabs). */
+  const lastWrittenPersistFingerprintRef = useRef<string | null>(null);
 
   const energyBudgetSeconds = Math.max(60, Math.round(energyHours[dayType] * 3600));
 
@@ -367,6 +594,54 @@ export default function Home() {
   const activeIds = useMemo(() => fullOrder.slice(0, k), [fullOrder, k]);
   const activeIdsKey = `${k}|${fullOrder.slice(0, k).join(",")}`;
 
+  const entitiesRef = useRef(entities);
+  entitiesRef.current = entities;
+  const mainSlotIdRef = useRef(mainSlotId);
+  mainSlotIdRef.current = mainSlotId;
+  const activeIdRef = useRef(activeId);
+  activeIdRef.current = activeId;
+  const kRef = useRef(k);
+  kRef.current = k;
+  const fullOrderRef = useRef(fullOrder);
+  fullOrderRef.current = fullOrder;
+  const autoBorrowRef = useRef(autoBorrow);
+  autoBorrowRef.current = autoBorrow;
+  const runWallAnchorMsRef = useRef<number | null>(null);
+  runWallAnchorMsRef.current = runWallAnchorMs;
+  /** Detect pause transitions so we clear wall anchor without clobbering hydrate/toggle start. */
+  const prevActiveIdForRunnerAnchorRef = useRef<string | null | undefined>(undefined);
+
+  /** Replay wall-time gap vs `runWallAnchorMs` (tab sleep / closed) using the same rules as the 1s tick. */
+  const flushRunnerWallCatchUp = useCallback((opts?: { force?: boolean }) => {
+    if (
+      !opts?.force &&
+      typeof document !== "undefined" &&
+      document.visibilityState !== "visible"
+    ) {
+      return;
+    }
+    const fo = fullOrderRef.current;
+    const k0 = kRef.current;
+    const c = computeRunnerWallCatchUp(
+      entitiesRef.current,
+      activeIdRef.current,
+      fo.slice(0, k0),
+      autoBorrowRef.current,
+      runWallAnchorMsRef.current,
+      Date.now()
+    );
+    if (!c.dirty) {
+      return;
+    }
+    runWallAnchorMsRef.current = c.runWallAnchorMs;
+    setEntities(c.entities);
+    if (c.consumedDelta > 0) {
+      setDayConsumedRunSeconds((x) => x + c.consumedDelta);
+    }
+    setActiveId(c.activeId);
+    setRunWallAnchorMs(c.runWallAnchorMs);
+  }, []);
+
   const presets = useMemo(() => getAllocationPresets(dayType, k), [dayType, k]);
 
   useEffect(() => {
@@ -375,19 +650,68 @@ export default function Home() {
 
   const safeAllocatorIndex = Math.min(allocatorIndex, Math.max(0, presets.length - 1));
 
+  // Sync energy draft when opening App settings so edits are not live until Save.
+  useEffect(() => {
+    if (settingsAccordion === "app") {
+      setEnergyDraft(energyHours);
+    }
+  }, [settingsAccordion, energyHours]);
+
+  // Keep fingerprint in sync before paint so storage/catch-up handlers see the latest committed state.
+  useLayoutEffect(() => {
+    currentPersistFingerprintRef.current = fingerprintPersistBody({
+      v: 5,
+      entities,
+      fullOrder,
+      mainSlotId,
+      activeId,
+      lastResetDate,
+      dayType,
+      holidayDaily,
+      focusDaily,
+      allocatorIndex: safeAllocatorIndex,
+      energyHours,
+      autoBorrow,
+      preferredDefaultDayType,
+      appTimezone,
+      autoDayReset,
+      dayResetClock: normalizeClockHm(dayResetClock),
+      dayConsumedRunSeconds,
+      runWallAnchorMs,
+    });
+  }, [
+    entities,
+    fullOrder,
+    mainSlotId,
+    activeId,
+    lastResetDate,
+    dayType,
+    holidayDaily,
+    focusDaily,
+    safeAllocatorIndex,
+    energyHours,
+    autoBorrow,
+    preferredDefaultDayType,
+    appTimezone,
+    autoDayReset,
+    dayResetClock,
+    dayConsumedRunSeconds,
+    runWallAnchorMs,
+  ]);
+
   const entityById = useMemo(
     () => new Map(entities.map((e) => [e.id, e])),
     [entities]
   );
 
-  /** Demoted nexus (not in first k of fullOrder): clear timers until next Apply. */
+  /** Demoted nexus (not in first k of fullOrder): strip allocation but keep elapsed (today’s run log + energy already spent). */
   useEffect(() => {
     const active = new Set(fullOrder.slice(0, k));
     setEntities((prev) =>
       prev.map((e) =>
         active.has(e.id)
           ? e
-          : { ...e, durationSeconds: 0, elapsedSeconds: 0, overspentAuto: false, donorAutoBorrow: false }
+          : { ...e, durationSeconds: 0, overspentAuto: false, donorAutoBorrow: false }
       )
     );
     setActiveId((cur) => (cur && active.has(cur) ? cur : null));
@@ -417,50 +741,155 @@ export default function Home() {
         return null;
       })();
 
-    if (!raw) {
-      return;
-    }
-
     try {
-      const p = JSON.parse(raw) as Partial<PersistedV5> & { v?: number };
-      const current = getDateKey(new Date());
-      const shouldReset = p.lastResetDate !== current;
-
-      if (Array.isArray(p.entities) && p.entities.length && Array.isArray(p.fullOrder)) {
-        setEntities(
-          shouldReset ? p.entities.map(resetEntityDay) : p.entities
-        );
-        setFullOrder(p.fullOrder);
-        setMainSlotId(
-          typeof p.mainSlotId === "string" ? p.mainSlotId : "main-focus"
-        );
-        setActiveId(shouldReset ? null : p.activeId ?? null);
-        setLastResetDate(current);
-        setDayType(
-          p.dayType === "holiday" || p.dayType === "focus" ? p.dayType : "default"
-        );
-        setHolidayDaily(p.holidayDaily === 0 || p.holidayDaily === 1 ? p.holidayDaily : 1);
-        setFocusDaily(
-          p.focusDaily === 1 || p.focusDaily === 2 || p.focusDaily === 3 ? p.focusDaily : 3
-        );
-        setAllocatorIndex(typeof p.allocatorIndex === "number" ? p.allocatorIndex : 0);
-        if (p.energyHours) {
-          setEnergyHours({
-            holiday: Number(p.energyHours.holiday) || defaultEnergyHours.holiday,
-            default: Number(p.energyHours.default) || defaultEnergyHours.default,
-            focus: Number(p.energyHours.focus) || defaultEnergyHours.focus,
-          });
-        }
-        if (typeof p.autoBorrow === "boolean") {
-          setAutoBorrow(p.autoBorrow);
+      if (raw) {
+        const p = JSON.parse(raw) as unknown;
+        const ok = applyDashboardFromPersisted(p, {
+          todayKey: hydrateTodayKeyFromPayload(p),
+          resetEntityDay,
+          defaultEnergyHours,
+          setEntities,
+          setFullOrder,
+          setMainSlotId,
+          setActiveId,
+          setLastResetDate,
+          setDayType,
+          setHolidayDaily,
+          setFocusDaily,
+          setAllocatorIndex,
+          setEnergyHours,
+          setAutoBorrow,
+          setPreferredDefaultDayType,
+          setAppTimezone,
+          setAutoDayReset,
+          setDayResetClock,
+          setDayConsumedRunSeconds,
+          setRunWallAnchorMs,
+        });
+        if (ok) {
+          bumpLocalDashboardWriteTs();
+          storageRevRef.current = Math.max(storageRevRef.current, readStorageRevision(p));
+          const fp0 = fingerprintFromPersistedUnknown(p);
+          if (fp0 != null) {
+            lastWrittenPersistFingerprintRef.current = fp0;
+          }
         }
       }
     } catch {
       /* ignore */
+    } finally {
+      setLocalHydrated(true);
     }
   }, []);
 
+  /** After local hydrate or tab visible again: apply wall-clock catch-up for an active runner. */
   useEffect(() => {
+    if (!localHydrated) {
+      return;
+    }
+    const onVis = () => {
+      if (document.visibilityState === "visible") {
+        flushRunnerWallCatchUp();
+      }
+    };
+    onVis();
+    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("pageshow", onVis);
+    return () => {
+      document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("pageshow", onVis);
+    };
+  }, [localHydrated, flushRunnerWallCatchUp]);
+
+  /**
+   * Tab close / navigate away: one best-effort cloud save with catch-up merged in-memory.
+   * Uses `fetch(..., { keepalive: true })` (cookies + JSON); Chromium caps body ~64KiB.
+   */
+  useEffect(() => {
+    const KEEPALIVE_BODY_MAX = 55_000;
+
+    const onPageHide = () => {
+      const uid = userIdRef.current;
+      if (!uid || !localHydratedRef.current) {
+        return;
+      }
+      const base = persistSnapshotRef.current;
+      if (!base || base.v !== 5) {
+        return;
+      }
+      const fo = fullOrderRef.current;
+      const k0 = kRef.current;
+      const now = Date.now();
+      const c = computeRunnerWallCatchUp(
+        entitiesRef.current,
+        activeIdRef.current,
+        fo.slice(0, k0),
+        autoBorrowRef.current,
+        runWallAnchorMsRef.current,
+        now
+      );
+      const consumedBase =
+        typeof base.dayConsumedRunSeconds === "number" ? base.dayConsumedRunSeconds : 0;
+      const payload: PersistedV5 = {
+        ...base,
+        entities: c.entities,
+        fullOrder: fo,
+        mainSlotId: mainSlotIdRef.current,
+        activeId: c.activeId,
+        dayConsumedRunSeconds: consumedBase + c.consumedDelta,
+        runWallAnchorMs: c.runWallAnchorMs,
+        storageRevision: storageRevRef.current,
+      };
+      const body = JSON.stringify({
+        payload,
+        knownServerUpdatedAt: getLastServerUpdatedAt(uid),
+      });
+      if (body.length > KEEPALIVE_BODY_MAX) {
+        return;
+      }
+      void fetch(`${window.location.origin}/api/dashboard-beacon`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+        keepalive: true,
+      });
+    };
+
+    window.addEventListener("pagehide", onPageHide);
+    return () => window.removeEventListener("pagehide", onPageHide);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- refs + persist snapshot cover latest dashboard
+  }, []);
+
+  useEffect(() => {
+    if (!localHydrated) {
+      return;
+    }
+    const fp = fingerprintPersistBody({
+      v: 5,
+      entities,
+      fullOrder,
+      mainSlotId,
+      activeId,
+      lastResetDate,
+      dayType,
+      holidayDaily,
+      focusDaily,
+      allocatorIndex: safeAllocatorIndex,
+      energyHours,
+      autoBorrow,
+      preferredDefaultDayType,
+      appTimezone,
+      autoDayReset,
+      dayResetClock: normalizeClockHm(dayResetClock),
+      dayConsumedRunSeconds,
+      runWallAnchorMs,
+    });
+    // Same payload as last write: do not bump storageRevision (prevents infinite storage ↔ persist loops across tabs).
+    if (fp === lastWrittenPersistFingerprintRef.current) {
+      return;
+    }
+    lastWrittenPersistFingerprintRef.current = fp;
+    storageRevRef.current += 1;
     const payload: PersistedV5 = {
       v: 5,
       entities,
@@ -474,9 +903,18 @@ export default function Home() {
       allocatorIndex: safeAllocatorIndex,
       energyHours,
       autoBorrow,
+      preferredDefaultDayType,
+      appTimezone,
+      autoDayReset,
+      dayResetClock: normalizeClockHm(dayResetClock),
+      dayConsumedRunSeconds,
+      runWallAnchorMs,
+      storageRevision: storageRevRef.current,
     };
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    bumpLocalDashboardWriteTs();
   }, [
+    localHydrated,
     entities,
     fullOrder,
     mainSlotId,
@@ -488,21 +926,666 @@ export default function Home() {
     safeAllocatorIndex,
     energyHours,
     autoBorrow,
+    preferredDefaultDayType,
+    appTimezone,
+    autoDayReset,
+    dayResetClock,
+    dayConsumedRunSeconds,
+    runWallAnchorMs,
   ]);
+
+  useEffect(() => {
+    persistSnapshotRef.current = {
+      v: 5,
+      entities,
+      fullOrder,
+      mainSlotId,
+      activeId,
+      lastResetDate,
+      dayType,
+      holidayDaily,
+      focusDaily,
+      allocatorIndex: safeAllocatorIndex,
+      energyHours,
+      autoBorrow,
+      preferredDefaultDayType,
+      appTimezone,
+      autoDayReset,
+      dayResetClock: normalizeClockHm(dayResetClock),
+      dayConsumedRunSeconds,
+      runWallAnchorMs,
+      storageRevision: storageRevRef.current,
+    };
+  });
+
+  useEffect(() => {
+    if (!user?.id) {
+      setCloudSyncReady(false);
+    }
+  }, [user?.id]);
+
+  /**
+   * Supabase session ended (any tab): mark “prefer server on next login”, wipe local files, reset UI to guest.
+   * Matches Tab B when Tab A signs out; avoids Tab B persisting stale user state back to localStorage.
+   */
+  useEffect(() => {
+    if (!localHydrated || authLoading) {
+      return;
+    }
+    const cur = user?.id ?? null;
+    const prev = authSessionPrevUserRef.current;
+    if (prev !== undefined && prev !== null && cur === null) {
+      markPreferServerAfterLogout();
+      clearNexusDashboardLocalState();
+      const tz0 = getDeviceTimeZone();
+      setAppTimezone(tz0);
+      setAutoDayReset(true);
+      setDayResetClock("00:00");
+      setLastResetDate(getEffectiveDashboardDayKey(new Date(), tz0, "00:00", true));
+      setEntities(seedEntities());
+      setFullOrder([...seedIds]);
+      setMainSlotId("main-focus");
+      setActiveId(null);
+      setDayType("default");
+      setPreferredDefaultDayType("default");
+      setHolidayDaily(1);
+      setFocusDaily(3);
+      setAllocatorIndex(0);
+      setEnergyHours(defaultEnergyHours);
+      setEnergyDraft(defaultEnergyHours);
+      setAutoBorrow(true);
+      setDayConsumedRunSeconds(0);
+      setRunWallAnchorMs(null);
+      storageRevRef.current = 0;
+      lastWrittenPersistFingerprintRef.current = null;
+      hasAppliedAllocationOnceRef.current = false;
+      setCloudSyncReady(false);
+    }
+    authSessionPrevUserRef.current = cur;
+  }, [user?.id, authLoading, localHydrated]);
+
+  /**
+   * If another Supabase user logs in, clear cached JSON + reload once to avoid mixing accounts.
+   */
+  useEffect(() => {
+    const uid = user?.id ?? null;
+    if (uid !== null) {
+      const prev = lastSignedInUserIdRef.current;
+      if (prev !== null && prev !== uid) {
+        clearNexusDashboardLocalState();
+        window.location.reload();
+        return;
+      }
+      lastSignedInUserIdRef.current = uid;
+    }
+  }, [user?.id]);
+
+  /**
+   * Other tabs write the same STORAGE_KEY; `storage` fires only outside this tab.
+   * Apply only if their revision is newer so a background tab cannot overwrite pause with stale “running”.
+   */
+  useEffect(() => {
+    if (!localHydrated) {
+      return;
+    }
+
+    const applyFromOtherTab = (raw: string) => {
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(raw) as unknown;
+      } catch {
+        return;
+      }
+      const rev = readStorageRevision(parsed);
+      if (rev <= storageRevRef.current) {
+        return;
+      }
+      const incomingFp = fingerprintFromPersistedUnknown(parsed);
+      const localFp = currentPersistFingerprintRef.current;
+      if (incomingFp != null && incomingFp === localFp) {
+        storageRevRef.current = rev;
+        return;
+      }
+      const ok = applyDashboardFromPersisted(parsed, {
+        todayKey: hydrateTodayKeyFromPayload(parsed),
+        resetEntityDay,
+        defaultEnergyHours,
+        setEntities,
+        setFullOrder,
+        setMainSlotId,
+        setActiveId,
+        setLastResetDate,
+        setDayType,
+        setHolidayDaily,
+        setFocusDaily,
+        setAllocatorIndex,
+        setEnergyHours,
+        setAutoBorrow,
+        setPreferredDefaultDayType,
+        setAppTimezone,
+        setAutoDayReset,
+        setDayResetClock,
+        setDayConsumedRunSeconds,
+        setRunWallAnchorMs,
+      });
+      if (ok) {
+        storageRevRef.current = rev;
+        bumpLocalDashboardWriteTs();
+        // After commit: wall-clock advance for payload anchor (multi-device / other tab).
+        window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
+      }
+    };
+
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== STORAGE_KEY || e.newValue == null) {
+        return;
+      }
+      applyFromOtherTab(e.newValue);
+    };
+
+    /** Same-tab: wall-clock runner catch-up, then merge localStorage when visible. */
+    const catchUpFromLocalStorage = () => {
+      if (document.visibilityState !== "visible") {
+        return;
+      }
+      flushRunnerWallCatchUp();
+      const raw = window.localStorage.getItem(STORAGE_KEY);
+      if (raw == null) {
+        return;
+      }
+      applyFromOtherTab(raw);
+    };
+
+    window.addEventListener("storage", onStorage);
+    document.addEventListener("visibilitychange", catchUpFromLocalStorage);
+    window.addEventListener("focus", catchUpFromLocalStorage);
+
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      document.removeEventListener("visibilitychange", catchUpFromLocalStorage);
+      window.removeEventListener("focus", catchUpFromLocalStorage);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- setters stable
+  }, [localHydrated, flushRunnerWallCatchUp]);
+
+  /** Logged in: pull remote row once (LWW vs local write time), then upsert if local is newer or row missing. */
+  useEffect(() => {
+    if (!localHydrated || authLoading || !user?.id) {
+      return;
+    }
+
+    const uid = user.id;
+    setCloudSyncReady(false);
+    let cancelled = false;
+
+    void (async () => {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from(USER_DASHBOARD_TABLE)
+          .select("payload, updated_at")
+          .eq("user_id", uid)
+          .maybeSingle();
+
+        if (cancelled) {
+          return;
+        }
+
+        if (error) {
+          console.error("[nexus] cloud fetch:", error.message);
+          return;
+        }
+
+        const preferServer = shouldPreferServerAfterLogout();
+        const localTs = getLocalDashboardWriteTs();
+        const localMs = new Date(localTs).getTime();
+        const snap = persistSnapshotRef.current;
+        if (!snap) {
+          return;
+        }
+
+        const iso = new Date().toISOString();
+
+        if (data?.payload && typeof data.updated_at === "string") {
+          const serverMs = new Date(data.updated_at).getTime();
+          if (preferServer || serverMs > localMs) {
+            const ok = applyDashboardFromPersisted(data.payload, {
+              todayKey: hydrateTodayKeyFromPayload(data.payload),
+              resetEntityDay,
+              defaultEnergyHours,
+              setEntities,
+              setFullOrder,
+              setMainSlotId,
+              setActiveId,
+              setLastResetDate,
+              setDayType,
+              setHolidayDaily,
+              setFocusDaily,
+              setAllocatorIndex,
+              setEnergyHours,
+              setAutoBorrow,
+              setPreferredDefaultDayType,
+              setAppTimezone,
+              setAutoDayReset,
+              setDayResetClock,
+              setDayConsumedRunSeconds,
+              setRunWallAnchorMs,
+            });
+            if (ok) {
+              window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data.payload));
+              storageRevRef.current = Math.max(
+                storageRevRef.current,
+                readStorageRevision(data.payload)
+              );
+              const fpPulled = fingerprintFromPersistedUnknown(data.payload);
+              if (fpPulled != null) {
+                lastWrittenPersistFingerprintRef.current = fpPulled;
+              }
+              setLocalDashboardWriteTs(data.updated_at);
+              setLastServerUpdatedAt(uid, data.updated_at);
+              cloudQuietUntilRef.current = Date.now() + 3000;
+              clearPreferServerAfterLogout();
+              setCloudConflictOpen(false);
+              window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
+            }
+          } else if (hasCloudVersionConflict(data.updated_at, uid)) {
+            setCloudConflictOpen(true);
+          } else {
+            const { data: up, error: upErr } = await supabase
+              .from(USER_DASHBOARD_TABLE)
+              .upsert(
+                { user_id: uid, payload: snap, updated_at: iso },
+                { onConflict: "user_id" }
+              )
+              .select("updated_at")
+              .single();
+            if (!upErr && up?.updated_at) {
+              setLocalDashboardWriteTs(up.updated_at);
+              setLastServerUpdatedAt(uid, up.updated_at);
+            } else if (upErr) {
+              console.error("[nexus] cloud upsert:", upErr.message);
+            }
+            clearPreferServerAfterLogout();
+          }
+        } else {
+          const { data: up, error: upErr } = await supabase
+            .from(USER_DASHBOARD_TABLE)
+            .upsert(
+              { user_id: uid, payload: snap, updated_at: iso },
+              { onConflict: "user_id" }
+            )
+            .select("updated_at")
+            .single();
+          if (!upErr && up?.updated_at) {
+            setLocalDashboardWriteTs(up.updated_at);
+            setLastServerUpdatedAt(uid, up.updated_at);
+            clearPreferServerAfterLogout();
+          } else if (upErr) {
+            console.error("[nexus] cloud upsert (new row):", upErr.message);
+          }
+        }
+      } catch (e) {
+        console.error("[nexus] cloud sync:", e);
+      } finally {
+        if (!cancelled) {
+          setCloudSyncReady(true);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- hydrate setters stable; re-run only when auth/local gate changes
+  }, [localHydrated, user?.id, authLoading, flushRunnerWallCatchUp]);
+
+  /** Debounced upload while logged in (after initial cloud compare). */
+  useEffect(() => {
+    if (!user?.id || !localHydrated || !cloudSyncReady) {
+      return;
+    }
+    if (Date.now() < cloudQuietUntilRef.current) {
+      return;
+    }
+
+    const snap: PersistedV5 = {
+      v: 5,
+      entities,
+      fullOrder,
+      mainSlotId,
+      activeId,
+      lastResetDate,
+      dayType,
+      holidayDaily,
+      focusDaily,
+      allocatorIndex: safeAllocatorIndex,
+      energyHours,
+      autoBorrow,
+      preferredDefaultDayType,
+      appTimezone,
+      autoDayReset,
+      dayResetClock: normalizeClockHm(dayResetClock),
+      dayConsumedRunSeconds,
+      runWallAnchorMs,
+      storageRevision: storageRevRef.current,
+    };
+
+    const uid = user.id;
+    const t = window.setTimeout(() => {
+      if (Date.now() < cloudQuietUntilRef.current) {
+        return;
+      }
+      void (async () => {
+        try {
+          const supabase = createClient();
+          const { data: meta } = await supabase
+            .from(USER_DASHBOARD_TABLE)
+            .select("updated_at")
+            .eq("user_id", uid)
+            .maybeSingle();
+          if (hasCloudVersionConflict(meta?.updated_at ?? null, uid)) {
+            setCloudConflictOpen(true);
+            return;
+          }
+          const iso = new Date().toISOString();
+          const { data: up, error } = await supabase
+            .from(USER_DASHBOARD_TABLE)
+            .upsert(
+              { user_id: uid, payload: snap, updated_at: iso },
+              { onConflict: "user_id" }
+            )
+            .select("updated_at")
+            .single();
+          if (!error && up?.updated_at) {
+            setLocalDashboardWriteTs(up.updated_at);
+            setLastServerUpdatedAt(uid, up.updated_at);
+          } else if (error) {
+            console.error("[nexus] cloud push:", error.message);
+          }
+        } catch (e) {
+          console.error("[nexus] cloud push:", e);
+        }
+      })();
+    }, 2800);
+
+    return () => window.clearTimeout(t);
+  }, [
+    user?.id,
+    localHydrated,
+    cloudSyncReady,
+    entities,
+    fullOrder,
+    mainSlotId,
+    activeId,
+    lastResetDate,
+    dayType,
+    holidayDaily,
+    focusDaily,
+    safeAllocatorIndex,
+    energyHours,
+    autoBorrow,
+    preferredDefaultDayType,
+    appTimezone,
+    autoDayReset,
+    dayResetClock,
+    dayConsumedRunSeconds,
+    runWallAnchorMs,
+  ]);
+
+  /** No Realtime: pull on focus/pageshow + interval backup (tighter while `activeId` set). */
+  useEffect(() => {
+    if (!user?.id || !cloudSyncReady) {
+      return;
+    }
+
+    const uid = user.id;
+    const pollMs = activeId ? CLOUD_PULL_INTERVAL_MS_RUNNING : CLOUD_PULL_INTERVAL_MS_IDLE;
+
+    const tryPullRemote = async () => {
+      if (document.visibilityState !== "visible") {
+        return;
+      }
+      if (Date.now() < cloudQuietUntilRef.current) {
+        return;
+      }
+
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from(USER_DASHBOARD_TABLE)
+          .select("payload, updated_at")
+          .eq("user_id", uid)
+          .maybeSingle();
+
+        if (error) {
+          console.error("[nexus] cloud pull:", error.message);
+          return;
+        }
+        if (!data?.updated_at || data.payload === null || data.payload === undefined) {
+          return;
+        }
+
+        const remoteMs = new Date(data.updated_at).getTime();
+        const knownMs = new Date(getLastServerUpdatedAt(uid)).getTime();
+        if (remoteMs <= knownMs) {
+          return;
+        }
+
+        const ok = applyDashboardFromPersisted(data.payload, {
+          todayKey: hydrateTodayKeyFromPayload(data.payload),
+          resetEntityDay,
+          defaultEnergyHours,
+          setEntities,
+          setFullOrder,
+          setMainSlotId,
+          setActiveId,
+          setLastResetDate,
+          setDayType,
+          setHolidayDaily,
+          setFocusDaily,
+          setAllocatorIndex,
+          setEnergyHours,
+          setAutoBorrow,
+          setPreferredDefaultDayType,
+          setAppTimezone,
+          setAutoDayReset,
+          setDayResetClock,
+          setDayConsumedRunSeconds,
+          setRunWallAnchorMs,
+        });
+        if (ok) {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data.payload));
+          storageRevRef.current = Math.max(
+            storageRevRef.current,
+            readStorageRevision(data.payload)
+          );
+          const fpPulled = fingerprintFromPersistedUnknown(data.payload);
+          if (fpPulled != null) {
+            lastWrittenPersistFingerprintRef.current = fpPulled;
+          }
+          setLocalDashboardWriteTs(data.updated_at);
+          setLastServerUpdatedAt(uid, data.updated_at);
+          cloudQuietUntilRef.current = Date.now() + 3000;
+          setCloudConflictOpen(false);
+          window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
+        }
+      } catch (e) {
+        console.error("[nexus] cloud pull:", e);
+      }
+    };
+
+    const onVisible = () => {
+      void tryPullRemote();
+    };
+
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pageshow", onVisible);
+    const pollId = window.setInterval(onVisible, pollMs);
+
+    void tryPullRemote();
+
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pageshow", onVisible);
+      window.clearInterval(pollId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- setters stable; activeId only changes poll period
+  }, [user?.id, cloudSyncReady, flushRunnerWallCatchUp, activeId]);
+
+  /** Apply newest Supabase row locally (after optimistic-lock conflict). */
+  const loadLatestCloudDashboard = useCallback(async () => {
+    const uid = user?.id;
+    if (!uid) {
+      setCloudConflictOpen(false);
+      return;
+    }
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from(USER_DASHBOARD_TABLE)
+        .select("payload, updated_at")
+        .eq("user_id", uid)
+        .maybeSingle();
+      if (error || !data?.updated_at || data.payload === null || data.payload === undefined) {
+        console.error("[nexus] load latest:", error?.message ?? "no row");
+        return;
+      }
+      const ok = applyDashboardFromPersisted(data.payload, {
+        todayKey: hydrateTodayKeyFromPayload(data.payload),
+        resetEntityDay,
+        defaultEnergyHours,
+        setEntities,
+        setFullOrder,
+        setMainSlotId,
+        setActiveId,
+        setLastResetDate,
+        setDayType,
+        setHolidayDaily,
+        setFocusDaily,
+        setAllocatorIndex,
+        setEnergyHours,
+        setAutoBorrow,
+        setPreferredDefaultDayType,
+        setAppTimezone,
+        setAutoDayReset,
+        setDayResetClock,
+        setDayConsumedRunSeconds,
+        setRunWallAnchorMs,
+      });
+      if (ok) {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data.payload));
+        storageRevRef.current = Math.max(
+          storageRevRef.current,
+          readStorageRevision(data.payload)
+        );
+        const fpPulled = fingerprintFromPersistedUnknown(data.payload);
+        if (fpPulled != null) {
+          lastWrittenPersistFingerprintRef.current = fpPulled;
+        }
+        setLocalDashboardWriteTs(data.updated_at);
+        setLastServerUpdatedAt(uid, data.updated_at);
+        cloudQuietUntilRef.current = Date.now() + 3000;
+        setCloudConflictOpen(false);
+        window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
+      }
+    } catch (e) {
+      console.error("[nexus] load latest:", e);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- dashboard setters stable
+  }, [user?.id, flushRunnerWallCatchUp]);
+
+  const tryNotifyDayRoll = useCallback(() => {
+    if (typeof Notification === "undefined" || Notification.permission !== "granted") {
+      return;
+    }
+    if (document.visibilityState !== "visible" || !document.hasFocus()) {
+      return;
+    }
+    try {
+      new Notification("5Nexus — new app day", {
+        body:
+          "Daily run timers and energy counters reset. Your nexus list and checklist stay as they are.",
+        tag: "nexus-day-roll",
+      });
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const confirmAppDayRoll = useCallback(
+    (newDayKey: string) => {
+      setEntities((e) => e.map(resetEntityDay));
+      setActiveId(null);
+      setDayConsumedRunSeconds(0);
+      setRunWallAnchorMs(null);
+      setLastResetDate(newDayKey);
+      setDayRollModal(null);
+      setDayRollSnoozeUntil(null);
+      dayRollSnoozeUntilRef.current = null;
+      tryNotifyDayRoll();
+      // Fresh day: jump to Daily so user can set day type / slots without hunting Settings.
+      setSettingsAccordion("daily");
+      setSettingsOpen(true);
+    },
+    [tryNotifyDayRoll]
+  );
+
+  const snoozeDayRollMinutes = useCallback((minutes: number) => {
+    const until = Date.now() + minutes * 60_000;
+    dayRollSnoozeUntilRef.current = until;
+    setDayRollSnoozeUntil(until);
+    setDayRollModal(null);
+  }, []);
+
+  useEffect(() => {
+    if (!autoDayReset) {
+      setDayRollModal(null);
+      setDayRollSnoozeUntil(null);
+      dayRollSnoozeUntilRef.current = null;
+    }
+  }, [autoDayReset]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
       const now = new Date();
       setClock(now);
-      const dk = getDateKey(now);
-      setLastResetDate((prev) => {
-        if (prev === dk) {
-          return prev;
+      const dk = getEffectiveDashboardDayKey(
+        now,
+        appTimezone,
+        normalizeClockHm(dayResetClock),
+        autoDayReset
+      );
+      const nowMs = Date.now();
+      let snoozeUntil = dayRollSnoozeUntilRef.current;
+      if (snoozeUntil !== null && nowMs >= snoozeUntil) {
+        snoozeUntil = null;
+        dayRollSnoozeUntilRef.current = null;
+        setDayRollSnoozeUntil(null);
+      }
+      const lr = lastResetDateRef.current;
+      if (autoDayReset) {
+        if (lr === dk) {
+          setDayRollModal((prev) => (prev ? null : prev));
+        } else {
+          const snoozing = snoozeUntil !== null && nowMs < snoozeUntil;
+          if (!snoozing) {
+            setDayRollModal((prev) => {
+              if (prev?.newDayKey === dk) {
+                return prev;
+              }
+              return { newDayKey: dk };
+            });
+          }
         }
-        setEntities((e) => e.map(resetEntityDay));
-        setActiveId(null);
-        return dk;
-      });
+      }
+
+      // Advance run timer while this browser tab is selected (`visible`). `hasFocus()` is omitted so
+      // switching to another app (IDE, chat) does not pause — only switching away in the browser does.
+      // Inactive tabs are `hidden`, so they do not double-tick in one window.
+      if (document.visibilityState !== "visible") {
+        return;
+      }
+
       if (!activeId || !fullOrder.slice(0, k).includes(activeId)) {
         return;
       }
@@ -518,14 +1601,15 @@ export default function Home() {
 
         if (cur().elapsedSeconds >= cur().durationSeconds) {
           if (!autoBorrow) {
-            setTimeout(() => setActiveId(null), 0);
+            // Clear run slot in same turn so payload + Supabase debounce see paused state.
+            queueMicrotask(() => setActiveId(null));
             return prev;
           }
           const borrowed = applyBorrowFromDonors(next, activeId, activeSlice, 1, {
             markOverspent: true,
           });
           if (!borrowed) {
-            setTimeout(() => setActiveId(null), 0);
+            queueMicrotask(() => setActiveId(null));
             return prev;
           }
           next = borrowed;
@@ -533,6 +1617,12 @@ export default function Home() {
 
         const s = cur();
         if (s.elapsedSeconds < s.durationSeconds) {
+          setDayConsumedRunSeconds((c) => c + 1);
+          const tickAt = Date.now();
+          queueMicrotask(() => {
+            setRunWallAnchorMs(tickAt);
+            runWallAnchorMsRef.current = tickAt;
+          });
           return next.map((x) =>
             x.id === activeId ? { ...x, elapsedSeconds: x.elapsedSeconds + 1 } : x
           );
@@ -541,20 +1631,45 @@ export default function Home() {
       });
     }, 1000);
     return () => window.clearInterval(timer);
-  }, [activeId, k, fullOrder.join("|"), autoBorrow]);
+  }, [
+    activeId,
+    k,
+    fullOrder.join("|"),
+    autoBorrow,
+    appTimezone,
+    autoDayReset,
+    dayResetClock,
+  ]);
 
   const totals = useMemo(() => {
-    const activeSet = new Set(activeIds);
-    const spent = entities.reduce(
-      (acc, e) => acc + (activeSet.has(e.id) ? e.elapsedSeconds : 0),
-      0
-    );
+    const spent = dayConsumedRunSeconds;
     const remainingEnergy = Math.max(0, energyBudgetSeconds - spent);
     const progress =
       energyBudgetSeconds <= 0 ? 0 : Math.min((spent / energyBudgetSeconds) * 100, 100);
-    const energyDepletedWhileRunning = Boolean(activeId && spent >= energyBudgetSeconds);
+    const energyDepletedWhileRunning = Boolean(
+      activeId && spent >= energyBudgetSeconds
+    );
     return { spent, remainingEnergy, progress, energyDepletedWhileRunning };
-  }, [entities, activeIds, energyBudgetSeconds, activeId]);
+  }, [dayConsumedRunSeconds, energyBudgetSeconds, activeId]);
+
+  const effectiveAppDayKey = useMemo(() => {
+    if (!clock) {
+      return lastResetDate;
+    }
+    return getEffectiveDashboardDayKey(
+      clock,
+      appTimezone,
+      normalizeClockHm(dayResetClock),
+      autoDayReset
+    );
+  }, [clock, lastResetDate, appTimezone, dayResetClock, autoDayReset]);
+
+  const showDayRollSnoozeBanner =
+    autoDayReset &&
+    clock != null &&
+    dayRollSnoozeUntil != null &&
+    clock.getTime() < dayRollSnoozeUntil &&
+    lastResetDate !== effectiveAppDayKey;
 
   useEffect(() => {
     if (!activeId) {
@@ -569,6 +1684,16 @@ export default function Home() {
       setActiveId(null);
     }
   }, [activeId, entityById, activeIds]);
+
+  /** Pause / cap-stop: drop wall anchor (start + hydrate set it explicitly). */
+  useEffect(() => {
+    const prev = prevActiveIdForRunnerAnchorRef.current;
+    prevActiveIdForRunnerAnchorRef.current = activeId;
+    if (prev !== undefined && prev !== null && activeId === null) {
+      setRunWallAnchorMs(null);
+      runWallAnchorMsRef.current = null;
+    }
+  }, [activeId]);
 
   /** Donor highlight only for the current run session; clear when switching/pausing timer. */
   useEffect(() => {
@@ -598,27 +1723,36 @@ export default function Home() {
     }
     const seconds = distributeSeconds(energyBudgetSeconds, pct);
     const idToSec = new Map(activeIds.map((id, i) => [id, seconds[i] ?? 0]));
-    setEntities((prev) =>
-      prev.map((e) => {
+    const sliceIds = activeIds;
+    setEntities((prev) => {
+      const next = prev.map((e) => {
         const d = idToSec.get(e.id);
         if (d === undefined) {
           return {
             ...e,
             durationSeconds: 0,
-            elapsedSeconds: 0,
             overspentAuto: false,
             donorAutoBorrow: false,
+            elapsedSeconds: e.elapsedSeconds,
           };
         }
         return {
           ...e,
           durationSeconds: d,
-          elapsedSeconds: Math.min(e.elapsedSeconds, d),
+          elapsedSeconds: e.elapsedSeconds,
           overspentAuto: false,
           donorAutoBorrow: false,
         };
-      })
-    );
+      });
+      let sumActive = 0;
+      for (const id of sliceIds) {
+        sumActive += next.find((x) => x.id === id)?.elapsedSeconds ?? 0;
+      }
+      queueMicrotask(() =>
+        setDayConsumedRunSeconds((c) => Math.max(c, sumActive))
+      );
+      return next;
+    });
   }, [k, presets, safeAllocatorIndex, energyBudgetSeconds, activeIds]);
 
   useEffect(() => {
@@ -637,6 +1771,46 @@ export default function Home() {
     return () => window.clearInterval(id);
   }, [allocationConfirmOpen]);
 
+  useEffect(() => {
+    if (!energyHoursConfirmOpen) {
+      return;
+    }
+    const id = window.setInterval(() => {
+      setEnergyHoursConfirmCooldown((t) => {
+        if (t <= 1) {
+          window.clearInterval(id);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [energyHoursConfirmOpen]);
+
+  useEffect(() => {
+    if (!timezoneConfirmOpen) {
+      return;
+    }
+    const id = window.setInterval(() => {
+      setTimezoneConfirmCooldown((t) => {
+        if (t <= 1) {
+          window.clearInterval(id);
+          return 0;
+        }
+        return t - 1;
+      });
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [timezoneConfirmOpen]);
+
+  useEffect(() => {
+    return () => {
+      if (dayTypeLongPressTimerRef.current != null) {
+        window.clearTimeout(dayTypeLongPressTimerRef.current);
+      }
+    };
+  }, []);
+
   const requestApplyAllocation = useCallback(() => {
     if (k <= 0 || presets.length === 0) {
       return;
@@ -654,6 +1828,152 @@ export default function Home() {
     setAllocationConfirmOpen(true);
   }, [k, presets, safeAllocatorIndex, applyAllocation]);
 
+  const commitEnergyHoursDraft = useCallback(() => {
+    setEnergyHours(energyDraft);
+    setEnergyHoursConfirmOpen(false);
+  }, [energyDraft]);
+
+  const requestSaveEnergyHours = useCallback(() => {
+    if (JSON.stringify(energyDraft) === JSON.stringify(energyHours)) {
+      return;
+    }
+    setEnergyHoursConfirmCooldown(2);
+    setEnergyHoursConfirmOpen(true);
+  }, [energyDraft, energyHours]);
+
+  const clearDayTypeLongPressTimer = useCallback(() => {
+    if (dayTypeLongPressTimerRef.current != null) {
+      window.clearTimeout(dayTypeLongPressTimerRef.current);
+      dayTypeLongPressTimerRef.current = null;
+    }
+  }, []);
+
+  /** Settings → App only: hold 2s on a row to set `preferredDefaultDayType` (does not change today’s type). */
+  const onPreferredDefaultPointerDown = useCallback(
+    (dt: DayType) => {
+      clearDayTypeLongPressTimer();
+      dayTypeLongPressTimerRef.current = window.setTimeout(() => {
+        dayTypeLongPressTimerRef.current = null;
+        setPreferredDefaultDayType(dt);
+      }, 2000);
+    },
+    [clearDayTypeLongPressTimer]
+  );
+
+  const onPreferredDefaultPointerEnd = useCallback(() => {
+    clearDayTypeLongPressTimer();
+  }, [clearDayTypeLongPressTimer]);
+
+  const openTimezoneConfirmFromEdit = useCallback(() => {
+    const t = timezoneDraft.trim();
+    if (!isValidIanaTimeZone(t)) {
+      return;
+    }
+    setTimezoneEditOpen(false);
+    setTimezoneConfirmCooldown(2);
+    setTimezoneConfirmOpen(true);
+  }, [timezoneDraft]);
+
+  const applyTimezoneDraft = useCallback(() => {
+    const t = timezoneDraft.trim();
+    if (!isValidIanaTimeZone(t)) {
+      return;
+    }
+    setAppTimezone(t);
+    setTimezoneConfirmOpen(false);
+  }, [timezoneDraft]);
+
+  /**
+   * Push current dashboard to Supabase immediately (bypass debounce), then sign out.
+   * Avoids losing the latest edits if the user re-signs in before the 2.8s delayed upsert runs.
+   */
+  const handleSignOut = useCallback(async () => {
+    const uid = user?.id;
+    let abortSignOut = false;
+    if (uid && localHydrated) {
+      setSignOutFlushing(true);
+      try {
+        const supabase = createClient();
+        const { data: meta } = await supabase
+          .from(USER_DASHBOARD_TABLE)
+          .select("updated_at")
+          .eq("user_id", uid)
+          .maybeSingle();
+        if (hasCloudVersionConflict(meta?.updated_at ?? null, uid)) {
+          setCloudConflictOpen(true);
+          abortSignOut = true;
+        } else {
+          const snap: PersistedV5 = {
+            v: 5,
+            entities,
+            fullOrder,
+            mainSlotId,
+            activeId,
+            lastResetDate,
+            dayType,
+            holidayDaily,
+            focusDaily,
+            allocatorIndex: safeAllocatorIndex,
+            energyHours,
+            autoBorrow,
+            preferredDefaultDayType,
+            appTimezone,
+            autoDayReset,
+            dayResetClock: normalizeClockHm(dayResetClock),
+            dayConsumedRunSeconds,
+            runWallAnchorMs,
+            storageRevision: storageRevRef.current,
+          };
+          const iso = new Date().toISOString();
+          const { data: up, error } = await supabase
+            .from(USER_DASHBOARD_TABLE)
+            .upsert(
+              { user_id: uid, payload: snap, updated_at: iso },
+              { onConflict: "user_id" }
+            )
+            .select("updated_at")
+            .single();
+          if (!error && up?.updated_at) {
+            setLocalDashboardWriteTs(up.updated_at);
+            setLastServerUpdatedAt(uid, up.updated_at);
+            cloudQuietUntilRef.current = Date.now() + 3000;
+          } else if (error) {
+            console.error("[nexus] pre-sign-out upsert:", error.message);
+          }
+        }
+      } catch (e) {
+        console.error("[nexus] pre-sign-out upsert:", e);
+      } finally {
+        setSignOutFlushing(false);
+      }
+    }
+    if (!abortSignOut) {
+      await signOut();
+    }
+    // Guest reset + clear + prefer-server flag run in the auth `user` effect (all tabs).
+  }, [
+    user?.id,
+    localHydrated,
+    signOut,
+    entities,
+    fullOrder,
+    mainSlotId,
+    activeId,
+    lastResetDate,
+    dayType,
+    holidayDaily,
+    focusDaily,
+    safeAllocatorIndex,
+    energyHours,
+    autoBorrow,
+    preferredDefaultDayType,
+    appTimezone,
+    autoDayReset,
+    dayResetClock,
+    dayConsumedRunSeconds,
+    runWallAnchorMs,
+  ]);
+
   const toggleTimer = (slotId: string) => {
     if (!activeIds.includes(slotId)) {
       return;
@@ -666,7 +1986,17 @@ export default function Home() {
     ) {
       return;
     }
-    setActiveId((prev) => (prev === slotId ? null : slotId));
+    setActiveId((prev) => {
+      if (prev === slotId) {
+        return null;
+      }
+      const t = Date.now();
+      queueMicrotask(() => {
+        setRunWallAnchorMs(t);
+        runWallAnchorMsRef.current = t;
+      });
+      return slotId;
+    });
   };
 
   /** End auto-borrow overspend session: pause + clear rose on recipient & donors (same as pause, plus flags). */
@@ -959,6 +2289,43 @@ export default function Home() {
           : "bg-gradient-to-b from-zinc-100 to-slate-100 text-zinc-900",
       ].join(" ")}
     >
+      {showDayRollSnoozeBanner ? (
+        <div
+          className={[
+            "flex shrink-0 items-center justify-between gap-2 border-b px-2.5 py-1.5 sm:px-3",
+            isDark ? "border-amber-900/50 bg-amber-950/40" : "border-amber-200 bg-amber-50",
+          ].join(" ")}
+          role="status"
+        >
+          <p className="min-w-0 text-[10px] leading-snug sm:text-[11px]">
+            <span className="font-semibold text-amber-800 dark:text-amber-200">Overtime:</span>{" "}
+            <span className="text-zinc-700 dark:text-zinc-300">
+              Day roll snoozed — timers keep running. Open reset when you are done.
+            </span>
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              const dk = getEffectiveDashboardDayKey(
+                new Date(),
+                appTimezone,
+                normalizeClockHm(dayResetClock),
+                autoDayReset
+              );
+              setDayRollModal({ newDayKey: dk });
+            }}
+            className={[
+              "shrink-0 rounded-lg border px-2 py-1 text-[10px] font-semibold sm:text-[11px]",
+              isDark
+                ? "border-amber-600/60 text-amber-200"
+                : "border-amber-500 text-amber-900",
+            ].join(" ")}
+          >
+            Reset day…
+          </button>
+        </div>
+      ) : null}
+
       {settingsOpen ? (
         <button
           type="button"
@@ -1022,7 +2389,7 @@ export default function Home() {
             {settingsAccordion === "daily" ? (
               <div className={settingsSubPanelCls}>
                 <div>
-                  <label className="text-[9px] uppercase text-zinc-500">Day type</label>
+                  <label className="text-[9px] uppercase text-zinc-500">Day type (today)</label>
                   <select
                     value={dayType}
                     onChange={(e) => setDayType(e.target.value as DayType)}
@@ -1030,7 +2397,7 @@ export default function Home() {
                       " "
                     )}
                   >
-                    <option value="default">Default (max 5 today)</option>
+                    <option value="default">Normal (max 5 today)</option>
                     <option value="focus">Focus (max 3 today)</option>
                     <option value="holiday">Holiday (0–1 today)</option>
                   </select>
@@ -1280,14 +2647,16 @@ export default function Home() {
               <div className={`${settingsSubPanelCls} space-y-1.5 text-[10px]`}>
                 {(["holiday", "default", "focus"] as const).map((key) => (
                   <label key={key} className="flex items-center justify-between gap-2">
-                    <span className="capitalize text-zinc-500">{key} hours</span>
+                    <span className="text-zinc-500">
+                      {key === "default" ? "Normal" : key === "focus" ? "Focus" : "Holiday"} hours
+                    </span>
                     <input
                       type="number"
                       min={0.5}
                       step={0.5}
-                      value={energyHours[key]}
+                      value={energyDraft[key]}
                       onChange={(e) =>
-                        setEnergyHours((prev) => ({
+                        setEnergyDraft((prev) => ({
                           ...prev,
                           [key]: Number(e.target.value) || prev[key],
                         }))
@@ -1296,6 +2665,118 @@ export default function Home() {
                     />
                   </label>
                 ))}
+                <button
+                  type="button"
+                  disabled={
+                    JSON.stringify(energyDraft) === JSON.stringify(energyHours)
+                  }
+                  onClick={requestSaveEnergyHours}
+                  className="w-full rounded-lg border border-emerald-500/50 bg-emerald-500/10 py-1.5 text-[10px] text-emerald-500 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  Save energy hours
+                </button>
+                <p className="text-[8px] leading-snug text-zinc-500">
+                  Changes apply after confirm (2s cooldown), like allocation.
+                </p>
+
+                <div>
+                  <label className="text-[9px] uppercase text-zinc-500">Default day type</label>
+                  <p className="mt-0.5 text-[8px] leading-snug text-zinc-500">
+                    Hold 2s on a row to choose which type is your default — label shows “(default)”.
+                    Daily → Day type sets today only.
+                  </p>
+                  <div className="mt-1 space-y-1">
+                    {(["default", "focus", "holiday"] as const).map((dt) => (
+                      <button
+                        key={dt}
+                        type="button"
+                        onPointerDown={() => onPreferredDefaultPointerDown(dt)}
+                        onPointerUp={onPreferredDefaultPointerEnd}
+                        onPointerLeave={onPreferredDefaultPointerEnd}
+                        onPointerCancel={onPreferredDefaultPointerEnd}
+                        className={[
+                          "w-full rounded-lg border px-2 py-1.5 text-left text-xs transition-colors",
+                          preferredDefaultDayType === dt
+                            ? isDark
+                              ? "border-amber-600/50 bg-amber-950/25"
+                              : "border-amber-400 bg-amber-50/80"
+                            : inputCls,
+                        ].join(" ")}
+                      >
+                        <span className="font-medium">
+                          {dayTypeDisplayName(dt)}
+                          {preferredDefaultDayType === dt ? " (default)" : ""}
+                        </span>
+                        <span className="mt-0.5 block text-[9px] font-normal text-zinc-500">
+                          {dayTypeSubtitle(dt)}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[9px] uppercase text-zinc-500">Daily reset</label>
+                  <label className="mt-1 flex cursor-pointer items-center justify-between gap-2">
+                    <span className="text-zinc-500">Auto-start new day</span>
+                    <input
+                      type="checkbox"
+                      checked={autoDayReset}
+                      onChange={(e) => setAutoDayReset(e.target.checked)}
+                      className="h-4 w-4 accent-emerald-600"
+                    />
+                  </label>
+                  <p className="mt-0.5 text-[8px] leading-snug text-zinc-500">
+                    On: at the chosen time you get a prompt to start the new app day (snooze if still in
+                    overtime). Run timers and daily energy reset on confirm; nexus titles, notes, order, and
+                    checklist stays until history archives done items. Off: no automatic roll from the clock.
+                  </p>
+                  {clientUiReady && typeof Notification !== "undefined" ? (
+                    <div
+                      className="mt-1.5 rounded-lg border border-zinc-600/25 px-2 py-1.5 dark:border-zinc-600/35"
+                      data-notif-rev={dayRollNotifRev}
+                    >
+                      <p className="text-[9px] font-medium text-zinc-600 dark:text-zinc-400">
+                        Day-roll alerts
+                      </p>
+                      <p className="mt-0.5 text-[8px] leading-snug text-zinc-500">
+                        Browser notification when you confirm a new day (only if this tab is focused).
+                      </p>
+                      <button
+                        type="button"
+                        disabled={Notification.permission === "granted"}
+                        onClick={async () => {
+                          await Notification.requestPermission();
+                          setDayRollNotifRev((n) => n + 1);
+                        }}
+                        className={[
+                          "mt-1.5 w-full rounded-lg border py-1.5 text-[10px] font-semibold",
+                          Notification.permission === "granted"
+                            ? "cursor-default border-emerald-500/35 text-emerald-600 opacity-80 dark:text-emerald-400"
+                            : "border-emerald-500/50 text-emerald-600 dark:text-emerald-400",
+                        ].join(" ")}
+                      >
+                        {Notification.permission === "granted"
+                          ? "Notifications allowed"
+                          : "Allow notifications…"}
+                      </button>
+                    </div>
+                  ) : null}
+                  <label className="mt-1.5 block text-[9px] uppercase text-zinc-500">
+                    Roll at (app time)
+                  </label>
+                  <input
+                    type="time"
+                    value={normalizeClockHm(dayResetClock)}
+                    disabled={!autoDayReset}
+                    onChange={(e) => setDayResetClock(e.target.value)}
+                    className={[
+                      "mt-0.5 w-full rounded-lg border px-2 py-1 text-xs disabled:opacity-45",
+                      inputCls,
+                    ].join(" ")}
+                  />
+                </div>
+
                 <label className="flex cursor-pointer items-center justify-between gap-2">
                   <span className="text-zinc-500">Auto-borrow time</span>
                   <input
@@ -1309,6 +2790,29 @@ export default function Home() {
                   When a running nexus hits zero, take 1s at a time from lowest priority slots.
                   Long-press a donor card (giving nexus) to move unused time; never marks overspend.
                 </p>
+                {!user && !authLoading ? (
+                  <div
+                    className={[
+                      "rounded-lg border px-2 py-1.5",
+                      isDark ? "border-zinc-700/60" : "border-zinc-300",
+                    ].join(" ")}
+                  >
+                    <p className="text-[9px] uppercase text-zinc-500">Time zone</p>
+                    <p className="mt-0.5 font-mono text-[11px] text-zinc-800 dark:text-zinc-200">
+                      {appTimezone}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTimezoneDraft(appTimezone);
+                        setTimezoneEditOpen(true);
+                      }}
+                      className="mt-1.5 w-full rounded border py-1 text-[10px] text-emerald-600 dark:text-emerald-400"
+                    >
+                      Edit time zone…
+                    </button>
+                  </div>
+                ) : null}
                 <p className="text-[9px] text-zinc-500">
                   Day type controls max nexus today + which allocation presets appear.
                 </p>
@@ -1330,25 +2834,174 @@ export default function Home() {
             </button>
             {settingsAccordion === "account" ? (
               <div className={`${settingsSubPanelCls} space-y-1.5 text-[10px]`}>
-                <button
-                  type="button"
-                  className="w-full rounded-lg border py-1.5"
-                  onClick={() => window.alert("Profile — demo")}
-                >
-                  Profile
-                </button>
-                <button
-                  type="button"
-                  className="w-full rounded-lg border border-rose-500/40 py-1.5 text-rose-500"
-                  onClick={() => window.alert("Log out — demo")}
-                >
-                  Log out
-                </button>
+                {authLoading ? (
+                  <p className="text-zinc-500">Checking session…</p>
+                ) : user ? (
+                  <>
+                    <p className="truncate text-xs font-medium text-zinc-700 dark:text-zinc-200">
+                      {user.email ?? user.id}
+                    </p>
+                    <div className="rounded-lg border border-zinc-700/30 px-2 py-1.5 dark:border-zinc-600/40">
+                      <p className="text-[9px] uppercase text-zinc-500">Time zone</p>
+                      <p className="mt-0.5 font-mono text-[11px] text-zinc-800 dark:text-zinc-200">
+                        {appTimezone}
+                      </p>
+                      <p className="mt-1 text-[8px] leading-snug text-zinc-500">
+                        Clock and “today” use this zone. Default follows your device.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTimezoneDraft(appTimezone);
+                          setTimezoneEditOpen(true);
+                        }}
+                        className="mt-1.5 w-full rounded border py-1 text-[10px] text-emerald-600 dark:text-emerald-400"
+                      >
+                        Edit time zone…
+                      </button>
+                    </div>
+                    <p className="text-[9px] leading-snug text-zinc-500">
+                      Signed in — dashboard syncs to Supabase (last write wins). Open the same account
+                      on another device after the table migration is applied in your project.
+                    </p>
+                    <p className="text-[9px] leading-snug text-zinc-500">
+                      Sign out saves your dashboard to Supabase, clears this browser’s copy, and resets the
+                      screen to the default guest layout. Sign in again loads your row from the database
+                      (not the old in-memory session).
+                    </p>
+                    <p className="text-[9px] leading-snug text-zinc-500">
+                      Signing in with a{" "}
+                      <span className="font-semibold text-zinc-700 dark:text-zinc-300">different</span>{" "}
+                      account clears local cache once so two accounts never share the same file.
+                    </p>
+                    <p className="text-[8px] leading-snug text-zinc-500">
+                      Nexus slots, timers, energy budgets, day type, allocator index, and checklist items
+                      are stored in the saved JSON (plus auto day-reset settings below). Daily reset clears
+                      run times, not your nexus layout.
+                    </p>
+                    <button
+                      type="button"
+                      disabled={signOutFlushing}
+                      className="w-full rounded-lg border border-rose-500/40 py-1.5 text-rose-500 disabled:cursor-not-allowed disabled:opacity-50"
+                      onClick={() => void handleSignOut()}
+                    >
+                      {signOutFlushing ? "Saving to cloud…" : "Sign out"}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-[9px] leading-snug text-zinc-500">
+                      Optional: use the app without signing in. Sign in when you want your identity
+                      ready for multi-device sync (coming soon).
+                    </p>
+                    <Link
+                      href="/login"
+                      className="flex w-full items-center justify-center rounded-lg border border-emerald-500/50 bg-emerald-500/10 py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400"
+                    >
+                      Sign in with Google
+                    </Link>
+                  </>
+                )}
               </div>
             ) : null}
           </div>
         </div>
       </aside>
+
+      {dayRollModal ? (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-3">
+          <div
+            className={[
+              "w-full max-w-sm rounded-2xl border p-3 sm:p-4",
+              isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-300 bg-white",
+            ].join(" ")}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="day-roll-title"
+          >
+            <p id="day-roll-title" className="text-sm font-semibold">
+              Start a new app day?
+            </p>
+            <p className="mt-1.5 text-[10px] leading-snug text-zinc-500">
+              Run timers and daily energy counters reset. Your nexus titles, notes, order, and checklist
+              stay as they are (done items will archive when history ships).
+            </p>
+            <div className="mt-3 flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => confirmAppDayRoll(dayRollModal.newDayKey)}
+                className="w-full rounded-lg border border-emerald-500/50 bg-emerald-500/15 py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400"
+              >
+                Reset now
+              </button>
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-stretch">
+                <button
+                  type="button"
+                  onClick={() => snoozeDayRollMinutes(30)}
+                  className={[
+                    "w-full rounded-lg border py-2 text-xs sm:flex-1",
+                    isDark ? "border-zinc-600" : "border-zinc-300",
+                  ].join(" ")}
+                >
+                  Snooze 30 min
+                </button>
+                <button
+                  type="button"
+                  onClick={() => snoozeDayRollMinutes(60)}
+                  className={[
+                    "w-full rounded-lg border py-2 text-xs sm:flex-1",
+                    isDark ? "border-zinc-600" : "border-zinc-300",
+                  ].join(" ")}
+                >
+                  Snooze 1 hour
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {cloudConflictOpen ? (
+        <div className="fixed inset-0 z-[61] flex items-center justify-center bg-black/50 p-3">
+          <div
+            className={[
+              "w-full max-w-sm rounded-2xl border p-3 sm:p-4",
+              isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-300 bg-white",
+            ].join(" ")}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cloud-conflict-title"
+          >
+            <p id="cloud-conflict-title" className="text-sm font-semibold">
+              Perubahan di perangkat lain
+            </p>
+            <p className="mt-1.5 text-[10px] leading-snug text-zinc-500">
+              Versi di cloud lebih baru dari yang terakhir disinkronkan di tab ini. Muat versi
+              terbaru untuk menyamakan data, atau tutup dan lanjutkan mengedit lokal (simpan ke
+              cloud akan ditunda sampai tidak bentrok).
+            </p>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row-reverse sm:justify-end">
+              <button
+                type="button"
+                onClick={() => void loadLatestCloudDashboard()}
+                className="w-full rounded-lg border border-emerald-500/50 bg-emerald-500/15 py-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400 sm:w-auto sm:min-w-[10rem]"
+              >
+                Muat versi terbaru
+              </button>
+              <button
+                type="button"
+                onClick={() => setCloudConflictOpen(false)}
+                className={[
+                  "w-full rounded-lg border py-2 text-xs sm:w-auto sm:min-w-[10rem]",
+                  isDark ? "border-zinc-600" : "border-zinc-300",
+                ].join(" ")}
+              >
+                Tutup — tetap lokal
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {allocationConfirmOpen ? (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-3">
@@ -1395,6 +3048,150 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => setAllocationConfirmOpen(false)}
+                className={[
+                  "w-full rounded-lg border py-2 text-xs sm:w-auto sm:min-w-[8rem]",
+                  isDark ? "border-zinc-600" : "border-zinc-300",
+                ].join(" ")}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {energyHoursConfirmOpen ? (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-3">
+          <div
+            className={[
+              "w-full max-w-sm rounded-2xl border p-3 sm:p-4",
+              isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-300 bg-white",
+            ].join(" ")}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="energy-hours-confirm-title"
+          >
+            <p id="energy-hours-confirm-title" className="text-sm font-semibold">
+              Save energy hours?
+            </p>
+            <p className="mt-1.5 text-[10px] leading-snug text-zinc-500">
+              Budgets use these values per day type (Normal / Focus / Holiday). The running nexus
+              keeps its slot; remaining time is capped when you next apply allocation.
+            </p>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row-reverse sm:justify-end">
+              <button
+                type="button"
+                disabled={energyHoursConfirmCooldown > 0}
+                onClick={commitEnergyHoursDraft}
+                className="w-full rounded-lg border border-emerald-500/50 bg-emerald-500/15 py-2 text-xs font-semibold text-emerald-600 disabled:cursor-not-allowed disabled:opacity-45 dark:text-emerald-400 sm:w-auto sm:min-w-[8rem]"
+              >
+                {energyHoursConfirmCooldown > 0
+                  ? `Save (${energyHoursConfirmCooldown}s)`
+                  : "Save"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setEnergyHoursConfirmOpen(false)}
+                className={[
+                  "w-full rounded-lg border py-2 text-xs sm:w-auto sm:min-w-[8rem]",
+                  isDark ? "border-zinc-600" : "border-zinc-300",
+                ].join(" ")}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {timezoneEditOpen ? (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-3">
+          <div
+            className={[
+              "w-full max-w-sm rounded-2xl border p-3 sm:p-4",
+              isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-300 bg-white",
+            ].join(" ")}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tz-edit-title"
+          >
+            <p id="tz-edit-title" className="text-sm font-semibold">
+              Edit time zone
+            </p>
+            <p className="mt-1.5 text-[10px] leading-snug text-zinc-500">
+              IANA name (e.g. Asia/Jakarta, America/New_York). Used for the clock and daily reset.
+            </p>
+            <input
+              value={timezoneDraft}
+              onChange={(e) => setTimezoneDraft(e.target.value)}
+              className={["mt-2 w-full rounded-lg border px-2 py-1.5 font-mono text-xs", inputCls].join(
+                " "
+              )}
+              placeholder={getDeviceTimeZone()}
+              autoComplete="off"
+              spellCheck={false}
+            />
+            {timezoneDraft.trim() && !isValidIanaTimeZone(timezoneDraft.trim()) ? (
+              <p className="mt-1 text-[9px] text-rose-500">Unrecognized time zone ID.</p>
+            ) : null}
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row-reverse sm:justify-end">
+              <button
+                type="button"
+                onClick={openTimezoneConfirmFromEdit}
+                disabled={!timezoneDraft.trim() || !isValidIanaTimeZone(timezoneDraft.trim())}
+                className="w-full rounded-lg border border-emerald-500/50 bg-emerald-500/15 py-2 text-xs font-semibold text-emerald-600 disabled:cursor-not-allowed disabled:opacity-45 dark:text-emerald-400 sm:w-auto sm:min-w-[8rem]"
+              >
+                Continue…
+              </button>
+              <button
+                type="button"
+                onClick={() => setTimezoneEditOpen(false)}
+                className={[
+                  "w-full rounded-lg border py-2 text-xs sm:w-auto sm:min-w-[8rem]",
+                  isDark ? "border-zinc-600" : "border-zinc-300",
+                ].join(" ")}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {timezoneConfirmOpen ? (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-3">
+          <div
+            className={[
+              "w-full max-w-sm rounded-2xl border p-3 sm:p-4",
+              isDark ? "border-zinc-700 bg-zinc-900" : "border-zinc-300 bg-white",
+            ].join(" ")}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tz-confirm-title"
+          >
+            <p id="tz-confirm-title" className="text-sm font-semibold">
+              Confirm time zone?
+            </p>
+            <p className="mt-1.5 rounded-lg border border-zinc-600/30 px-2 py-1.5 font-mono text-[11px]">
+              {timezoneDraft.trim()}
+            </p>
+            <p className="mt-1.5 text-[10px] leading-snug text-zinc-500">
+              “Today” and the clock will follow this zone. Wait 2s before confirming.
+            </p>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row-reverse sm:justify-end">
+              <button
+                type="button"
+                disabled={timezoneConfirmCooldown > 0}
+                onClick={applyTimezoneDraft}
+                className="w-full rounded-lg border border-emerald-500/50 bg-emerald-500/15 py-2 text-xs font-semibold text-emerald-600 disabled:cursor-not-allowed disabled:opacity-45 dark:text-emerald-400 sm:w-auto sm:min-w-[8rem]"
+              >
+                {timezoneConfirmCooldown > 0
+                  ? `Apply (${timezoneConfirmCooldown}s)`
+                  : "Apply"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setTimezoneConfirmOpen(false)}
                 className={[
                   "w-full rounded-lg border py-2 text-xs sm:w-auto sm:min-w-[8rem]",
                   isDark ? "border-zinc-600" : "border-zinc-300",
@@ -1690,7 +3487,7 @@ export default function Home() {
                   isDark ? "text-zinc-300" : "text-zinc-600",
                 ].join(" ")}
               >
-                {clock ? formatClock(clock) : "—"}
+                {clock ? formatClock(clock, appTimezone) : "—"}
               </span>
             </div>
           </div>
@@ -1806,7 +3603,7 @@ export default function Home() {
                   isDark ? "text-zinc-300" : "text-zinc-600",
                 ].join(" ")}
               >
-                {clock ? formatClock(clock) : "—"}
+                {clock ? formatClock(clock, appTimezone) : "—"}
               </div>
             </div>
           </div>

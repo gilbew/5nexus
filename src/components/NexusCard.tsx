@@ -115,13 +115,18 @@ export function NexusCard({
   onOuterDrop,
   onRequestTransfer,
 }: NexusCardProps) {
+  /** Parked with no slice budget but elapsed kept for “already ran today” + energy accounting. */
+  const isParkedRunHold = slot.durationSeconds <= 0 && slot.elapsedSeconds > 0;
   const remaining = Math.max(0, slot.durationSeconds - slot.elapsedSeconds);
   const denom = Math.max(slot.durationSeconds, 1);
-  const completion = Math.min((slot.elapsedSeconds / denom) * 100, 100);
+  const completion =
+    slot.durationSeconds > 0
+      ? Math.min((slot.elapsedSeconds / denom) * 100, 100)
+      : 0;
   const isSupport = variant === "support";
   const isDark = theme === "dark";
   /** No time left / no allocation → Start disabled; shell + timer read visually “parked”. */
-  const isInactiveNoTime = !isActive && !canStart;
+  const isInactiveNoTime = !isActive && !canStart && !isParkedRunHold;
 
   const [cardMode, setCardMode] = useState<"counter" | "tasks">("counter");
   const [tasksEdit, setTasksEdit] = useState(false);
@@ -597,7 +602,11 @@ export function NexusCard({
             ].join(" ")}
           >
             <span className="sr-only">Countdown</span>
-            {slot.durationSeconds <= 0 ? "—" : formatSeconds(remaining)}
+            {slot.durationSeconds <= 0
+              ? isParkedRunHold
+                ? `Today ${formatSeconds(slot.elapsedSeconds)}`
+                : "—"
+              : formatSeconds(remaining)}
           </div>
 
           <div
