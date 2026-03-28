@@ -50,8 +50,10 @@ const STORAGE_LEGACY_V4 = NEXUS_DASHBOARD_STORAGE_V4;
 const STORAGE_LEGACY_V3 = NEXUS_DASHBOARD_STORAGE_V3;
 const MAX_NEXUS = 10;
 /** Backup cloud pull: slower when idle; faster while a nexus is running (multi-device, no Realtime). */
-const CLOUD_PULL_INTERVAL_MS_IDLE = 120_000;
+const CLOUD_PULL_INTERVAL_MS_IDLE = 30_000;
 const CLOUD_PULL_INTERVAL_MS_RUNNING = 30_000;
+/** While running, push wall/elapsed periodically — debounced push omits per-second fields so it must not be the only path. */
+const CLOUD_PUSH_INTERVAL_MS_ACTIVE = 18_000;
 /** Tailwind `md` default — used with JS viewport for orientation-aware UI. */
 const MD_PX = 768;
 /** Shared horizontal rhythm: dashboard island + nexus grid share one column width. */
@@ -615,6 +617,8 @@ export default function Home() {
   localHydratedRef.current = localHydrated;
   const userIdRef = useRef<string | null>(null);
   userIdRef.current = user?.id ?? null;
+  const cloudSyncReadyRef = useRef(false);
+  cloudSyncReadyRef.current = cloudSyncReady;
   const cloudQuietUntilRef = useRef(0);
   /** Cross-tab: higher revision wins when merging localStorage (see storage listener + focused timer). */
   const storageRevRef = useRef(0);
@@ -1005,6 +1009,50 @@ export default function Home() {
     };
   });
 
+  /** Reads latest `persistSnapshotRef` — safe to call from timers (no stale `entities` closure). */
+  const flushSupabaseDashboardPush = useCallback(async () => {
+    const uid = userIdRef.current;
+    if (!uid || !localHydratedRef.current || !cloudSyncReadyRef.current) {
+      return;
+    }
+    if (Date.now() < cloudQuietUntilRef.current) {
+      return;
+    }
+    const snap = persistSnapshotRef.current;
+    if (!snap || snap.v !== 5) {
+      return;
+    }
+    try {
+      const supabase = createClient();
+      const { data: meta } = await supabase
+        .from(USER_DASHBOARD_TABLE)
+        .select("updated_at")
+        .eq("user_id", uid)
+        .maybeSingle();
+      if (hasCloudVersionConflict(meta?.updated_at ?? null, uid)) {
+        setCloudConflictOpen(true);
+        return;
+      }
+      const iso = new Date().toISOString();
+      const { data: up, error } = await supabase
+        .from(USER_DASHBOARD_TABLE)
+        .upsert(
+          { user_id: uid, payload: snap, updated_at: iso },
+          { onConflict: "user_id" }
+        )
+        .select("updated_at")
+        .single();
+      if (!error && up?.updated_at) {
+        setLocalDashboardWriteTs(up.updated_at);
+        setLastServerUpdatedAt(uid, up.updated_at);
+      } else if (error) {
+        console.error("[nexus] cloud push:", error.message);
+      }
+    } catch (e) {
+      console.error("[nexus] cloud push:", e);
+    }
+  }, []);
+
   useEffect(() => {
     if (!user?.id) {
       setCloudSyncReady(false);
@@ -1291,7 +1339,80 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- hydrate setters stable; re-run only when auth/local gate changes
   }, [localHydrated, user?.id, authLoading, flushRunnerWallCatchUp]);
 
-  /** Debounced upload while logged in (after initial cloud compare). */
+  // Per render (no useMemo on `entities`): same string when only elapsed ticks → debounce timer is not reset.
+  const cloudPushEntitySig = entities
+    .map(
+      (e) =>
+        `${e.id}\u001f${e.title}\u001f${e.note}\u001f${e.durationSeconds}\u001f${e.checklist
+          .map((c) => `${c.id}:${c.done}:${c.text}`)
+          .join(";")}\u001f${Boolean(e.overspentAuto)}\u001f${Boolean(e.donorAutoBorrow)}`
+    )
+    .join("\u001e");
+
+  const cloudPushSettingsKey = useMemo(
+    () =>
+      JSON.stringify({
+        fullOrder,
+        mainSlotId,
+        lastResetDate,
+        dayType,
+        holidayDaily,
+        focusDaily,
+        ix: safeAllocatorIndex,
+        energyHours,
+        autoBorrow,
+        pref: preferredDefaultDayType,
+        tz: appTimezone,
+        autoDayReset,
+        dr: normalizeClockHm(dayResetClock),
+      }),
+    [
+      fullOrder,
+      mainSlotId,
+      lastResetDate,
+      dayType,
+      holidayDaily,
+      focusDaily,
+      safeAllocatorIndex,
+      energyHours,
+      autoBorrow,
+      preferredDefaultDayType,
+      appTimezone,
+      autoDayReset,
+      dayResetClock,
+    ]
+  );
+
+  /** When idle, include runner snapshot fields in debounce; when active, constant so per-second updates use interval push only. */
+  const cloudDebounceRunnerKey =
+    activeId != null ? "__active_run__" : `idle:${dayConsumedRunSeconds}|${runWallAnchorMs ?? 0}`;
+
+  /** Start / pause / switch nexus: push soon so other devices see `activeId` (debounce ignores ticking state). */
+  useEffect(() => {
+    if (!user?.id || !localHydrated || !cloudSyncReady) {
+      return;
+    }
+    if (Date.now() < cloudQuietUntilRef.current) {
+      return;
+    }
+    const t = window.setTimeout(() => void flushSupabaseDashboardPush(), 450);
+    return () => window.clearTimeout(t);
+  }, [activeId, user?.id, localHydrated, cloudSyncReady, flushSupabaseDashboardPush]);
+
+  /** While running, periodically push elapsed / wall fields; payload always from `persistSnapshotRef`. */
+  useEffect(() => {
+    if (!user?.id || !localHydrated || !cloudSyncReady || activeId == null) {
+      return;
+    }
+    void flushSupabaseDashboardPush();
+    const id = window.setInterval(
+      () => void flushSupabaseDashboardPush(),
+      CLOUD_PUSH_INTERVAL_MS_ACTIVE
+    );
+    return () => window.clearInterval(id);
+  }, [user?.id, localHydrated, cloudSyncReady, activeId, flushSupabaseDashboardPush]);
+
+  /** Debounced upload — deps exclude per-second runner fields so the 2.8s timer can complete while a nexus runs. */
   useEffect(() => {
     if (!user?.id || !localHydrated || !cloudSyncReady) {
       return;
@@ -1300,64 +1421,11 @@ export default function Home() {
       return;
     }
 
-    const snap: PersistedV5 = {
-      v: 5,
-      entities,
-      fullOrder,
-      mainSlotId,
-      activeId,
-      lastResetDate,
-      dayType,
-      holidayDaily,
-      focusDaily,
-      allocatorIndex: safeAllocatorIndex,
-      energyHours,
-      autoBorrow,
-      preferredDefaultDayType,
-      appTimezone,
-      autoDayReset,
-      dayResetClock: normalizeClockHm(dayResetClock),
-      dayConsumedRunSeconds,
-      runWallAnchorMs,
-      storageRevision: storageRevRef.current,
-    };
-
-    const uid = user.id;
     const t = window.setTimeout(() => {
       if (Date.now() < cloudQuietUntilRef.current) {
         return;
       }
-      void (async () => {
-        try {
-          const supabase = createClient();
-          const { data: meta } = await supabase
-            .from(USER_DASHBOARD_TABLE)
-            .select("updated_at")
-            .eq("user_id", uid)
-            .maybeSingle();
-          if (hasCloudVersionConflict(meta?.updated_at ?? null, uid)) {
-            setCloudConflictOpen(true);
-            return;
-          }
-          const iso = new Date().toISOString();
-          const { data: up, error } = await supabase
-            .from(USER_DASHBOARD_TABLE)
-            .upsert(
-              { user_id: uid, payload: snap, updated_at: iso },
-              { onConflict: "user_id" }
-            )
-            .select("updated_at")
-            .single();
-          if (!error && up?.updated_at) {
-            setLocalDashboardWriteTs(up.updated_at);
-            setLastServerUpdatedAt(uid, up.updated_at);
-          } else if (error) {
-            console.error("[nexus] cloud push:", error.message);
-          }
-        } catch (e) {
-          console.error("[nexus] cloud push:", e);
-        }
-      })();
+      void flushSupabaseDashboardPush();
     }, 2800);
 
     return () => window.clearTimeout(t);
@@ -1365,23 +1433,10 @@ export default function Home() {
     user?.id,
     localHydrated,
     cloudSyncReady,
-    entities,
-    fullOrder,
-    mainSlotId,
-    activeId,
-    lastResetDate,
-    dayType,
-    holidayDaily,
-    focusDaily,
-    safeAllocatorIndex,
-    energyHours,
-    autoBorrow,
-    preferredDefaultDayType,
-    appTimezone,
-    autoDayReset,
-    dayResetClock,
-    dayConsumedRunSeconds,
-    runWallAnchorMs,
+    flushSupabaseDashboardPush,
+    cloudPushEntitySig,
+    cloudPushSettingsKey,
+    cloudDebounceRunnerKey,
   ]);
 
   /** No Realtime: pull on focus/pageshow + interval backup (tighter while `activeId` set). */
