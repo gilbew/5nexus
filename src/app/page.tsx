@@ -1485,13 +1485,22 @@ export default function Home() {
             Number.isFinite(localDiskWriteMs) &&
             localDiskWriteMs <= serverRowMs;
 
+          /**
+           * Cold open / semua tab mati: disk `lastServerAck` bisa terlihat “lebih baru” dari baris server
+           * (skew jam, beacon tanpa update ack, urutan device). Lokal beku saat close ≠ kebenaran wall clock.
+           * Kalau **server** bilang masih ada runner dan blob beda → pakai server, lalu catch-up dari `runWallAnchorMs`.
+           */
+          const applyServerWhenRemoteRunning =
+            contentDiffers && serverActiveId != null;
+
           const shouldApplyServer =
             preferServer ||
             neverAckedServerForUser ||
             (!neverAckedServerForUser &&
               isServerNewerThanClientAck(data.updated_at, lastServerAck)) ||
             applyServerRemoteRunnerLocalIdle ||
-            applyServerToHealFork;
+            applyServerToHealFork ||
+            applyServerWhenRemoteRunning;
           if (shouldApplyServer) {
             const ok = applyDashboardFromPersisted(data.payload, {
               todayKey: hydrateTodayKeyFromPayload(data.payload),
