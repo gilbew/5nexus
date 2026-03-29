@@ -51,18 +51,16 @@ const STORAGE_LEGACY_V4 = NEXUS_DASHBOARD_STORAGE_V4;
 const STORAGE_LEGACY_V3 = NEXUS_DASHBOARD_STORAGE_V3;
 const MAX_NEXUS = 10;
 /**
- * Cloud sync — satu baris `user_dashboard_state` = satu kebenaran; Realtime mendorong perubahan ke tab lain.
+ * Cloud sync — satu baris `user_dashboard_state`; **utama**: Supabase Realtime (`postgres_changes`).
  *
- * Listen (murah untuk DB reads): Supabase Realtime + pull sekali saat tab jadi visible (bukan interval polling).
+ * **Bukan** pengganti Realtime: satu `SELECT` saat tab kembali visible / `pageshow` kalau WS sempat putus atau
+ * mobile men-suspend tab (Postgres tidak mengirim ulang event yang terlewat).
  *
- * Write (sengaja dibatasi frekuensi untuk billing):
- * 1) Start / pause / ganti nexus → push ~450ms
- * 2) Tombol/aksi user (kartu, settings, order, alokasi, …) → scheduleDebouncedCloudWrite ~2.8s (bukan useEffect ngikutin state)
- * 3) Sedang running → checkpoint push tiap CLOUD_RUNNING_CHECKPOINT_PUSH_MS
- *
- * Supabase: hindari polling SELECT berkala; Realtime tidak mengganti biaya write tapi mengurangi kebutuhan “cek versi” manual.
+ * Write: start/pause/ganti nexus (~450ms), aksi user (debounce ~2.8s), **tab hidden** (setelah catch-up wall
+ * clock) bila tadi ada runner, pagehide beacon. Payload berisi `activeId`, `runWallAnchorMs`, `elapsedSeconds`
+ * (+ energy) — device lain / sesi berikut `pull` + `flushRunnerWallCatchUp` menutup selisih waktu nyata.
+ * Realtime hanya menyebarkan setelah upsert.
  */
-const CLOUD_RUNNING_CHECKPOINT_PUSH_MS = 90_000;
 /** Tailwind `md` default — used with JS viewport for orientation-aware UI. */
 const MD_PX = 768;
 /** Shared horizontal rhythm: dashboard island + nexus grid share one column width. */
@@ -204,6 +202,9 @@ function fingerprintFromPersistedUnknown(parsed: unknown): string | null {
 /**
  * `hasCloudVersionConflict` saja terlalu kasar: HP bisa push idle dengan `updated_at` lebih baru lalu
  * PC dengan nexus running selalu diblokir; atau ack tertinggal walau payload cloud sudah sama (echo).
+ *
+ * Penting: keduanya idle (`activeId` null) tapi konten beda (mis. judul "5Nexusss" vs "5Nexuss") —
+ * jangan `modal`, kalau tidak PC tidak pernah write karena timestamp HP selalu menang.
  */
 function resolveCloudPushGate(args: {
   serverUpdatedAt: string | null | undefined;
@@ -242,6 +243,14 @@ function resolveCloudPushGate(args: {
   }
   if (localAid != null && serverAid != null && localAid === serverAid) {
     return "proceed";
+  }
+  // Dua-duanya pause: beda judul/elapsed/dll → tetap boleh push (LWW). Modal di sini = PC “gak bisa write”.
+  if (localAid == null && serverAid == null) {
+    return "proceed";
+  }
+  // Lokal pause tapi cloud masih ada runner — jangan timpa tanpa dialog.
+  if (localAid == null && serverAid != null) {
+    return "modal";
   }
   return "modal";
 }
@@ -673,7 +682,6 @@ export default function Home() {
   userIdRef.current = user?.id ?? null;
   const cloudSyncReadyRef = useRef(false);
   cloudSyncReadyRef.current = cloudSyncReady;
-  const cloudQuietUntilRef = useRef(0);
   /** Cross-tab: higher revision wins when merging localStorage (see storage listener + focused timer). */
   const storageRevRef = useRef(0);
   /** Fingerprint of current React dashboard (layout) — redundant storage events skip setState when data already matches. */
@@ -1069,8 +1077,6 @@ export default function Home() {
     if (!uid || !localHydratedRef.current || !cloudSyncReadyRef.current) {
       return;
     }
-    // Jangan pakai cloudQuietUntil di sini: setelah pull, jeda 3s membuat edit judul/aksi
-    // memanggil scheduleDebouncedCloudWrite lalu flush di-skip → upsert tidak pernah jalan.
     const snap = persistSnapshotRef.current;
     if (!snap || snap.v !== 5) {
       return;
@@ -1123,11 +1129,35 @@ export default function Home() {
     }
   }, []);
 
+  /**
+   * Tab hidden: `flushRunnerWallCatchUp` (effect di atas) sudah merge jam dinding → commit state →
+   * `persistSnapshotRef` terbaru di tick berikut; push sekali supaya device lain lihat running + anchor + elapsed.
+   */
+  useEffect(() => {
+    if (!localHydrated) {
+      return;
+    }
+    const onHiddenPush = () => {
+      if (document.visibilityState !== "hidden") {
+        return;
+      }
+      const hadRunner = activeIdRef.current != null;
+      if (!hadRunner || !userIdRef.current || !cloudSyncReadyRef.current) {
+        return;
+      }
+      window.setTimeout(() => {
+        void flushSupabaseDashboardPush();
+      }, 0);
+    };
+    document.addEventListener("visibilitychange", onHiddenPush);
+    return () => document.removeEventListener("visibilitychange", onHiddenPush);
+  }, [localHydrated, flushSupabaseDashboardPush]);
+
   const cloudWriteDebounceTimerRef = useRef<number | null>(null);
 
   /**
    * Supabase write dari aksi user (bukan tick 1s runner). Debounce supaya tap checklist cepat jadi satu upsert.
-   * Start/pause/checkpoint tetap lewat effect terpisah.
+   * Start/pause/ganti slot → effect `activeId` (~450ms); mirror runner saat tab hidden → effect terpisah.
    */
   const scheduleDebouncedCloudWrite = useCallback(() => {
     if (!userIdRef.current || !localHydratedRef.current || !cloudSyncReadyRef.current) {
@@ -1150,21 +1180,17 @@ export default function Home() {
     };
   }, []);
 
-  /** If remote `updated_at` is newer than last ack, merge row (Realtime + refocus pull). */
-  const pullRemoteDashboardIfNewer = useCallback(async (opts?: { fromRealtime?: boolean }) => {
+  /** Merge baris cloud jika `updated_at` lebih baru dari ack (Realtime + cadangan saat tab visible). */
+  const pullRemoteDashboardIfNewer = useCallback(async (opts?: { skipVisibilityGate?: boolean }) => {
     const uid = userIdRef.current;
     if (!uid || !cloudSyncReadyRef.current) {
       return;
     }
     if (
-      !opts?.fromRealtime &&
+      !opts?.skipVisibilityGate &&
       typeof document !== "undefined" &&
       document.visibilityState !== "visible"
     ) {
-      return;
-    }
-    // Post-apply quiet hanya untuk pull refocus — jangan blokir event Realtime dari device lain.
-    if (!opts?.fromRealtime && Date.now() < cloudQuietUntilRef.current) {
       return;
     }
 
@@ -1224,7 +1250,6 @@ export default function Home() {
         }
         setLocalDashboardWriteTs(data.updated_at);
         setLastServerUpdatedAt(uid, data.updated_at);
-        cloudQuietUntilRef.current = Date.now() + 3000;
         setCloudConflictOpen(false);
         window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
       }
@@ -1502,7 +1527,6 @@ export default function Home() {
               }
               setLocalDashboardWriteTs(data.updated_at);
               setLastServerUpdatedAt(uid, data.updated_at);
-              cloudQuietUntilRef.current = Date.now() + 3000;
               clearPreferServerAfterLogout();
               setCloudConflictOpen(false);
               window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
@@ -1567,21 +1591,6 @@ export default function Home() {
     return () => window.clearTimeout(t);
   }, [activeId, user?.id, localHydrated, cloudSyncReady, flushSupabaseDashboardPush]);
 
-  /**
-   * Satu sumber “siapa yang running” + snapshot anchor/elapsed ke DB secara berkala (rendah).
-   * Realtime menyebarkan ke device lain; interval sengaja jarang untuk menekan write billing.
-   */
-  useEffect(() => {
-    if (!user?.id || !localHydrated || !cloudSyncReady || activeId == null) {
-      return;
-    }
-    const id = window.setInterval(
-      () => void flushSupabaseDashboardPush(),
-      CLOUD_RUNNING_CHECKPOINT_PUSH_MS
-    );
-    return () => window.clearInterval(id);
-  }, [user?.id, localHydrated, cloudSyncReady, activeId, flushSupabaseDashboardPush]);
-
   /** Listen: Postgres → Realtime (jalankan migration `user_dashboard_state_realtime.sql` di Supabase). */
   useEffect(() => {
     if (!user?.id || !cloudSyncReady) {
@@ -1601,7 +1610,7 @@ export default function Home() {
           filter: `user_id=eq.${uid}`,
         },
         () => {
-          void pullRemoteDashboardIfNewer({ fromRealtime: true });
+          void pullRemoteDashboardIfNewer({ skipVisibilityGate: true });
         }
       )
       .subscribe((status) => {
@@ -1617,7 +1626,7 @@ export default function Home() {
     };
   }, [user?.id, cloudSyncReady, pullRemoteDashboardIfNewer]);
 
-  /** Satu kali pull saat tab kembali visible (WS bisa ketinggalan saat suspend); tanpa interval = tanpa polling bill. */
+  /** Cadangan (bukan polling): satu pull saat visible/pageshow jika Realtime sempat lewatkan event. */
   useEffect(() => {
     if (!user?.id || !cloudSyncReady) {
       return;
@@ -1690,7 +1699,6 @@ export default function Home() {
         }
         setLocalDashboardWriteTs(data.updated_at);
         setLastServerUpdatedAt(uid, data.updated_at);
-        cloudQuietUntilRef.current = Date.now() + 3000;
         setCloudConflictOpen(false);
         window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
       }
@@ -2163,7 +2171,6 @@ export default function Home() {
             if (!error && up?.updated_at) {
               setLocalDashboardWriteTs(up.updated_at);
               setLastServerUpdatedAt(uid, up.updated_at);
-              cloudQuietUntilRef.current = Date.now() + 3000;
             } else if (error) {
               console.error("[nexus] pre-sign-out upsert:", error.message);
             }
