@@ -27,6 +27,7 @@ import {
   clearNexusDashboardLocalState,
   clearPreferServerAfterLogout,
   getLastServerUpdatedAt,
+  getLocalDashboardWriteTs,
   hasCloudVersionConflict,
   isServerNewerThanClientAck,
   NO_SERVER_ACK_ISO,
@@ -49,11 +50,19 @@ const STORAGE_KEY = NEXUS_DASHBOARD_STORAGE_V5;
 const STORAGE_LEGACY_V4 = NEXUS_DASHBOARD_STORAGE_V4;
 const STORAGE_LEGACY_V3 = NEXUS_DASHBOARD_STORAGE_V3;
 const MAX_NEXUS = 10;
-/** Backup cloud pull: slower when idle; faster while a nexus is running (multi-device, no Realtime). */
-const CLOUD_PULL_INTERVAL_MS_IDLE = 30_000;
-const CLOUD_PULL_INTERVAL_MS_RUNNING = 30_000;
-/** While running, push wall/elapsed periodically — debounced push omits per-second fields so it must not be the only path. */
-const CLOUD_PUSH_INTERVAL_MS_ACTIVE = 18_000;
+/**
+ * Cloud sync — satu baris `user_dashboard_state` = satu kebenaran; Realtime mendorong perubahan ke tab lain.
+ *
+ * Listen (murah untuk DB reads): Supabase Realtime + pull sekali saat tab jadi visible (bukan interval polling).
+ *
+ * Write (sengaja dibatasi frekuensi untuk billing):
+ * 1) Start / pause / ganti nexus → push ~450ms
+ * 2) Tombol/aksi user (kartu, settings, order, alokasi, …) → scheduleDebouncedCloudWrite ~2.8s (bukan useEffect ngikutin state)
+ * 3) Sedang running → checkpoint push tiap CLOUD_RUNNING_CHECKPOINT_PUSH_MS
+ *
+ * Supabase: hindari polling SELECT berkala; Realtime tidak mengganti biaya write tapi mengurangi kebutuhan “cek versi” manual.
+ */
+const CLOUD_RUNNING_CHECKPOINT_PUSH_MS = 90_000;
 /** Tailwind `md` default — used with JS viewport for orientation-aware UI. */
 const MD_PX = 768;
 /** Shared horizontal rhythm: dashboard island + nexus grid share one column width. */
@@ -1053,6 +1062,117 @@ export default function Home() {
     }
   }, []);
 
+  const cloudWriteDebounceTimerRef = useRef<number | null>(null);
+
+  /**
+   * Supabase write dari aksi user (bukan tick 1s runner). Debounce supaya tap checklist cepat jadi satu upsert.
+   * Start/pause/checkpoint tetap lewat effect terpisah.
+   */
+  const scheduleDebouncedCloudWrite = useCallback(() => {
+    if (!userIdRef.current || !localHydratedRef.current || !cloudSyncReadyRef.current) {
+      return;
+    }
+    if (Date.now() < cloudQuietUntilRef.current) {
+      return;
+    }
+    if (cloudWriteDebounceTimerRef.current != null) {
+      window.clearTimeout(cloudWriteDebounceTimerRef.current);
+    }
+    cloudWriteDebounceTimerRef.current = window.setTimeout(() => {
+      cloudWriteDebounceTimerRef.current = null;
+      if (Date.now() < cloudQuietUntilRef.current) {
+        return;
+      }
+      void flushSupabaseDashboardPush();
+    }, 2800);
+  }, [flushSupabaseDashboardPush]);
+
+  useEffect(() => {
+    return () => {
+      if (cloudWriteDebounceTimerRef.current != null) {
+        window.clearTimeout(cloudWriteDebounceTimerRef.current);
+      }
+    };
+  }, []);
+
+  /** If remote `updated_at` is newer than last ack, merge row (Realtime + refocus pull). */
+  const pullRemoteDashboardIfNewer = useCallback(async () => {
+    const uid = userIdRef.current;
+    if (!uid || !cloudSyncReadyRef.current) {
+      return;
+    }
+    if (typeof document !== "undefined" && document.visibilityState !== "visible") {
+      return;
+    }
+    if (Date.now() < cloudQuietUntilRef.current) {
+      return;
+    }
+
+    try {
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from(USER_DASHBOARD_TABLE)
+        .select("payload, updated_at")
+        .eq("user_id", uid)
+        .maybeSingle();
+
+      if (error) {
+        console.error("[nexus] cloud pull:", error.message);
+        return;
+      }
+      if (!data?.updated_at || data.payload === null || data.payload === undefined) {
+        return;
+      }
+
+      const remoteMs = new Date(data.updated_at).getTime();
+      const knownMs = new Date(getLastServerUpdatedAt(uid)).getTime();
+      if (remoteMs <= knownMs) {
+        return;
+      }
+
+      const ok = applyDashboardFromPersisted(data.payload, {
+        todayKey: hydrateTodayKeyFromPayload(data.payload),
+        resetEntityDay,
+        defaultEnergyHours,
+        setEntities,
+        setFullOrder,
+        setMainSlotId,
+        setActiveId,
+        setLastResetDate,
+        setDayType,
+        setHolidayDaily,
+        setFocusDaily,
+        setAllocatorIndex,
+        setEnergyHours,
+        setAutoBorrow,
+        setPreferredDefaultDayType,
+        setAppTimezone,
+        setAutoDayReset,
+        setDayResetClock,
+        setDayConsumedRunSeconds,
+        setRunWallAnchorMs,
+      });
+      if (ok) {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data.payload));
+        storageRevRef.current = Math.max(
+          storageRevRef.current,
+          readStorageRevision(data.payload)
+        );
+        const fpPulled = fingerprintFromPersistedUnknown(data.payload);
+        if (fpPulled != null) {
+          lastWrittenPersistFingerprintRef.current = fpPulled;
+        }
+        setLocalDashboardWriteTs(data.updated_at);
+        setLastServerUpdatedAt(uid, data.updated_at);
+        cloudQuietUntilRef.current = Date.now() + 3000;
+        setCloudConflictOpen(false);
+        window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
+      }
+    } catch (e) {
+      console.error("[nexus] cloud pull:", e);
+    }
+  }, [flushRunnerWallCatchUp]);
+
   useEffect(() => {
     if (!user?.id) {
       setCloudSyncReady(false);
@@ -1243,11 +1363,31 @@ export default function Home() {
         const iso = new Date().toISOString();
 
         if (data?.payload && typeof data.updated_at === "string") {
+          const fpServer = fingerprintFromPersistedUnknown(data.payload);
+          const fpLocal = fingerprintFromPersistedUnknown(snap);
+          const contentDiffers =
+            fpServer != null && fpLocal != null && fpServer !== fpLocal;
+
+          const serverRowMs = new Date(data.updated_at).getTime();
+          const localDiskWriteMs = new Date(getLocalDashboardWriteTs()).getTime();
+
+          /**
+           * If `updated_at` is not strictly ahead of ack, we used to upsert local and fork devices.
+           * When idle and disk was last written at or before this server row, prefer the row we just fetched.
+           */
+          const applyServerToHealFork =
+            contentDiffers &&
+            snap.activeId == null &&
+            Number.isFinite(serverRowMs) &&
+            Number.isFinite(localDiskWriteMs) &&
+            localDiskWriteMs <= serverRowMs;
+
           const shouldApplyServer =
             preferServer ||
             neverAckedServerForUser ||
             (!neverAckedServerForUser &&
-              isServerNewerThanClientAck(data.updated_at, lastServerAck));
+              isServerNewerThanClientAck(data.updated_at, lastServerAck)) ||
+            applyServerToHealFork;
           if (shouldApplyServer) {
             const ok = applyDashboardFromPersisted(data.payload, {
               todayKey: hydrateTodayKeyFromPayload(data.payload),
@@ -1339,55 +1479,7 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- hydrate setters stable; re-run only when auth/local gate changes
   }, [localHydrated, user?.id, authLoading, flushRunnerWallCatchUp]);
 
-  // Per render (no useMemo on `entities`): same string when only elapsed ticks → debounce timer is not reset.
-  const cloudPushEntitySig = entities
-    .map(
-      (e) =>
-        `${e.id}\u001f${e.title}\u001f${e.note}\u001f${e.durationSeconds}\u001f${e.checklist
-          .map((c) => `${c.id}:${c.done}:${c.text}`)
-          .join(";")}\u001f${Boolean(e.overspentAuto)}\u001f${Boolean(e.donorAutoBorrow)}`
-    )
-    .join("\u001e");
-
-  const cloudPushSettingsKey = useMemo(
-    () =>
-      JSON.stringify({
-        fullOrder,
-        mainSlotId,
-        lastResetDate,
-        dayType,
-        holidayDaily,
-        focusDaily,
-        ix: safeAllocatorIndex,
-        energyHours,
-        autoBorrow,
-        pref: preferredDefaultDayType,
-        tz: appTimezone,
-        autoDayReset,
-        dr: normalizeClockHm(dayResetClock),
-      }),
-    [
-      fullOrder,
-      mainSlotId,
-      lastResetDate,
-      dayType,
-      holidayDaily,
-      focusDaily,
-      safeAllocatorIndex,
-      energyHours,
-      autoBorrow,
-      preferredDefaultDayType,
-      appTimezone,
-      autoDayReset,
-      dayResetClock,
-    ]
-  );
-
-  /** When idle, include runner snapshot fields in debounce; when active, constant so per-second updates use interval push only. */
-  const cloudDebounceRunnerKey =
-    activeId != null ? "__active_run__" : `idle:${dayConsumedRunSeconds}|${runWallAnchorMs ?? 0}`;
-
-  /** Start / pause / switch nexus: push soon so other devices see `activeId` (debounce ignores ticking state). */
+  /** Start / pause / switch nexus → push (explicit write). */
   useEffect(() => {
     if (!user?.id || !localHydrated || !cloudSyncReady) {
       return;
@@ -1399,145 +1491,76 @@ export default function Home() {
     return () => window.clearTimeout(t);
   }, [activeId, user?.id, localHydrated, cloudSyncReady, flushSupabaseDashboardPush]);
 
-  /** While running, periodically push elapsed / wall fields; payload always from `persistSnapshotRef`. */
+  /**
+   * Satu sumber “siapa yang running” + snapshot anchor/elapsed ke DB secara berkala (rendah).
+   * Realtime menyebarkan ke device lain; interval sengaja jarang untuk menekan write billing.
+   */
   useEffect(() => {
     if (!user?.id || !localHydrated || !cloudSyncReady || activeId == null) {
       return;
     }
-    void flushSupabaseDashboardPush();
     const id = window.setInterval(
       () => void flushSupabaseDashboardPush(),
-      CLOUD_PUSH_INTERVAL_MS_ACTIVE
+      CLOUD_RUNNING_CHECKPOINT_PUSH_MS
     );
     return () => window.clearInterval(id);
   }, [user?.id, localHydrated, cloudSyncReady, activeId, flushSupabaseDashboardPush]);
 
-  /** Debounced upload — deps exclude per-second runner fields so the 2.8s timer can complete while a nexus runs. */
-  useEffect(() => {
-    if (!user?.id || !localHydrated || !cloudSyncReady) {
-      return;
-    }
-    if (Date.now() < cloudQuietUntilRef.current) {
-      return;
-    }
-
-    const t = window.setTimeout(() => {
-      if (Date.now() < cloudQuietUntilRef.current) {
-        return;
-      }
-      void flushSupabaseDashboardPush();
-    }, 2800);
-
-    return () => window.clearTimeout(t);
-  }, [
-    user?.id,
-    localHydrated,
-    cloudSyncReady,
-    flushSupabaseDashboardPush,
-    cloudPushEntitySig,
-    cloudPushSettingsKey,
-    cloudDebounceRunnerKey,
-  ]);
-
-  /** No Realtime: pull on focus/pageshow + interval backup (tighter while `activeId` set). */
+  /** Listen: Postgres → Realtime (jalankan migration `user_dashboard_state_realtime.sql` di Supabase). */
   useEffect(() => {
     if (!user?.id || !cloudSyncReady) {
       return;
     }
 
     const uid = user.id;
-    const pollMs = activeId ? CLOUD_PULL_INTERVAL_MS_RUNNING : CLOUD_PULL_INTERVAL_MS_IDLE;
-
-    const tryPullRemote = async () => {
-      if (document.visibilityState !== "visible") {
-        return;
-      }
-      if (Date.now() < cloudQuietUntilRef.current) {
-        return;
-      }
-
-      try {
-        const supabase = createClient();
-        const { data, error } = await supabase
-          .from(USER_DASHBOARD_TABLE)
-          .select("payload, updated_at")
-          .eq("user_id", uid)
-          .maybeSingle();
-
-        if (error) {
-          console.error("[nexus] cloud pull:", error.message);
-          return;
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`dashboard_state:${uid}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: USER_DASHBOARD_TABLE,
+          filter: `user_id=eq.${uid}`,
+        },
+        () => {
+          void pullRemoteDashboardIfNewer();
         }
-        if (!data?.updated_at || data.payload === null || data.payload === undefined) {
-          return;
-        }
-
-        const remoteMs = new Date(data.updated_at).getTime();
-        const knownMs = new Date(getLastServerUpdatedAt(uid)).getTime();
-        if (remoteMs <= knownMs) {
-          return;
-        }
-
-        const ok = applyDashboardFromPersisted(data.payload, {
-          todayKey: hydrateTodayKeyFromPayload(data.payload),
-          resetEntityDay,
-          defaultEnergyHours,
-          setEntities,
-          setFullOrder,
-          setMainSlotId,
-          setActiveId,
-          setLastResetDate,
-          setDayType,
-          setHolidayDaily,
-          setFocusDaily,
-          setAllocatorIndex,
-          setEnergyHours,
-          setAutoBorrow,
-          setPreferredDefaultDayType,
-          setAppTimezone,
-          setAutoDayReset,
-          setDayResetClock,
-          setDayConsumedRunSeconds,
-          setRunWallAnchorMs,
-        });
-        if (ok) {
-          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data.payload));
-          storageRevRef.current = Math.max(
-            storageRevRef.current,
-            readStorageRevision(data.payload)
+      )
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR") {
+          console.warn(
+            "[nexus] dashboard Realtime subscribe error — pastikan tabel ada di publication `supabase_realtime` (lihat migration)."
           );
-          const fpPulled = fingerprintFromPersistedUnknown(data.payload);
-          if (fpPulled != null) {
-            lastWrittenPersistFingerprintRef.current = fpPulled;
-          }
-          setLocalDashboardWriteTs(data.updated_at);
-          setLastServerUpdatedAt(uid, data.updated_at);
-          cloudQuietUntilRef.current = Date.now() + 3000;
-          setCloudConflictOpen(false);
-          window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
         }
-      } catch (e) {
-        console.error("[nexus] cloud pull:", e);
-      }
+      });
+
+    return () => {
+      void supabase.removeChannel(channel);
     };
+  }, [user?.id, cloudSyncReady, pullRemoteDashboardIfNewer]);
+
+  /** Satu kali pull saat tab kembali visible (WS bisa ketinggalan saat suspend); tanpa interval = tanpa polling bill. */
+  useEffect(() => {
+    if (!user?.id || !cloudSyncReady) {
+      return;
+    }
 
     const onVisible = () => {
-      void tryPullRemote();
+      if (document.visibilityState === "visible") {
+        void pullRemoteDashboardIfNewer();
+      }
     };
 
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("pageshow", onVisible);
-    const pollId = window.setInterval(onVisible, pollMs);
-
-    void tryPullRemote();
 
     return () => {
       document.removeEventListener("visibilitychange", onVisible);
       window.removeEventListener("pageshow", onVisible);
-      window.clearInterval(pollId);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- setters stable; activeId only changes poll period
-  }, [user?.id, cloudSyncReady, flushRunnerWallCatchUp, activeId]);
+  }, [user?.id, cloudSyncReady, pullRemoteDashboardIfNewer]);
 
   /** Apply newest Supabase row locally (after optimistic-lock conflict). */
   const loadLatestCloudDashboard = useCallback(async () => {
@@ -1633,8 +1656,9 @@ export default function Home() {
       // Fresh day: jump to Daily so user can set day type / slots without hunting Settings.
       setSettingsAccordion("daily");
       setSettingsOpen(true);
+      scheduleDebouncedCloudWrite();
     },
-    [tryNotifyDayRoll]
+    [tryNotifyDayRoll, scheduleDebouncedCloudWrite]
   );
 
   const snoozeDayRollMinutes = useCallback((minutes: number) => {
@@ -1861,7 +1885,8 @@ export default function Home() {
       );
       return next;
     });
-  }, [k, presets, safeAllocatorIndex, energyBudgetSeconds, activeIds]);
+    scheduleDebouncedCloudWrite();
+  }, [k, presets, safeAllocatorIndex, energyBudgetSeconds, activeIds, scheduleDebouncedCloudWrite]);
 
   useEffect(() => {
     if (!allocationConfirmOpen) {
@@ -1939,7 +1964,8 @@ export default function Home() {
   const commitEnergyHoursDraft = useCallback(() => {
     setEnergyHours(energyDraft);
     setEnergyHoursConfirmOpen(false);
-  }, [energyDraft]);
+    scheduleDebouncedCloudWrite();
+  }, [energyDraft, scheduleDebouncedCloudWrite]);
 
   const requestSaveEnergyHours = useCallback(() => {
     if (JSON.stringify(energyDraft) === JSON.stringify(energyHours)) {
@@ -1963,9 +1989,10 @@ export default function Home() {
       dayTypeLongPressTimerRef.current = window.setTimeout(() => {
         dayTypeLongPressTimerRef.current = null;
         setPreferredDefaultDayType(dt);
+        scheduleDebouncedCloudWrite();
       }, 2000);
     },
-    [clearDayTypeLongPressTimer]
+    [clearDayTypeLongPressTimer, scheduleDebouncedCloudWrite]
   );
 
   const onPreferredDefaultPointerEnd = useCallback(() => {
@@ -1989,11 +2016,12 @@ export default function Home() {
     }
     setAppTimezone(t);
     setTimezoneConfirmOpen(false);
-  }, [timezoneDraft]);
+    scheduleDebouncedCloudWrite();
+  }, [timezoneDraft, scheduleDebouncedCloudWrite]);
 
   /**
-   * Push current dashboard to Supabase immediately (bypass debounce), then sign out.
-   * Avoids losing the latest edits if the user re-signs in before the 2.8s delayed upsert runs.
+   * Push current dashboard to Supabase immediately, then sign out.
+   * Mencegah edit terakhir hilang kalau user belum sempat `scheduleDebouncedCloudWrite` fire.
    */
   const handleSignOut = useCallback(async () => {
     const uid = user?.id;
@@ -2113,6 +2141,7 @@ export default function Home() {
     setEntities((prev) =>
       prev.map((e) => ({ ...e, overspentAuto: false, donorAutoBorrow: false }))
     );
+    scheduleDebouncedCloudWrite();
   };
 
   const handleStartPauseForSlot = (slotId: string) => {
@@ -2157,6 +2186,7 @@ export default function Home() {
     if (requested <= 0) {
       return;
     }
+    let didTransfer = false;
     setEntities((prev) => {
       const from = prev.find((e) => e.id === transferDonorId);
       const to = prev.find((e) => e.id === transferRecipientId);
@@ -2168,6 +2198,7 @@ export default function Home() {
       if (amount <= 0) {
         return prev;
       }
+      didTransfer = true;
       return prev.map((e) => {
         if (e.id === transferDonorId) {
           return { ...e, durationSeconds: e.durationSeconds - amount, donorAutoBorrow: false };
@@ -2184,6 +2215,9 @@ export default function Home() {
       });
     });
     setTransferDonorId(null);
+    if (didTransfer) {
+      scheduleDebouncedCloudWrite();
+    }
   };
 
   const slotCanStart = (slot: NexusSlot) =>
@@ -2191,6 +2225,7 @@ export default function Home() {
 
   const updateEntity = (id: string, fn: (e: NexusSlot) => NexusSlot) => {
     setEntities((prev) => prev.map((e) => (e.id === id ? fn(e) : e)));
+    scheduleDebouncedCloudWrite();
   };
 
   const getPriorityRankForActive = (id: string) => {
@@ -2205,8 +2240,9 @@ export default function Home() {
         return;
       }
       setMainSlotId(id);
+      scheduleDebouncedCloudWrite();
     },
-    [mainSlotId, activeIds]
+    [mainSlotId, activeIds, scheduleDebouncedCloudWrite]
   );
 
   const handleDropOnMain = useCallback(() => {
@@ -2274,6 +2310,7 @@ export default function Home() {
     }
     setActiveId((cur) => (cur === parkedEntityId ? null : cur));
     setSwapModal(null);
+    scheduleDebouncedCloudWrite();
   };
 
   const startEditCard = (slot: NexusSlot, opts?: { focusTasks?: boolean }) => {
@@ -2314,7 +2351,8 @@ export default function Home() {
       next.splice(ti, 0, fromId);
       return next;
     });
-  }, []);
+    scheduleDebouncedCloudWrite();
+  }, [scheduleDebouncedCloudWrite]);
 
   const addParkedNexus = () => {
     const title = addTitle.trim();
@@ -2337,6 +2375,7 @@ export default function Home() {
     setAddTitle("");
     setAddNote("");
     setShowAddParkedForm(false);
+    scheduleDebouncedCloudWrite();
   };
 
   const deleteParkedEntity = (id: string) => {
@@ -2346,6 +2385,7 @@ export default function Home() {
     setEntities((prev) => prev.filter((e) => e.id !== id));
     setFullOrder((o) => o.filter((x) => x !== id));
     setActiveId((cur) => (cur === id ? null : cur));
+    scheduleDebouncedCloudWrite();
   };
 
   const reorderDropOnRow = (targetId: string) => {
@@ -2720,7 +2760,10 @@ export default function Home() {
                   <label className="text-[9px] uppercase text-zinc-500">Day type (today)</label>
                   <select
                     value={dayType}
-                    onChange={(e) => setDayType(e.target.value as DayType)}
+                    onChange={(e) => {
+                      setDayType(e.target.value as DayType);
+                      scheduleDebouncedCloudWrite();
+                    }}
                     className={["mt-0.5 w-full rounded-lg border px-2 py-1 text-xs", inputCls].join(
                       " "
                     )}
@@ -2736,9 +2779,10 @@ export default function Home() {
                     <label className="text-[9px] uppercase text-zinc-500">Holiday · nexus today</label>
                     <select
                       value={holidayDaily}
-                      onChange={(e) =>
-                        setHolidayDaily(Number(e.target.value) as HolidayDailySlots)
-                      }
+                      onChange={(e) => {
+                        setHolidayDaily(Number(e.target.value) as HolidayDailySlots);
+                        scheduleDebouncedCloudWrite();
+                      }}
                       className={["mt-0.5 w-full rounded-lg border px-2 py-1 text-xs", inputCls].join(
                         " "
                       )}
@@ -2754,9 +2798,10 @@ export default function Home() {
                     <label className="text-[9px] uppercase text-zinc-500">Focus · slots today</label>
                     <select
                       value={focusDaily}
-                      onChange={(e) =>
-                        setFocusDaily(Number(e.target.value) as FocusDailySlots)
-                      }
+                      onChange={(e) => {
+                        setFocusDaily(Number(e.target.value) as FocusDailySlots);
+                        scheduleDebouncedCloudWrite();
+                      }}
                       className={["mt-0.5 w-full rounded-lg border px-2 py-1 text-xs", inputCls].join(
                         " "
                       )}
@@ -2784,7 +2829,10 @@ export default function Home() {
                           key={idx}
                           percentages={pct}
                           selected={idx === safeAllocatorIndex}
-                          onSelect={() => setAllocatorIndex(idx)}
+                          onSelect={() => {
+                            setAllocatorIndex(idx);
+                            scheduleDebouncedCloudWrite();
+                          }}
                           isDark={isDark}
                         />
                       ))}
@@ -3086,7 +3134,10 @@ export default function Home() {
                     <input
                       type="checkbox"
                       checked={autoDayReset}
-                      onChange={(e) => setAutoDayReset(e.target.checked)}
+                      onChange={(e) => {
+                        setAutoDayReset(e.target.checked);
+                        scheduleDebouncedCloudWrite();
+                      }}
                       className="h-4 w-4 accent-emerald-600"
                     />
                   </label>
@@ -3133,7 +3184,10 @@ export default function Home() {
                     type="time"
                     value={normalizeClockHm(dayResetClock)}
                     disabled={!autoDayReset}
-                    onChange={(e) => setDayResetClock(e.target.value)}
+                    onChange={(e) => {
+                      setDayResetClock(e.target.value);
+                      scheduleDebouncedCloudWrite();
+                    }}
                     className={[
                       "mt-0.5 w-full rounded-lg border px-2 py-1 text-xs disabled:opacity-45",
                       inputCls,
@@ -3146,7 +3200,10 @@ export default function Home() {
                   <input
                     type="checkbox"
                     checked={autoBorrow}
-                    onChange={(e) => setAutoBorrow(e.target.checked)}
+                    onChange={(e) => {
+                      setAutoBorrow(e.target.checked);
+                      scheduleDebouncedCloudWrite();
+                    }}
                     className="h-4 w-4 accent-emerald-600"
                   />
                 </label>
