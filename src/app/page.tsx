@@ -201,6 +201,51 @@ function fingerprintFromPersistedUnknown(parsed: unknown): string | null {
   return null;
 }
 
+/**
+ * `hasCloudVersionConflict` saja terlalu kasar: HP bisa push idle dengan `updated_at` lebih baru lalu
+ * PC dengan nexus running selalu diblokir; atau ack tertinggal walau payload cloud sudah sama (echo).
+ */
+function resolveCloudPushGate(args: {
+  serverUpdatedAt: string | null | undefined;
+  serverPayload: unknown;
+  localSnap: PersistedV5;
+  userId: string;
+}): "proceed" | "skip_healed" | "modal" {
+  const { serverUpdatedAt, serverPayload, localSnap, userId } = args;
+  if (!hasCloudVersionConflict(serverUpdatedAt, userId)) {
+    return "proceed";
+  }
+  const fpL = fingerprintFromPersistedUnknown(localSnap);
+  const fpS =
+    serverPayload !== null && serverPayload !== undefined
+      ? fingerprintFromPersistedUnknown(serverPayload)
+      : null;
+  if (typeof serverUpdatedAt === "string" && fpS != null && fpL != null && fpS === fpL) {
+    return "skip_healed";
+  }
+  const serverP =
+    serverPayload && typeof serverPayload === "object"
+      ? (serverPayload as Record<string, unknown>)
+      : null;
+  const serverAid =
+    serverP &&
+    typeof serverP.activeId === "string" &&
+    serverP.activeId.trim() !== ""
+      ? serverP.activeId.trim()
+      : null;
+  const localAid =
+    typeof localSnap.activeId === "string" && localSnap.activeId.trim() !== ""
+      ? localSnap.activeId.trim()
+      : null;
+  if (localAid != null && serverAid == null) {
+    return "proceed";
+  }
+  if (localAid != null && serverAid != null && localAid === serverAid) {
+    return "proceed";
+  }
+  return "modal";
+}
+
 const defaultEnergyHours: EnergyHoursConfig = {
   holiday: 4,
   default: 12,
@@ -1024,24 +1069,40 @@ export default function Home() {
     if (!uid || !localHydratedRef.current || !cloudSyncReadyRef.current) {
       return;
     }
-    if (Date.now() < cloudQuietUntilRef.current) {
-      return;
-    }
+    // Jangan pakai cloudQuietUntil di sini: setelah pull, jeda 3s membuat edit judul/aksi
+    // memanggil scheduleDebouncedCloudWrite lalu flush di-skip → upsert tidak pernah jalan.
     const snap = persistSnapshotRef.current;
     if (!snap || snap.v !== 5) {
       return;
     }
     try {
       const supabase = createClient();
-      const { data: meta } = await supabase
+      const { data: row, error: rowErr } = await supabase
         .from(USER_DASHBOARD_TABLE)
-        .select("updated_at")
+        .select("payload, updated_at")
         .eq("user_id", uid)
         .maybeSingle();
-      if (hasCloudVersionConflict(meta?.updated_at ?? null, uid)) {
+      if (rowErr) {
+        console.error("[nexus] cloud push (read):", rowErr.message);
+        return;
+      }
+      const gate = resolveCloudPushGate({
+        serverUpdatedAt: row?.updated_at ?? null,
+        serverPayload: row?.payload ?? null,
+        localSnap: snap,
+        userId: uid,
+      });
+      if (gate === "modal") {
         setCloudConflictOpen(true);
         return;
       }
+      if (gate === "skip_healed" && row?.updated_at) {
+        setLocalDashboardWriteTs(row.updated_at);
+        setLastServerUpdatedAt(uid, row.updated_at);
+        setCloudConflictOpen(false);
+        return;
+      }
+      setCloudConflictOpen(false);
       const iso = new Date().toISOString();
       const { data: up, error } = await supabase
         .from(USER_DASHBOARD_TABLE)
@@ -1072,17 +1133,11 @@ export default function Home() {
     if (!userIdRef.current || !localHydratedRef.current || !cloudSyncReadyRef.current) {
       return;
     }
-    if (Date.now() < cloudQuietUntilRef.current) {
-      return;
-    }
     if (cloudWriteDebounceTimerRef.current != null) {
       window.clearTimeout(cloudWriteDebounceTimerRef.current);
     }
     cloudWriteDebounceTimerRef.current = window.setTimeout(() => {
       cloudWriteDebounceTimerRef.current = null;
-      if (Date.now() < cloudQuietUntilRef.current) {
-        return;
-      }
       void flushSupabaseDashboardPush();
     }, 2800);
   }, [flushSupabaseDashboardPush]);
@@ -1096,15 +1151,20 @@ export default function Home() {
   }, []);
 
   /** If remote `updated_at` is newer than last ack, merge row (Realtime + refocus pull). */
-  const pullRemoteDashboardIfNewer = useCallback(async () => {
+  const pullRemoteDashboardIfNewer = useCallback(async (opts?: { fromRealtime?: boolean }) => {
     const uid = userIdRef.current;
     if (!uid || !cloudSyncReadyRef.current) {
       return;
     }
-    if (typeof document !== "undefined" && document.visibilityState !== "visible") {
+    if (
+      !opts?.fromRealtime &&
+      typeof document !== "undefined" &&
+      document.visibilityState !== "visible"
+    ) {
       return;
     }
-    if (Date.now() < cloudQuietUntilRef.current) {
+    // Post-apply quiet hanya untuk pull refocus — jangan blokir event Realtime dari device lain.
+    if (!opts?.fromRealtime && Date.now() < cloudQuietUntilRef.current) {
       return;
     }
 
@@ -1371,9 +1431,27 @@ export default function Home() {
           const serverRowMs = new Date(data.updated_at).getTime();
           const localDiskWriteMs = new Date(getLocalDashboardWriteTs()).getTime();
 
+          const serverP =
+            data.payload && typeof data.payload === "object"
+              ? (data.payload as Record<string, unknown>)
+              : null;
+          const serverActiveId =
+            serverP &&
+            typeof serverP.activeId === "string" &&
+            serverP.activeId.trim() !== ""
+              ? serverP.activeId.trim()
+              : null;
+
           /**
-           * If `updated_at` is not strictly ahead of ack, we used to upsert local and fork devices.
-           * When idle and disk was last written at or before this server row, prefer the row we just fetched.
+           * PC running + HP idle: jangan pakai `localDiskWriteTs` saja — persist awal tab baru bump ts ke “now”
+           * sehingga > server `updated_at` dan fork-heal lama gagal → HP upsert lokal menimpa runner di server.
+           */
+          const applyServerRemoteRunnerLocalIdle =
+            contentDiffers && serverActiveId != null && snap.activeId == null;
+
+          /**
+           * If `updated_at` is not strictly ahead of ack, prefer fetched row bila disk benar-benar tidak
+           * lebih baru dari server (tanpa race persist pembuka tab).
            */
           const applyServerToHealFork =
             contentDiffers &&
@@ -1387,6 +1465,7 @@ export default function Home() {
             neverAckedServerForUser ||
             (!neverAckedServerForUser &&
               isServerNewerThanClientAck(data.updated_at, lastServerAck)) ||
+            applyServerRemoteRunnerLocalIdle ||
             applyServerToHealFork;
           if (shouldApplyServer) {
             const ok = applyDashboardFromPersisted(data.payload, {
@@ -1484,9 +1563,6 @@ export default function Home() {
     if (!user?.id || !localHydrated || !cloudSyncReady) {
       return;
     }
-    if (Date.now() < cloudQuietUntilRef.current) {
-      return;
-    }
     const t = window.setTimeout(() => void flushSupabaseDashboardPush(), 450);
     return () => window.clearTimeout(t);
   }, [activeId, user?.id, localHydrated, cloudSyncReady, flushSupabaseDashboardPush]);
@@ -1525,7 +1601,7 @@ export default function Home() {
           filter: `user_id=eq.${uid}`,
         },
         () => {
-          void pullRemoteDashboardIfNewer();
+          void pullRemoteDashboardIfNewer({ fromRealtime: true });
         }
       )
       .subscribe((status) => {
@@ -2030,13 +2106,13 @@ export default function Home() {
       setSignOutFlushing(true);
       try {
         const supabase = createClient();
-        const { data: meta } = await supabase
+        const { data: row, error: rowErr } = await supabase
           .from(USER_DASHBOARD_TABLE)
-          .select("updated_at")
+          .select("payload, updated_at")
           .eq("user_id", uid)
           .maybeSingle();
-        if (hasCloudVersionConflict(meta?.updated_at ?? null, uid)) {
-          setCloudConflictOpen(true);
+        if (rowErr) {
+          console.error("[nexus] sign-out read:", rowErr.message);
           abortSignOut = true;
         } else {
           const snap: PersistedV5 = {
@@ -2060,21 +2136,37 @@ export default function Home() {
             runWallAnchorMs,
             storageRevision: storageRevRef.current,
           };
-          const iso = new Date().toISOString();
-          const { data: up, error } = await supabase
-            .from(USER_DASHBOARD_TABLE)
-            .upsert(
-              { user_id: uid, payload: snap, updated_at: iso },
-              { onConflict: "user_id" }
-            )
-            .select("updated_at")
-            .single();
-          if (!error && up?.updated_at) {
-            setLocalDashboardWriteTs(up.updated_at);
-            setLastServerUpdatedAt(uid, up.updated_at);
-            cloudQuietUntilRef.current = Date.now() + 3000;
-          } else if (error) {
-            console.error("[nexus] pre-sign-out upsert:", error.message);
+          const gate = resolveCloudPushGate({
+            serverUpdatedAt: row?.updated_at ?? null,
+            serverPayload: row?.payload ?? null,
+            localSnap: snap,
+            userId: uid,
+          });
+          if (gate === "modal") {
+            setCloudConflictOpen(true);
+            abortSignOut = true;
+          } else if (gate === "skip_healed" && row?.updated_at) {
+            setLocalDashboardWriteTs(row.updated_at);
+            setLastServerUpdatedAt(uid, row.updated_at);
+            setCloudConflictOpen(false);
+          } else {
+            setCloudConflictOpen(false);
+            const iso = new Date().toISOString();
+            const { data: up, error } = await supabase
+              .from(USER_DASHBOARD_TABLE)
+              .upsert(
+                { user_id: uid, payload: snap, updated_at: iso },
+                { onConflict: "user_id" }
+              )
+              .select("updated_at")
+              .single();
+            if (!error && up?.updated_at) {
+              setLocalDashboardWriteTs(up.updated_at);
+              setLastServerUpdatedAt(uid, up.updated_at);
+              cloudQuietUntilRef.current = Date.now() + 3000;
+            } else if (error) {
+              console.error("[nexus] pre-sign-out upsert:", error.message);
+            }
           }
         }
       } catch (e) {
