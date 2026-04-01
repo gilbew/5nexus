@@ -256,6 +256,79 @@ function resolveCloudPushGate(args: {
   return "modal";
 }
 
+function readPersistedRunnerProgress(parsed: unknown): {
+  activeId: string | null;
+  runWallAnchorMs: number | null;
+  elapsedById: Map<string, number>;
+  totalElapsed: number;
+} | null {
+  if (!parsed || typeof parsed !== "object") {
+    return null;
+  }
+  const p = parsed as Record<string, unknown>;
+  const entitiesRaw = p.entities;
+  if (!Array.isArray(entitiesRaw)) {
+    return null;
+  }
+  const elapsedById = new Map<string, number>();
+  let totalElapsed = 0;
+  for (const row of entitiesRaw) {
+    if (!row || typeof row !== "object") {
+      continue;
+    }
+    const r = row as Record<string, unknown>;
+    const id = typeof r.id === "string" ? r.id : "";
+    const elapsed = Number(r.elapsedSeconds);
+    if (!id || !Number.isFinite(elapsed)) {
+      continue;
+    }
+    const safeElapsed = Math.max(0, Math.floor(elapsed));
+    elapsedById.set(id, safeElapsed);
+    totalElapsed += safeElapsed;
+  }
+  const activeId =
+    typeof p.activeId === "string" && p.activeId.trim() !== "" ? p.activeId.trim() : null;
+  const anchorRaw = p.runWallAnchorMs;
+  const runWallAnchorMs =
+    typeof anchorRaw === "number" && Number.isFinite(anchorRaw) && anchorRaw > 1
+      ? anchorRaw
+      : null;
+  return { activeId, runWallAnchorMs, elapsedById, totalElapsed };
+}
+
+function shouldRejectRemoteRunnerRegression(args: {
+  localPayload: unknown;
+  remotePayload: unknown;
+  remoteUpdatedAt: string | null | undefined;
+  knownServerUpdatedAt: string | null | undefined;
+}): boolean {
+  const { localPayload, remotePayload, remoteUpdatedAt, knownServerUpdatedAt } = args;
+  const local = readPersistedRunnerProgress(localPayload);
+  const remote = readPersistedRunnerProgress(remotePayload);
+  if (!local || !remote || !local.activeId || !remote.activeId || local.activeId !== remote.activeId) {
+    return false;
+  }
+  const localElapsed = local.elapsedById.get(local.activeId) ?? 0;
+  const remoteElapsed = remote.elapsedById.get(remote.activeId) ?? 0;
+  if (remoteElapsed >= localElapsed) {
+    return false;
+  }
+  const remoteMs =
+    typeof remoteUpdatedAt === "string" && remoteUpdatedAt.trim() !== ""
+      ? new Date(remoteUpdatedAt).getTime()
+      : NaN;
+  const knownMs =
+    typeof knownServerUpdatedAt === "string" && knownServerUpdatedAt.trim() !== ""
+      ? new Date(knownServerUpdatedAt).getTime()
+      : NaN;
+  // If server row is definitely newer than our last ack, accept it even if elapsed is smaller
+  // (another device may legitimately pause/switch). Otherwise treat as stale regression.
+  if (Number.isFinite(remoteMs) && Number.isFinite(knownMs) && remoteMs > knownMs) {
+    return false;
+  }
+  return true;
+}
+
 const defaultEnergyHours: EnergyHoursConfig = {
   holiday: 4,
   default: 12,
@@ -1217,6 +1290,18 @@ export default function Home() {
       if (remoteMs <= knownMs) {
         return;
       }
+      const rejectIncomingRunnerRegression = shouldRejectRemoteRunnerRegression({
+        localPayload: persistSnapshotRef.current,
+        remotePayload: data.payload,
+        remoteUpdatedAt: data.updated_at,
+        knownServerUpdatedAt: getLastServerUpdatedAt(uid),
+      });
+      if (rejectIncomingRunnerRegression) {
+        // Keep local runner progress and immediately heal cloud to prevent rollback flicker on reconnect.
+        setLastServerUpdatedAt(uid, data.updated_at);
+        void flushSupabaseDashboardPush();
+        return;
+      }
 
       const ok = applyDashboardFromPersisted(data.payload, {
         todayKey: hydrateTodayKeyFromPayload(data.payload),
@@ -1258,7 +1343,7 @@ export default function Home() {
     } catch (e) {
       console.error("[nexus] cloud pull:", e);
     }
-  }, [flushRunnerWallCatchUp]);
+  }, [flushRunnerWallCatchUp, flushSupabaseDashboardPush]);
 
   useEffect(() => {
     if (!user?.id) {
@@ -1493,6 +1578,19 @@ export default function Home() {
               isServerNewerThanClientAck(data.updated_at, lastServerAck)) ||
             applyServerRemoteRunnerLocalIdle ||
             applyServerToHealFork;
+          const rejectIncomingRunnerRegression = shouldRejectRemoteRunnerRegression({
+            localPayload: snap,
+            remotePayload: data.payload,
+            remoteUpdatedAt: data.updated_at,
+            knownServerUpdatedAt: lastServerAck,
+          });
+          if (rejectIncomingRunnerRegression) {
+            setLastServerUpdatedAt(uid, data.updated_at);
+            setCloudConflictOpen(false);
+            clearPreferServerAfterLogout();
+            void flushSupabaseDashboardPush();
+            return;
+          }
           if (shouldApplyServer) {
             const ok = applyDashboardFromPersisted(data.payload, {
               todayKey: hydrateTodayKeyFromPayload(data.payload),
@@ -1601,7 +1699,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [localHydrated, user?.id, authLoading, flushRunnerWallCatchUp]);
+  }, [localHydrated, user?.id, authLoading, flushRunnerWallCatchUp, flushSupabaseDashboardPush]);
 
   /** Start / pause / switch nexus → push (explicit write). */
   useEffect(() => {
