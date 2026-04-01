@@ -36,6 +36,7 @@ import {
   markPreferServerAfterLogout,
   shouldPreferServerAfterLogout,
 } from "@/lib/nexus-cloud-sync";
+import { writeDashboardPayloadWithCas } from "@/lib/nexus-cloud-cas";
 import {
   getDateKeyInTimeZone,
   getDeviceTimeZone,
@@ -809,6 +810,8 @@ export default function Home() {
     [entities]
   );
 
+  const fullOrderKey = useMemo(() => fullOrder.join("|"), [fullOrder]);
+
   /** Demoted nexus (not in first k of fullOrder): strip allocation but keep elapsed (today’s run log + energy already spent). */
   useEffect(() => {
     const active = new Set(fullOrder.slice(0, k));
@@ -820,7 +823,7 @@ export default function Home() {
       )
     );
     setActiveId((cur) => (cur && active.has(cur) ? cur : null));
-  }, [k, fullOrder.join("|")]);
+  }, [k, fullOrder]);
 
   useEffect(() => {
     const active = fullOrder.slice(0, k);
@@ -970,7 +973,6 @@ export default function Home() {
 
     window.addEventListener("pagehide", onPageHide);
     return () => window.removeEventListener("pagehide", onPageHide);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- refs + persist snapshot cover latest dashboard
   }, []);
 
   useEffect(() => {
@@ -1109,20 +1111,20 @@ export default function Home() {
         return;
       }
       setCloudConflictOpen(false);
-      const iso = new Date().toISOString();
-      const { data: up, error } = await supabase
-        .from(USER_DASHBOARD_TABLE)
-        .upsert(
-          { user_id: uid, payload: snap, updated_at: iso },
-          { onConflict: "user_id" }
-        )
-        .select("updated_at")
-        .single();
-      if (!error && up?.updated_at) {
-        setLocalDashboardWriteTs(up.updated_at);
-        setLastServerUpdatedAt(uid, up.updated_at);
-      } else if (error) {
-        console.error("[nexus] cloud push:", error.message);
+      const write = await writeDashboardPayloadWithCas({
+        supabase,
+        userId: uid,
+        payload: snap,
+        knownServerUpdatedAt: row?.updated_at ?? getLastServerUpdatedAt(uid),
+      });
+      if (write.kind === "written") {
+        setLocalDashboardWriteTs(write.updatedAt);
+        setLastServerUpdatedAt(uid, write.updatedAt);
+      } else if (write.kind === "stale") {
+        setLastServerUpdatedAt(uid, write.updatedAt);
+        setCloudConflictOpen(true);
+      } else {
+        console.error("[nexus] cloud push:", write.message);
       }
     } catch (e) {
       console.error("[nexus] cloud push:", e);
@@ -1405,7 +1407,6 @@ export default function Home() {
       document.removeEventListener("visibilitychange", catchUpFromLocalStorage);
       window.removeEventListener("focus", catchUpFromLocalStorage);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- setters stable
   }, [localHydrated, flushRunnerWallCatchUp]);
 
   /** Logged in: pull remote row once (LWW vs local write time), then upsert if local is newer or row missing. */
@@ -1543,37 +1544,41 @@ export default function Home() {
           } else if (hasCloudVersionConflict(data.updated_at, uid)) {
             setCloudConflictOpen(true);
           } else {
-            const { data: up, error: upErr } = await supabase
-              .from(USER_DASHBOARD_TABLE)
-              .upsert(
-                { user_id: uid, payload: snap, updated_at: iso },
-                { onConflict: "user_id" }
-              )
-              .select("updated_at")
-              .single();
-            if (!upErr && up?.updated_at) {
-              setLocalDashboardWriteTs(up.updated_at);
-              setLastServerUpdatedAt(uid, up.updated_at);
-            } else if (upErr) {
-              console.error("[nexus] cloud upsert:", upErr.message);
+            const write = await writeDashboardPayloadWithCas({
+              supabase,
+              userId: uid,
+              payload: snap,
+              knownServerUpdatedAt: data.updated_at,
+              nowIso: iso,
+            });
+            if (write.kind === "written") {
+              setLocalDashboardWriteTs(write.updatedAt);
+              setLastServerUpdatedAt(uid, write.updatedAt);
+            } else if (write.kind === "stale") {
+              setLastServerUpdatedAt(uid, write.updatedAt);
+              setCloudConflictOpen(true);
+            } else {
+              console.error("[nexus] cloud upsert:", write.message);
             }
             clearPreferServerAfterLogout();
           }
         } else {
-          const { data: up, error: upErr } = await supabase
-            .from(USER_DASHBOARD_TABLE)
-            .upsert(
-              { user_id: uid, payload: snap, updated_at: iso },
-              { onConflict: "user_id" }
-            )
-            .select("updated_at")
-            .single();
-          if (!upErr && up?.updated_at) {
-            setLocalDashboardWriteTs(up.updated_at);
-            setLastServerUpdatedAt(uid, up.updated_at);
+          const write = await writeDashboardPayloadWithCas({
+            supabase,
+            userId: uid,
+            payload: snap,
+            knownServerUpdatedAt: null,
+            nowIso: iso,
+          });
+          if (write.kind === "written") {
+            setLocalDashboardWriteTs(write.updatedAt);
+            setLastServerUpdatedAt(uid, write.updatedAt);
             clearPreferServerAfterLogout();
-          } else if (upErr) {
-            console.error("[nexus] cloud upsert (new row):", upErr.message);
+          } else if (write.kind === "stale") {
+            setLastServerUpdatedAt(uid, write.updatedAt);
+            setCloudConflictOpen(true);
+          } else {
+            console.error("[nexus] cloud upsert (new row):", write.message);
           }
         }
       } catch (e) {
@@ -1588,7 +1593,6 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- hydrate setters stable; re-run only when auth/local gate changes
   }, [localHydrated, user?.id, authLoading, flushRunnerWallCatchUp]);
 
   /** Start / pause / switch nexus → push (explicit write). */
@@ -1714,7 +1718,6 @@ export default function Home() {
     } catch (e) {
       console.error("[nexus] load latest:", e);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- dashboard setters stable
   }, [user?.id, flushRunnerWallCatchUp]);
 
   const tryNotifyDayRoll = useCallback(() => {
@@ -1858,7 +1861,8 @@ export default function Home() {
   }, [
     activeId,
     k,
-    fullOrder.join("|"),
+    fullOrder,
+    fullOrderKey,
     autoBorrow,
     appTimezone,
     autoDayReset,
@@ -2169,19 +2173,22 @@ export default function Home() {
           } else {
             setCloudConflictOpen(false);
             const iso = new Date().toISOString();
-            const { data: up, error } = await supabase
-              .from(USER_DASHBOARD_TABLE)
-              .upsert(
-                { user_id: uid, payload: snap, updated_at: iso },
-                { onConflict: "user_id" }
-              )
-              .select("updated_at")
-              .single();
-            if (!error && up?.updated_at) {
-              setLocalDashboardWriteTs(up.updated_at);
-              setLastServerUpdatedAt(uid, up.updated_at);
-            } else if (error) {
-              console.error("[nexus] pre-sign-out upsert:", error.message);
+            const write = await writeDashboardPayloadWithCas({
+              supabase,
+              userId: uid,
+              payload: snap,
+              knownServerUpdatedAt: row?.updated_at ?? getLastServerUpdatedAt(uid),
+              nowIso: iso,
+            });
+            if (write.kind === "written") {
+              setLocalDashboardWriteTs(write.updatedAt);
+              setLastServerUpdatedAt(uid, write.updatedAt);
+            } else if (write.kind === "stale") {
+              setLastServerUpdatedAt(uid, write.updatedAt);
+              setCloudConflictOpen(true);
+              abortSignOut = true;
+            } else {
+              console.error("[nexus] pre-sign-out upsert:", write.message);
             }
           }
         }
