@@ -767,6 +767,7 @@ export default function Home() {
     return window.localStorage.getItem(SYNC_DEBUG_FLAG_KEY) === "1";
   }, []);
   const [syncDebugLines, setSyncDebugLines] = useState<string[]>([]);
+  const [syncDebugOpen, setSyncDebugOpen] = useState(false);
   const pushSyncDebug = useCallback(
     (code: string, detail?: string) => {
       if (!debugSyncEnabled) {
@@ -784,6 +785,8 @@ export default function Home() {
       return;
     }
     pushSyncDebug("sync.boot", window.location.href);
+    // Mobile-first: open timeline once so users immediately see it after enabling debug mode.
+    setSyncDebugOpen(true);
   }, [debugSyncEnabled, pushSyncDebug]);
   const debugSyncEnabledRef = useRef(false);
   debugSyncEnabledRef.current = debugSyncEnabled;
@@ -2993,40 +2996,68 @@ export default function Home() {
         </div>
       ) : null}
       {debugSyncEnabled ? (
-        <div className="pointer-events-none fixed bottom-2 right-2 z-[120] w-[min(92vw,420px)]">
-          <div
+        <>
+          <button
+            type="button"
+            onClick={() => setSyncDebugOpen((v) => !v)}
             className={[
-              "pointer-events-auto rounded-xl border p-2 text-[10px] shadow-2xl",
+              "fixed bottom-3 right-3 z-[121] rounded-xl border px-3 py-2 text-xs font-semibold shadow-xl",
               isDark
-                ? "border-zinc-700/90 bg-zinc-950/95 text-zinc-100"
-                : "border-zinc-300 bg-white/95 text-zinc-900",
+                ? "border-emerald-400/50 bg-zinc-900/95 text-emerald-200"
+                : "border-emerald-600/40 bg-white text-emerald-700",
             ].join(" ")}
           >
-            <div className="mb-1 flex items-center justify-between gap-2">
-              <p className="font-semibold">Sync Debug</p>
-              <button
-                type="button"
-                onClick={() => setSyncDebugLines([])}
+            {syncDebugOpen ? "Hide Sync Debug" : "Sync Debug"}
+          </button>
+          {syncDebugOpen ? (
+            <div className="fixed inset-0 z-[122] flex items-end justify-center bg-black/45 p-2 sm:items-end">
+              <div
                 className={[
-                  "rounded-md border px-2 py-0.5 text-[10px]",
-                  isDark ? "border-zinc-600 text-zinc-200" : "border-zinc-300 text-zinc-700",
+                  "w-full max-w-xl rounded-2xl border p-2 text-[10px] shadow-2xl",
+                  isDark
+                    ? "border-zinc-700/90 bg-zinc-950/95 text-zinc-100"
+                    : "border-zinc-300 bg-white/95 text-zinc-900",
                 ].join(" ")}
               >
-                Clear
-              </button>
+                <div className="mb-1 flex items-center justify-between gap-2">
+                  <p className="font-semibold">Sync Debug Timeline</p>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setSyncDebugLines([])}
+                      className={[
+                        "rounded-md border px-2 py-0.5 text-[10px]",
+                        isDark ? "border-zinc-600 text-zinc-200" : "border-zinc-300 text-zinc-700",
+                      ].join(" ")}
+                    >
+                      Clear
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSyncDebugOpen(false)}
+                      className={[
+                        "rounded-md border px-2 py-0.5 text-[10px]",
+                        isDark ? "border-zinc-600 text-zinc-200" : "border-zinc-300 text-zinc-700",
+                      ].join(" ")}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+                <ul className="hide-scrollbar max-h-[42dvh] space-y-0.5 overflow-y-auto font-mono leading-tight">
+                  {syncDebugLines.length === 0 ? (
+                    <li className="opacity-70">No sync events yet.</li>
+                  ) : (
+                    syncDebugLines
+                      .slice()
+                      .reverse()
+                      .map((line, idx) => <li key={`${idx}-${line}`}>{line}</li>)
+                  )}
+                </ul>
+              </div>
             </div>
-            <ul className="hide-scrollbar max-h-40 space-y-0.5 overflow-y-auto font-mono leading-tight">
-              {syncDebugLines.length === 0 ? (
-                <li className="opacity-70">No sync events yet.</li>
-              ) : (
-                syncDebugLines
-                  .slice()
-                  .reverse()
-                  .map((line, idx) => <li key={`${idx}-${line}`}>{line}</li>)
-              )}
-            </ul>
-          </div>
-        </div>
+          ) : null}
+        </>
       ) : null}
 
       {settingsOpen ? (
