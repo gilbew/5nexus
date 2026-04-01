@@ -21,49 +21,54 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const supabase = useMemo(() => {
+    try {
+      return createClient();
+    } catch {
+      return null;
+    }
+  }, []);
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => supabase !== null);
 
   useEffect(() => {
+    if (!supabase) {
+      return;
+    }
     let cancelled = false;
     let subscription: { unsubscribe: () => void } | null = null;
-
-    try {
-      const supabase = createClient();
-
-      void (async () => {
-        const { data } = await supabase.auth.getSession();
-        if (cancelled) {
-          return;
-        }
-        setSession(data.session);
-        setUser(data.session?.user ?? null);
-        setIsLoading(false);
-      })();
-
-      const sub = supabase.auth.onAuthStateChange((_event, nextSession) => {
-        setSession(nextSession);
-        setUser(nextSession?.user ?? null);
-        setIsLoading(false);
-      });
-      subscription = sub.data.subscription;
-    } catch {
+    void (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) {
+        return;
+      }
+      setSession(data.session);
+      setUser(data.session?.user ?? null);
       setIsLoading(false);
-    }
+    })();
+
+    const sub = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      setSession(nextSession);
+      setUser(nextSession?.user ?? null);
+      setIsLoading(false);
+    });
+    subscription = sub.data.subscription;
 
     return () => {
       cancelled = true;
       subscription?.unsubscribe();
     };
-  }, []);
+  }, [supabase]);
 
   const signOut = useCallback(async () => {
-    const supabase = createClient();
+    if (!supabase) {
+      return;
+    }
     await supabase.auth.signOut();
     setSession(null);
     setUser(null);
-  }, []);
+  }, [supabase]);
 
   const value = useMemo(
     () => ({

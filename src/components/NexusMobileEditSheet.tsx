@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { ChecklistItem, NexusSlot } from "@/components/NexusCard";
 
 type NexusMobileEditSheetProps = {
@@ -32,18 +32,10 @@ export function NexusMobileEditSheet({
   onUpdateChecklist,
   onDeleteChecklist,
 }: NexusMobileEditSheetProps) {
-  const [tasksEdit, setTasksEdit] = useState(false);
+  const [tasksEdit, setTasksEdit] = useState(() => Boolean(startWithTasksEdit));
   const [taskDraft, setTaskDraft] = useState("");
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [editingTaskText, setEditingTaskText] = useState("");
-
-  // Sync when opening from title vs checklist (same card id can open both ways).
-  useEffect(() => {
-    setTasksEdit(Boolean(startWithTasksEdit));
-    setEditingTaskId(null);
-    setTaskDraft("");
-    setEditingTaskText("");
-  }, [slot.id, startWithTasksEdit]);
 
   const inputBase =
     "w-full min-h-[44px] rounded-xl border px-3 py-2.5 text-base outline-none transition-colors";

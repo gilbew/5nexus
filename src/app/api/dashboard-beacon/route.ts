@@ -3,6 +3,7 @@ import {
   USER_DASHBOARD_TABLE,
   isServerNewerThanClientAck,
 } from "@/lib/nexus-cloud-sync";
+import { writeDashboardPayloadWithCas } from "@/lib/nexus-cloud-cas";
 import { createClient } from "@/lib/supabase/server";
 
 /** Minimal v5 shape check (full Zod optional later). */
@@ -59,13 +60,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, stale: true }, { status: 409 });
   }
 
-  const iso = new Date().toISOString();
-  const { error } = await supabase
-    .from(USER_DASHBOARD_TABLE)
-    .upsert({ user_id: user.id, payload, updated_at: iso }, { onConflict: "user_id" });
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  const write = await writeDashboardPayloadWithCas({
+    supabase,
+    userId: user.id,
+    payload,
+    knownServerUpdatedAt,
+  });
+  if (write.kind === "written") {
+    return NextResponse.json({ ok: true, updated_at: write.updatedAt });
   }
-  return NextResponse.json({ ok: true, updated_at: iso });
+  if (write.kind === "stale") {
+    return NextResponse.json({ ok: false, stale: true }, { status: 409 });
+  }
+  return NextResponse.json({ error: write.message }, { status: 500 });
 }

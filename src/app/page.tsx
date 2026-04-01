@@ -36,6 +36,7 @@ import {
   markPreferServerAfterLogout,
   shouldPreferServerAfterLogout,
 } from "@/lib/nexus-cloud-sync";
+import { writeDashboardPayloadWithCas } from "@/lib/nexus-cloud-cas";
 import {
   getDateKeyInTimeZone,
   getDeviceTimeZone,
@@ -65,6 +66,7 @@ const MAX_NEXUS = 10;
 const MD_PX = 768;
 /** Shared horizontal rhythm: dashboard island + nexus grid share one column width. */
 const SHELL_X = "mx-auto w-full max-w-[1680px] px-3 sm:px-4 md:px-8 lg:px-12 xl:px-14";
+const SYNC_DEBUG_FLAG_KEY = "nexus-sync-debug";
 
 type EnergyHoursConfig = {
   holiday: number;
@@ -253,6 +255,79 @@ function resolveCloudPushGate(args: {
     return "modal";
   }
   return "modal";
+}
+
+function readPersistedRunnerProgress(parsed: unknown): {
+  activeId: string | null;
+  runWallAnchorMs: number | null;
+  elapsedById: Map<string, number>;
+  totalElapsed: number;
+} | null {
+  if (!parsed || typeof parsed !== "object") {
+    return null;
+  }
+  const p = parsed as Record<string, unknown>;
+  const entitiesRaw = p.entities;
+  if (!Array.isArray(entitiesRaw)) {
+    return null;
+  }
+  const elapsedById = new Map<string, number>();
+  let totalElapsed = 0;
+  for (const row of entitiesRaw) {
+    if (!row || typeof row !== "object") {
+      continue;
+    }
+    const r = row as Record<string, unknown>;
+    const id = typeof r.id === "string" ? r.id : "";
+    const elapsed = Number(r.elapsedSeconds);
+    if (!id || !Number.isFinite(elapsed)) {
+      continue;
+    }
+    const safeElapsed = Math.max(0, Math.floor(elapsed));
+    elapsedById.set(id, safeElapsed);
+    totalElapsed += safeElapsed;
+  }
+  const activeId =
+    typeof p.activeId === "string" && p.activeId.trim() !== "" ? p.activeId.trim() : null;
+  const anchorRaw = p.runWallAnchorMs;
+  const runWallAnchorMs =
+    typeof anchorRaw === "number" && Number.isFinite(anchorRaw) && anchorRaw > 1
+      ? anchorRaw
+      : null;
+  return { activeId, runWallAnchorMs, elapsedById, totalElapsed };
+}
+
+function shouldRejectRemoteRunnerRegression(args: {
+  localPayload: unknown;
+  remotePayload: unknown;
+  remoteUpdatedAt: string | null | undefined;
+  knownServerUpdatedAt: string | null | undefined;
+}): boolean {
+  const { localPayload, remotePayload, remoteUpdatedAt, knownServerUpdatedAt } = args;
+  const local = readPersistedRunnerProgress(localPayload);
+  const remote = readPersistedRunnerProgress(remotePayload);
+  if (!local || !remote || !local.activeId || !remote.activeId || local.activeId !== remote.activeId) {
+    return false;
+  }
+  const localElapsed = local.elapsedById.get(local.activeId) ?? 0;
+  const remoteElapsed = remote.elapsedById.get(remote.activeId) ?? 0;
+  if (remoteElapsed >= localElapsed) {
+    return false;
+  }
+  const remoteMs =
+    typeof remoteUpdatedAt === "string" && remoteUpdatedAt.trim() !== ""
+      ? new Date(remoteUpdatedAt).getTime()
+      : NaN;
+  const knownMs =
+    typeof knownServerUpdatedAt === "string" && knownServerUpdatedAt.trim() !== ""
+      ? new Date(knownServerUpdatedAt).getTime()
+      : NaN;
+  // If server row is definitely newer than our last ack, accept it even if elapsed is smaller
+  // (another device may legitimately pause/switch). Otherwise treat as stale regression.
+  if (Number.isFinite(remoteMs) && Number.isFinite(knownMs) && remoteMs > knownMs) {
+    return false;
+  }
+  return true;
 }
 
 const defaultEnergyHours: EnergyHoursConfig = {
@@ -539,6 +614,11 @@ function sampleTouchDragHit(clientX: number, clientY: number) {
   return { overDrop, overPriorityRowId };
 }
 
+function formatSyncDebugLine(code: string, detail?: string): string {
+  const stamp = new Date().toLocaleTimeString("en-GB", { hour12: false });
+  return detail ? `${stamp} ${code} | ${detail}` : `${stamp} ${code}`;
+}
+
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
   const { user, isLoading: authLoading, signOut } = useAuth();
@@ -674,6 +754,44 @@ export default function Home() {
   const [localHydrated, setLocalHydrated] = useState(false);
   /** Initial compare/upsert to Supabase finished; debounced push waits for this. */
   const [cloudSyncReady, setCloudSyncReady] = useState(false);
+  const debugSyncEnabled = useMemo(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("debugSync");
+    if (q === "1") {
+      window.localStorage.setItem(SYNC_DEBUG_FLAG_KEY, "1");
+      return true;
+    }
+    return window.localStorage.getItem(SYNC_DEBUG_FLAG_KEY) === "1";
+  }, []);
+  const [syncDebugLines, setSyncDebugLines] = useState<string[]>([]);
+  const [syncDebugOpen, setSyncDebugOpen] = useState(false);
+  const pushSyncDebug = useCallback(
+    (code: string, detail?: string) => {
+      if (!debugSyncEnabled) {
+        return;
+      }
+      setSyncDebugLines((prev) => {
+        const next = [...prev, formatSyncDebugLine(code, detail)];
+        return next.length > 80 ? next.slice(next.length - 80) : next;
+      });
+    },
+    [debugSyncEnabled]
+  );
+  useEffect(() => {
+    if (!debugSyncEnabled) {
+      return;
+    }
+    pushSyncDebug("sync.boot", window.location.href);
+    // Mobile-first: open timeline once so users immediately see it after enabling debug mode.
+    setSyncDebugOpen(true);
+  }, [debugSyncEnabled, pushSyncDebug]);
+  const debugSyncEnabledRef = useRef(false);
+  debugSyncEnabledRef.current = debugSyncEnabled;
+  const pushSyncDebugRef = useRef(pushSyncDebug);
+  pushSyncDebugRef.current = pushSyncDebug;
   const persistSnapshotRef = useRef<PersistedV5 | null>(null);
   /** For `pagehide` keepalive upload — mirrors gates without re-subscribing on every state change. */
   const localHydratedRef = useRef(false);
@@ -809,6 +927,8 @@ export default function Home() {
     [entities]
   );
 
+  const fullOrderKey = useMemo(() => fullOrder.join("|"), [fullOrder]);
+
   /** Demoted nexus (not in first k of fullOrder): strip allocation but keep elapsed (today’s run log + energy already spent). */
   useEffect(() => {
     const active = new Set(fullOrder.slice(0, k));
@@ -820,7 +940,7 @@ export default function Home() {
       )
     );
     setActiveId((cur) => (cur && active.has(cur) ? cur : null));
-  }, [k, fullOrder.join("|")]);
+  }, [k, fullOrder]);
 
   useEffect(() => {
     const active = fullOrder.slice(0, k);
@@ -957,7 +1077,16 @@ export default function Home() {
         payload,
         knownServerUpdatedAt: getLastServerUpdatedAt(uid),
       });
+      if (debugSyncEnabledRef.current) {
+        pushSyncDebugRef.current(
+          "BEACON_SEND",
+          `aid=${payload.activeId ?? "-"} anchor=${payload.runWallAnchorMs ?? "-"}`
+        );
+      }
       if (body.length > KEEPALIVE_BODY_MAX) {
+        if (debugSyncEnabledRef.current) {
+          pushSyncDebugRef.current("BEACON_SKIP_SIZE", String(body.length));
+        }
         return;
       }
       void fetch(`${window.location.origin}/api/dashboard-beacon`, {
@@ -970,7 +1099,6 @@ export default function Home() {
 
     window.addEventListener("pagehide", onPageHide);
     return () => window.removeEventListener("pagehide", onPageHide);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- refs + persist snapshot cover latest dashboard
   }, []);
 
   useEffect(() => {
@@ -1089,6 +1217,7 @@ export default function Home() {
         .eq("user_id", uid)
         .maybeSingle();
       if (rowErr) {
+        pushSyncDebug("push.read_err", rowErr.message);
         console.error("[nexus] cloud push (read):", rowErr.message);
         return;
       }
@@ -1099,35 +1228,41 @@ export default function Home() {
         userId: uid,
       });
       if (gate === "modal") {
+        pushSyncDebug("push.gate_modal");
         setCloudConflictOpen(true);
         return;
       }
       if (gate === "skip_healed" && row?.updated_at) {
+        pushSyncDebug("push.gate_skip_healed", row.updated_at);
         setLocalDashboardWriteTs(row.updated_at);
         setLastServerUpdatedAt(uid, row.updated_at);
         setCloudConflictOpen(false);
         return;
       }
       setCloudConflictOpen(false);
-      const iso = new Date().toISOString();
-      const { data: up, error } = await supabase
-        .from(USER_DASHBOARD_TABLE)
-        .upsert(
-          { user_id: uid, payload: snap, updated_at: iso },
-          { onConflict: "user_id" }
-        )
-        .select("updated_at")
-        .single();
-      if (!error && up?.updated_at) {
-        setLocalDashboardWriteTs(up.updated_at);
-        setLastServerUpdatedAt(uid, up.updated_at);
-      } else if (error) {
-        console.error("[nexus] cloud push:", error.message);
+      const write = await writeDashboardPayloadWithCas({
+        supabase,
+        userId: uid,
+        payload: snap,
+        knownServerUpdatedAt: row?.updated_at ?? getLastServerUpdatedAt(uid),
+      });
+      if (write.kind === "written") {
+        pushSyncDebug("push.written", write.updatedAt);
+        setLocalDashboardWriteTs(write.updatedAt);
+        setLastServerUpdatedAt(uid, write.updatedAt);
+      } else if (write.kind === "stale") {
+        pushSyncDebug("push.stale", write.updatedAt);
+        setLastServerUpdatedAt(uid, write.updatedAt);
+        setCloudConflictOpen(true);
+      } else {
+        pushSyncDebug("push.err", write.message);
+        console.error("[nexus] cloud push:", write.message);
       }
     } catch (e) {
+      pushSyncDebug("push.catch", e instanceof Error ? e.message : String(e));
       console.error("[nexus] cloud push:", e);
     }
-  }, []);
+  }, [pushSyncDebug]);
 
   /**
    * Tab hidden: `flushRunnerWallCatchUp` (effect di atas) sudah merge jam dinding → commit state →
@@ -1194,6 +1329,7 @@ export default function Home() {
       return;
     }
 
+    pushSyncDebug("pull.start", opts?.skipVisibilityGate ? "skipVisibilityGate=1" : "visible-only");
     try {
       const supabase = createClient();
       const { data, error } = await supabase
@@ -1203,16 +1339,32 @@ export default function Home() {
         .maybeSingle();
 
       if (error) {
+        pushSyncDebug("pull.read_err", error.message);
         console.error("[nexus] cloud pull:", error.message);
         return;
       }
       if (!data?.updated_at || data.payload === null || data.payload === undefined) {
+        pushSyncDebug("pull.empty");
         return;
       }
 
       const remoteMs = new Date(data.updated_at).getTime();
       const knownMs = new Date(getLastServerUpdatedAt(uid)).getTime();
       if (remoteMs <= knownMs) {
+        pushSyncDebug("pull.skip_old", data.updated_at);
+        return;
+      }
+      const rejectIncomingRunnerRegression = shouldRejectRemoteRunnerRegression({
+        localPayload: persistSnapshotRef.current,
+        remotePayload: data.payload,
+        remoteUpdatedAt: data.updated_at,
+        knownServerUpdatedAt: getLastServerUpdatedAt(uid),
+      });
+      if (rejectIncomingRunnerRegression) {
+        // Keep local runner progress and immediately heal cloud to prevent rollback flicker on reconnect.
+        pushSyncDebug("pull.reject_regression", data.updated_at);
+        setLastServerUpdatedAt(uid, data.updated_at);
+        void flushSupabaseDashboardPush();
         return;
       }
 
@@ -1239,6 +1391,7 @@ export default function Home() {
         setRunWallAnchorMs,
       });
       if (ok) {
+        pushSyncDebug("pull.applied", data.updated_at);
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data.payload));
         storageRevRef.current = Math.max(
           storageRevRef.current,
@@ -1254,9 +1407,10 @@ export default function Home() {
         window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
       }
     } catch (e) {
+      pushSyncDebug("pull.err", e instanceof Error ? e.message : String(e));
       console.error("[nexus] cloud pull:", e);
     }
-  }, [flushRunnerWallCatchUp]);
+  }, [flushRunnerWallCatchUp, flushSupabaseDashboardPush, pushSyncDebug]);
 
   useEffect(() => {
     if (!user?.id) {
@@ -1405,7 +1559,6 @@ export default function Home() {
       document.removeEventListener("visibilitychange", catchUpFromLocalStorage);
       window.removeEventListener("focus", catchUpFromLocalStorage);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- setters stable
   }, [localHydrated, flushRunnerWallCatchUp]);
 
   /** Logged in: pull remote row once (LWW vs local write time), then upsert if local is newer or row missing. */
@@ -1485,23 +1638,29 @@ export default function Home() {
             Number.isFinite(localDiskWriteMs) &&
             localDiskWriteMs <= serverRowMs;
 
-          /**
-           * Cold open / semua tab mati: disk `lastServerAck` bisa terlihat “lebih baru” dari baris server
-           * (skew jam, beacon tanpa update ack, urutan device). Lokal beku saat close ≠ kebenaran wall clock.
-           * Kalau **server** bilang masih ada runner dan blob beda → pakai server, lalu catch-up dari `runWallAnchorMs`.
-           */
-          const applyServerWhenRemoteRunning =
-            contentDiffers && serverActiveId != null;
-
           const shouldApplyServer =
             preferServer ||
             neverAckedServerForUser ||
             (!neverAckedServerForUser &&
               isServerNewerThanClientAck(data.updated_at, lastServerAck)) ||
             applyServerRemoteRunnerLocalIdle ||
-            applyServerToHealFork ||
-            applyServerWhenRemoteRunning;
+            applyServerToHealFork;
+          const rejectIncomingRunnerRegression = shouldRejectRemoteRunnerRegression({
+            localPayload: snap,
+            remotePayload: data.payload,
+            remoteUpdatedAt: data.updated_at,
+            knownServerUpdatedAt: lastServerAck,
+          });
+          if (rejectIncomingRunnerRegression) {
+            pushSyncDebug("sync.initial.reject_regression", data.updated_at);
+            setLastServerUpdatedAt(uid, data.updated_at);
+            setCloudConflictOpen(false);
+            clearPreferServerAfterLogout();
+            void flushSupabaseDashboardPush();
+            return;
+          }
           if (shouldApplyServer) {
+            pushSyncDebug("sync.initial.apply_server", data.updated_at);
             const ok = applyDashboardFromPersisted(data.payload, {
               todayKey: hydrateTodayKeyFromPayload(data.payload),
               resetEntityDay,
@@ -1541,39 +1700,66 @@ export default function Home() {
               window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
             }
           } else if (hasCloudVersionConflict(data.updated_at, uid)) {
+            pushSyncDebug("sync.initial.conflict", data.updated_at);
             setCloudConflictOpen(true);
           } else {
-            const { data: up, error: upErr } = await supabase
-              .from(USER_DASHBOARD_TABLE)
-              .upsert(
-                { user_id: uid, payload: snap, updated_at: iso },
-                { onConflict: "user_id" }
-              )
-              .select("updated_at")
-              .single();
-            if (!upErr && up?.updated_at) {
-              setLocalDashboardWriteTs(up.updated_at);
-              setLastServerUpdatedAt(uid, up.updated_at);
-            } else if (upErr) {
-              console.error("[nexus] cloud upsert:", upErr.message);
+            const gate = resolveCloudPushGate({
+              serverUpdatedAt: data.updated_at,
+              serverPayload: data.payload,
+              localSnap: snap,
+              userId: uid,
+            });
+            if (gate === "modal") {
+              pushSyncDebug("sync.initial.gate_modal", data.updated_at);
+              setCloudConflictOpen(true);
+              return;
+            }
+            if (gate === "skip_healed") {
+              pushSyncDebug("sync.initial.gate_skip_healed", data.updated_at);
+              setLocalDashboardWriteTs(data.updated_at);
+              setLastServerUpdatedAt(uid, data.updated_at);
+              setCloudConflictOpen(false);
+              clearPreferServerAfterLogout();
+              return;
+            }
+            const write = await writeDashboardPayloadWithCas({
+              supabase,
+              userId: uid,
+              payload: snap,
+              knownServerUpdatedAt: data.updated_at,
+              nowIso: iso,
+            });
+            if (write.kind === "written") {
+              pushSyncDebug("sync.initial.write_won", write.updatedAt);
+              setLocalDashboardWriteTs(write.updatedAt);
+              setLastServerUpdatedAt(uid, write.updatedAt);
+            } else if (write.kind === "stale") {
+              pushSyncDebug("sync.initial.write_stale", write.updatedAt);
+              setLastServerUpdatedAt(uid, write.updatedAt);
+              setCloudConflictOpen(true);
+            } else {
+              pushSyncDebug("sync.initial.write_err", write.message);
+              console.error("[nexus] cloud upsert:", write.message);
             }
             clearPreferServerAfterLogout();
           }
         } else {
-          const { data: up, error: upErr } = await supabase
-            .from(USER_DASHBOARD_TABLE)
-            .upsert(
-              { user_id: uid, payload: snap, updated_at: iso },
-              { onConflict: "user_id" }
-            )
-            .select("updated_at")
-            .single();
-          if (!upErr && up?.updated_at) {
-            setLocalDashboardWriteTs(up.updated_at);
-            setLastServerUpdatedAt(uid, up.updated_at);
+          const write = await writeDashboardPayloadWithCas({
+            supabase,
+            userId: uid,
+            payload: snap,
+            knownServerUpdatedAt: null,
+            nowIso: iso,
+          });
+          if (write.kind === "written") {
+            setLocalDashboardWriteTs(write.updatedAt);
+            setLastServerUpdatedAt(uid, write.updatedAt);
             clearPreferServerAfterLogout();
-          } else if (upErr) {
-            console.error("[nexus] cloud upsert (new row):", upErr.message);
+          } else if (write.kind === "stale") {
+            setLastServerUpdatedAt(uid, write.updatedAt);
+            setCloudConflictOpen(true);
+          } else {
+            console.error("[nexus] cloud upsert (new row):", write.message);
           }
         }
       } catch (e) {
@@ -1588,8 +1774,14 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- hydrate setters stable; re-run only when auth/local gate changes
-  }, [localHydrated, user?.id, authLoading, flushRunnerWallCatchUp]);
+  }, [
+    localHydrated,
+    user?.id,
+    authLoading,
+    flushRunnerWallCatchUp,
+    flushSupabaseDashboardPush,
+    pushSyncDebug,
+  ]);
 
   /** Start / pause / switch nexus → push (explicit write). */
   useEffect(() => {
@@ -1714,7 +1906,6 @@ export default function Home() {
     } catch (e) {
       console.error("[nexus] load latest:", e);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- dashboard setters stable
   }, [user?.id, flushRunnerWallCatchUp]);
 
   const tryNotifyDayRoll = useCallback(() => {
@@ -1858,7 +2049,8 @@ export default function Home() {
   }, [
     activeId,
     k,
-    fullOrder.join("|"),
+    fullOrder,
+    fullOrderKey,
     autoBorrow,
     appTimezone,
     autoDayReset,
@@ -2169,19 +2361,22 @@ export default function Home() {
           } else {
             setCloudConflictOpen(false);
             const iso = new Date().toISOString();
-            const { data: up, error } = await supabase
-              .from(USER_DASHBOARD_TABLE)
-              .upsert(
-                { user_id: uid, payload: snap, updated_at: iso },
-                { onConflict: "user_id" }
-              )
-              .select("updated_at")
-              .single();
-            if (!error && up?.updated_at) {
-              setLocalDashboardWriteTs(up.updated_at);
-              setLastServerUpdatedAt(uid, up.updated_at);
-            } else if (error) {
-              console.error("[nexus] pre-sign-out upsert:", error.message);
+            const write = await writeDashboardPayloadWithCas({
+              supabase,
+              userId: uid,
+              payload: snap,
+              knownServerUpdatedAt: row?.updated_at ?? getLastServerUpdatedAt(uid),
+              nowIso: iso,
+            });
+            if (write.kind === "written") {
+              setLocalDashboardWriteTs(write.updatedAt);
+              setLastServerUpdatedAt(uid, write.updatedAt);
+            } else if (write.kind === "stale") {
+              setLastServerUpdatedAt(uid, write.updatedAt);
+              setCloudConflictOpen(true);
+              abortSignOut = true;
+            } else {
+              console.error("[nexus] pre-sign-out upsert:", write.message);
             }
           }
         }
@@ -2799,6 +2994,70 @@ export default function Home() {
             Reset day…
           </button>
         </div>
+      ) : null}
+      {debugSyncEnabled ? (
+        <>
+          <button
+            type="button"
+            onClick={() => setSyncDebugOpen((v) => !v)}
+            className={[
+              "fixed bottom-3 right-3 z-[121] rounded-xl border px-3 py-2 text-xs font-semibold shadow-xl",
+              isDark
+                ? "border-emerald-400/50 bg-zinc-900/95 text-emerald-200"
+                : "border-emerald-600/40 bg-white text-emerald-700",
+            ].join(" ")}
+          >
+            {syncDebugOpen ? "Hide Sync Debug" : "Sync Debug"}
+          </button>
+          {syncDebugOpen ? (
+            <div className="fixed inset-0 z-[122] flex items-end justify-center bg-black/45 p-2 sm:items-end">
+              <div
+                className={[
+                  "w-full max-w-xl rounded-2xl border p-2 text-[10px] shadow-2xl",
+                  isDark
+                    ? "border-zinc-700/90 bg-zinc-950/95 text-zinc-100"
+                    : "border-zinc-300 bg-white/95 text-zinc-900",
+                ].join(" ")}
+              >
+                <div className="mb-1 flex items-center justify-between gap-2">
+                  <p className="font-semibold">Sync Debug Timeline</p>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setSyncDebugLines([])}
+                      className={[
+                        "rounded-md border px-2 py-0.5 text-[10px]",
+                        isDark ? "border-zinc-600 text-zinc-200" : "border-zinc-300 text-zinc-700",
+                      ].join(" ")}
+                    >
+                      Clear
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSyncDebugOpen(false)}
+                      className={[
+                        "rounded-md border px-2 py-0.5 text-[10px]",
+                        isDark ? "border-zinc-600 text-zinc-200" : "border-zinc-300 text-zinc-700",
+                      ].join(" ")}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+                <ul className="hide-scrollbar max-h-[42dvh] space-y-0.5 overflow-y-auto font-mono leading-tight">
+                  {syncDebugLines.length === 0 ? (
+                    <li className="opacity-70">No sync events yet.</li>
+                  ) : (
+                    syncDebugLines
+                      .slice()
+                      .reverse()
+                      .map((line, idx) => <li key={`${idx}-${line}`}>{line}</li>)
+                  )}
+                </ul>
+              </div>
+            </div>
+          ) : null}
+        </>
       ) : null}
 
       {settingsOpen ? (
