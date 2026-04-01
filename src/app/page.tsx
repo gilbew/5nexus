@@ -1486,22 +1486,13 @@ export default function Home() {
             Number.isFinite(localDiskWriteMs) &&
             localDiskWriteMs <= serverRowMs;
 
-          /**
-           * Cold open / semua tab mati: disk `lastServerAck` bisa terlihat “lebih baru” dari baris server
-           * (skew jam, beacon tanpa update ack, urutan device). Lokal beku saat close ≠ kebenaran wall clock.
-           * Kalau **server** bilang masih ada runner dan blob beda → pakai server, lalu catch-up dari `runWallAnchorMs`.
-           */
-          const applyServerWhenRemoteRunning =
-            contentDiffers && serverActiveId != null;
-
           const shouldApplyServer =
             preferServer ||
             neverAckedServerForUser ||
             (!neverAckedServerForUser &&
               isServerNewerThanClientAck(data.updated_at, lastServerAck)) ||
             applyServerRemoteRunnerLocalIdle ||
-            applyServerToHealFork ||
-            applyServerWhenRemoteRunning;
+            applyServerToHealFork;
           if (shouldApplyServer) {
             const ok = applyDashboardFromPersisted(data.payload, {
               todayKey: hydrateTodayKeyFromPayload(data.payload),
@@ -1544,6 +1535,23 @@ export default function Home() {
           } else if (hasCloudVersionConflict(data.updated_at, uid)) {
             setCloudConflictOpen(true);
           } else {
+            const gate = resolveCloudPushGate({
+              serverUpdatedAt: data.updated_at,
+              serverPayload: data.payload,
+              localSnap: snap,
+              userId: uid,
+            });
+            if (gate === "modal") {
+              setCloudConflictOpen(true);
+              return;
+            }
+            if (gate === "skip_healed") {
+              setLocalDashboardWriteTs(data.updated_at);
+              setLastServerUpdatedAt(uid, data.updated_at);
+              setCloudConflictOpen(false);
+              clearPreferServerAfterLogout();
+              return;
+            }
             const write = await writeDashboardPayloadWithCas({
               supabase,
               userId: uid,
