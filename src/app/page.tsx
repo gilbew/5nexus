@@ -66,6 +66,7 @@ const MAX_NEXUS = 10;
 const MD_PX = 768;
 /** Shared horizontal rhythm: dashboard island + nexus grid share one column width. */
 const SHELL_X = "mx-auto w-full max-w-[1680px] px-3 sm:px-4 md:px-8 lg:px-12 xl:px-14";
+const SYNC_DEBUG_FLAG_KEY = "nexus-sync-debug";
 
 type EnergyHoursConfig = {
   holiday: number;
@@ -757,7 +758,13 @@ export default function Home() {
     if (typeof window === "undefined") {
       return false;
     }
-    return new URLSearchParams(window.location.search).get("debugSync") === "1";
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("debugSync");
+    if (q === "1") {
+      window.localStorage.setItem(SYNC_DEBUG_FLAG_KEY, "1");
+      return true;
+    }
+    return window.localStorage.getItem(SYNC_DEBUG_FLAG_KEY) === "1";
   }, []);
   const [syncDebugLines, setSyncDebugLines] = useState<string[]>([]);
   const pushSyncDebug = useCallback(
