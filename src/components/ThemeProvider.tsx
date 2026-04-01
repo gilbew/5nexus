@@ -14,19 +14,20 @@ const STORAGE_KEY = "nexus-theme";
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
+function resolveInitialTheme(): Theme {
+  if (typeof window === "undefined") {
+    return "dark";
+  }
+  const raw = window.localStorage.getItem(STORAGE_KEY);
+  if (raw === "dark" || raw === "light") {
+    return raw;
+  }
+  const preferredDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  return preferredDark ? "dark" : "light";
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("dark");
-
-  useEffect(() => {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (raw === "dark" || raw === "light") {
-      setThemeState(raw);
-      return;
-    }
-
-    const preferredDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setThemeState(preferredDark ? "dark" : "light");
-  }, []);
+  const [theme, setThemeState] = useState<Theme>(resolveInitialTheme);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, theme);
