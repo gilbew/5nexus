@@ -613,6 +613,11 @@ function sampleTouchDragHit(clientX: number, clientY: number) {
   return { overDrop, overPriorityRowId };
 }
 
+function formatSyncDebugLine(code: string, detail?: string): string {
+  const stamp = new Date().toLocaleTimeString("en-GB", { hour12: false });
+  return detail ? `${stamp} ${code} | ${detail}` : `${stamp} ${code}`;
+}
+
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
   const { user, isLoading: authLoading, signOut } = useAuth();
@@ -748,6 +753,35 @@ export default function Home() {
   const [localHydrated, setLocalHydrated] = useState(false);
   /** Initial compare/upsert to Supabase finished; debounced push waits for this. */
   const [cloudSyncReady, setCloudSyncReady] = useState(false);
+  const debugSyncEnabled = useMemo(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+    return new URLSearchParams(window.location.search).get("debugSync") === "1";
+  }, []);
+  const [syncDebugLines, setSyncDebugLines] = useState<string[]>([]);
+  const pushSyncDebug = useCallback(
+    (code: string, detail?: string) => {
+      if (!debugSyncEnabled) {
+        return;
+      }
+      setSyncDebugLines((prev) => {
+        const next = [...prev, formatSyncDebugLine(code, detail)];
+        return next.length > 80 ? next.slice(next.length - 80) : next;
+      });
+    },
+    [debugSyncEnabled]
+  );
+  useEffect(() => {
+    if (!debugSyncEnabled) {
+      return;
+    }
+    pushSyncDebug("sync.boot", window.location.href);
+  }, [debugSyncEnabled, pushSyncDebug]);
+  const debugSyncEnabledRef = useRef(false);
+  debugSyncEnabledRef.current = debugSyncEnabled;
+  const pushSyncDebugRef = useRef(pushSyncDebug);
+  pushSyncDebugRef.current = pushSyncDebug;
   const persistSnapshotRef = useRef<PersistedV5 | null>(null);
   /** For `pagehide` keepalive upload — mirrors gates without re-subscribing on every state change. */
   const localHydratedRef = useRef(false);
@@ -1033,7 +1067,16 @@ export default function Home() {
         payload,
         knownServerUpdatedAt: getLastServerUpdatedAt(uid),
       });
+      if (debugSyncEnabledRef.current) {
+        pushSyncDebugRef.current(
+          "BEACON_SEND",
+          `aid=${payload.activeId ?? "-"} anchor=${payload.runWallAnchorMs ?? "-"}`
+        );
+      }
       if (body.length > KEEPALIVE_BODY_MAX) {
+        if (debugSyncEnabledRef.current) {
+          pushSyncDebugRef.current("BEACON_SKIP_SIZE", String(body.length));
+        }
         return;
       }
       void fetch(`${window.location.origin}/api/dashboard-beacon`, {
@@ -1164,6 +1207,7 @@ export default function Home() {
         .eq("user_id", uid)
         .maybeSingle();
       if (rowErr) {
+        pushSyncDebug("push.read_err", rowErr.message);
         console.error("[nexus] cloud push (read):", rowErr.message);
         return;
       }
@@ -1174,10 +1218,12 @@ export default function Home() {
         userId: uid,
       });
       if (gate === "modal") {
+        pushSyncDebug("push.gate_modal");
         setCloudConflictOpen(true);
         return;
       }
       if (gate === "skip_healed" && row?.updated_at) {
+        pushSyncDebug("push.gate_skip_healed", row.updated_at);
         setLocalDashboardWriteTs(row.updated_at);
         setLastServerUpdatedAt(uid, row.updated_at);
         setCloudConflictOpen(false);
@@ -1191,18 +1237,22 @@ export default function Home() {
         knownServerUpdatedAt: row?.updated_at ?? getLastServerUpdatedAt(uid),
       });
       if (write.kind === "written") {
+        pushSyncDebug("push.written", write.updatedAt);
         setLocalDashboardWriteTs(write.updatedAt);
         setLastServerUpdatedAt(uid, write.updatedAt);
       } else if (write.kind === "stale") {
+        pushSyncDebug("push.stale", write.updatedAt);
         setLastServerUpdatedAt(uid, write.updatedAt);
         setCloudConflictOpen(true);
       } else {
+        pushSyncDebug("push.err", write.message);
         console.error("[nexus] cloud push:", write.message);
       }
     } catch (e) {
+      pushSyncDebug("push.catch", e instanceof Error ? e.message : String(e));
       console.error("[nexus] cloud push:", e);
     }
-  }, []);
+  }, [pushSyncDebug]);
 
   /**
    * Tab hidden: `flushRunnerWallCatchUp` (effect di atas) sudah merge jam dinding → commit state →
@@ -1269,6 +1319,7 @@ export default function Home() {
       return;
     }
 
+    pushSyncDebug("pull.start", opts?.skipVisibilityGate ? "skipVisibilityGate=1" : "visible-only");
     try {
       const supabase = createClient();
       const { data, error } = await supabase
@@ -1278,16 +1329,19 @@ export default function Home() {
         .maybeSingle();
 
       if (error) {
+        pushSyncDebug("pull.read_err", error.message);
         console.error("[nexus] cloud pull:", error.message);
         return;
       }
       if (!data?.updated_at || data.payload === null || data.payload === undefined) {
+        pushSyncDebug("pull.empty");
         return;
       }
 
       const remoteMs = new Date(data.updated_at).getTime();
       const knownMs = new Date(getLastServerUpdatedAt(uid)).getTime();
       if (remoteMs <= knownMs) {
+        pushSyncDebug("pull.skip_old", data.updated_at);
         return;
       }
       const rejectIncomingRunnerRegression = shouldRejectRemoteRunnerRegression({
@@ -1298,6 +1352,7 @@ export default function Home() {
       });
       if (rejectIncomingRunnerRegression) {
         // Keep local runner progress and immediately heal cloud to prevent rollback flicker on reconnect.
+        pushSyncDebug("pull.reject_regression", data.updated_at);
         setLastServerUpdatedAt(uid, data.updated_at);
         void flushSupabaseDashboardPush();
         return;
@@ -1326,6 +1381,7 @@ export default function Home() {
         setRunWallAnchorMs,
       });
       if (ok) {
+        pushSyncDebug("pull.applied", data.updated_at);
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data.payload));
         storageRevRef.current = Math.max(
           storageRevRef.current,
@@ -1341,9 +1397,10 @@ export default function Home() {
         window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
       }
     } catch (e) {
+      pushSyncDebug("pull.err", e instanceof Error ? e.message : String(e));
       console.error("[nexus] cloud pull:", e);
     }
-  }, [flushRunnerWallCatchUp, flushSupabaseDashboardPush]);
+  }, [flushRunnerWallCatchUp, flushSupabaseDashboardPush, pushSyncDebug]);
 
   useEffect(() => {
     if (!user?.id) {
@@ -1585,6 +1642,7 @@ export default function Home() {
             knownServerUpdatedAt: lastServerAck,
           });
           if (rejectIncomingRunnerRegression) {
+            pushSyncDebug("sync.initial.reject_regression", data.updated_at);
             setLastServerUpdatedAt(uid, data.updated_at);
             setCloudConflictOpen(false);
             clearPreferServerAfterLogout();
@@ -1592,6 +1650,7 @@ export default function Home() {
             return;
           }
           if (shouldApplyServer) {
+            pushSyncDebug("sync.initial.apply_server", data.updated_at);
             const ok = applyDashboardFromPersisted(data.payload, {
               todayKey: hydrateTodayKeyFromPayload(data.payload),
               resetEntityDay,
@@ -1631,6 +1690,7 @@ export default function Home() {
               window.setTimeout(() => flushRunnerWallCatchUp({ force: true }), 0);
             }
           } else if (hasCloudVersionConflict(data.updated_at, uid)) {
+            pushSyncDebug("sync.initial.conflict", data.updated_at);
             setCloudConflictOpen(true);
           } else {
             const gate = resolveCloudPushGate({
@@ -1640,10 +1700,12 @@ export default function Home() {
               userId: uid,
             });
             if (gate === "modal") {
+              pushSyncDebug("sync.initial.gate_modal", data.updated_at);
               setCloudConflictOpen(true);
               return;
             }
             if (gate === "skip_healed") {
+              pushSyncDebug("sync.initial.gate_skip_healed", data.updated_at);
               setLocalDashboardWriteTs(data.updated_at);
               setLastServerUpdatedAt(uid, data.updated_at);
               setCloudConflictOpen(false);
@@ -1658,12 +1720,15 @@ export default function Home() {
               nowIso: iso,
             });
             if (write.kind === "written") {
+              pushSyncDebug("sync.initial.write_won", write.updatedAt);
               setLocalDashboardWriteTs(write.updatedAt);
               setLastServerUpdatedAt(uid, write.updatedAt);
             } else if (write.kind === "stale") {
+              pushSyncDebug("sync.initial.write_stale", write.updatedAt);
               setLastServerUpdatedAt(uid, write.updatedAt);
               setCloudConflictOpen(true);
             } else {
+              pushSyncDebug("sync.initial.write_err", write.message);
               console.error("[nexus] cloud upsert:", write.message);
             }
             clearPreferServerAfterLogout();
@@ -1699,7 +1764,14 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [localHydrated, user?.id, authLoading, flushRunnerWallCatchUp, flushSupabaseDashboardPush]);
+  }, [
+    localHydrated,
+    user?.id,
+    authLoading,
+    flushRunnerWallCatchUp,
+    flushSupabaseDashboardPush,
+    pushSyncDebug,
+  ]);
 
   /** Start / pause / switch nexus → push (explicit write). */
   useEffect(() => {
@@ -2911,6 +2983,42 @@ export default function Home() {
           >
             Reset day…
           </button>
+        </div>
+      ) : null}
+      {debugSyncEnabled ? (
+        <div className="pointer-events-none fixed bottom-2 right-2 z-[120] w-[min(92vw,420px)]">
+          <div
+            className={[
+              "pointer-events-auto rounded-xl border p-2 text-[10px] shadow-2xl",
+              isDark
+                ? "border-zinc-700/90 bg-zinc-950/95 text-zinc-100"
+                : "border-zinc-300 bg-white/95 text-zinc-900",
+            ].join(" ")}
+          >
+            <div className="mb-1 flex items-center justify-between gap-2">
+              <p className="font-semibold">Sync Debug</p>
+              <button
+                type="button"
+                onClick={() => setSyncDebugLines([])}
+                className={[
+                  "rounded-md border px-2 py-0.5 text-[10px]",
+                  isDark ? "border-zinc-600 text-zinc-200" : "border-zinc-300 text-zinc-700",
+                ].join(" ")}
+              >
+                Clear
+              </button>
+            </div>
+            <ul className="hide-scrollbar max-h-40 space-y-0.5 overflow-y-auto font-mono leading-tight">
+              {syncDebugLines.length === 0 ? (
+                <li className="opacity-70">No sync events yet.</li>
+              ) : (
+                syncDebugLines
+                  .slice()
+                  .reverse()
+                  .map((line, idx) => <li key={`${idx}-${line}`}>{line}</li>)
+              )}
+            </ul>
+          </div>
         </div>
       ) : null}
 
