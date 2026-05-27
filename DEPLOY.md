@@ -86,6 +86,25 @@ File `vercel.json` di repo sudah mengatur build yang sama.
 - URL default `nama-project.vercel.app` **tidak berubah** selama project Vercel-nya sama.
 - Custom domain (jika pernah dipasang) **tetap mengarah** ke project yang sama — tidak perlu daftar ulang.
 
+### Repo contoh: [gilbew/5nexus](https://github.com/gilbew/5nexus) (dulu Next.js + Supabase)
+
+**Tidak perlu memutus Supabase** sebelum push. Yang terjadi:
+
+| Yang | Perlu diputus? | Keterangan |
+|------|----------------|------------|
+| Project Supabase di dashboard | Tidak | Tetap ada di supabase.com; tidak dipanggil oleh app statis ini |
+| Env `NEXT_PUBLIC_SUPABASE_*` di Vercel | Opsional | Diabaikan oleh `index.html` + `soal-bank.js`; boleh dihapus nanti untuk rapi |
+| Integrasi GitHub di Supabase | Opsional | Hanya untuk migrasi SQL repo lama; tidak mengganggu deploy |
+| Domain `5nexus.diaidia.id` | Tidak | Tetap ke project Vercel yang sama setelah push |
+
+Setelah `git push --force`, ubah **Framework → Other** dan **Root Directory → `.`** di Vercel (lihat tabel di atas). Build lama Next.js tidak dipakai lagi.
+
+```powershell
+cd "c:\Users\gilbe\Desktop\latihan ukom\Latihan UKOM"
+git remote add origin https://github.com/gilbew/5nexus.git
+git push -u origin main --force
+```
+
 ---
 
 ## Opsi 4: Vercel (project baru)
