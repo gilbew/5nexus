@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latihan UKOM — Perencana Ahli Muda</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --text: #1a2332;
+      --muted: #5c6b7a;
+      --accent: #1565c0;
+      --accent-dark: #0d47a1;
+      --ok: #2e7d32;
+      --ok-bg: #e8f5e9;
+      --bad: #c62828;
+      --bad-bg: #ffebee;
+      --border: #dde3ea;
+      --radius: 0.625rem;
+      --shadow: 0 0.125rem 0.75rem rgba(26, 35, 50, 0.08);
+      font-size: 100%;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      font-size: 1rem;
+      line-height: 1.55;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .app {
+      max-width: 42em;
+      margin: 0 auto;
+      padding: 1rem 1rem 2rem;
+    }
+
+    .app.wide { max-width: 56em; }
+
+    header.top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    header.top h1 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .btn-icon {
+      flex-shrink: 0;
+      width: 2.5rem;
+      height: 2.5rem;
+      padding: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 1.125rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.625rem;
+    }
+
+    @media (min-width: 30em) {
+      .stats { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    @media (min-width: 48em) {
+      .stats { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+      .stat { padding: 0.625rem 0.375rem; }
+      .stat-num { font-size: 1.25rem; }
+    }
+
+    .stat {
+      text-align: center;
+      padding: 0.75rem 0.5rem;
+      border-radius: calc(var(--radius) - 0.125rem);
+      background: var(--bg);
+    }
+
+    .stat-num {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+
+    .note {
+      font-size: 0.875rem;
+      color: var(--muted);
+      padding: 0.75rem 1rem;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: var(--radius);
+      margin-bottom: 1rem;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 0.875rem;
+    }
+
+    label.field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    select, input[type="number"] {
+      font: inherit;
+      padding: 0.625rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) - 0.125rem);
+      background: var(--surface);
+      min-height: 2.75rem;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .mode-btn {
+      padding: 0.75rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .mode-btn.active {
+      border-color: var(--accent);
+      background: #e3f2fd;
+      color: var(--accent-dark);
+    }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9375rem;
+    }
+
+    .check-row input { width: 1.125rem; height: 1.125rem; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      padding: 0.75rem 1.25rem;
+      border: none;
+      border-radius: var(--radius);
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 2.75rem;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 1.0625rem;
+    }
+
+    .btn-primary:hover { background: var(--accent-dark); }
+
+    .btn-secondary {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .last-score {
+      font-size: 0.875rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 0.75rem;
+    }
+
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .quiz-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    .timer {
+      font-weight: 700;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer.warn { color: #e65100; }
+    .timer.danger { color: var(--bad); }
+
+    .progress-track {
+      height: 0.375rem;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .q-meta {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .q-stem {
+      font-size: 1.0625rem;
+      margin: 0 0 1.125rem;
+      white-space: pre-wrap;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .opt-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.625rem;
+      width: 100%;
+      padding: 0.75rem 0.875rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .opt-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: #f5f9ff;
+    }
+
+    .opt-btn:disabled { cursor: default; }
+
+    .opt-btn.selected { border-color: var(--accent); background: #e3f2fd; }
+    .opt-btn.correct { border-color: var(--ok); background: var(--ok-bg); }
+    .opt-btn.wrong { border-color: var(--bad); background: var(--bad-bg); }
+
+    .opt-key {
+      flex-shrink: 0;
+      width: 1.75rem;
+      height: 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--bg);
+      font-weight: 700;
+      font-size: 0.875rem;
+    }
+
+    .explain {
+      display: none;
+      padding: 0.875rem 1rem;
+      margin-bottom: 1rem;
+      border-radius: var(--radius);
+      background: #e8eaf6;
+      border-left: 0.25rem solid var(--accent);
+      font-size: 0.9375rem;
+    }
+
+    .explain.show { display: block; }
+
+    .quiz-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .quiz-actions .btn { flex: 1; min-width: 8rem; }
+
+    .result-score {
+      text-align: center;
+      padding: 1.5rem 1rem;
+    }
+
+    .result-score .big {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .result-score .sub {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-top: 0.375rem;
+    }
+
+    .result-detail {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+
+    .latihan-hint {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin: 0 0 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: #fff8e1;
+      border-radius: var(--radius);
+      border-left: 0.2rem solid #f9a825;
+    }
+
+    .exam-layout {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .exam-sidebar {
+      flex: 0 0 10.5rem;
+      position: sticky;
+      top: 0.5rem;
+      padding: 0.75rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .nav-title {
+      margin: 0 0 0.5rem;
+      font-size: 0.8125rem;
+      font-weight: 700;
+    }
+
+    .nav-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 0.625rem;
+    }
+
+    .nav-legend .dot {
+      display: inline-block;
+      width: 0.625rem;
+      height: 0.625rem;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      margin-right: 0.25rem;
+      vertical-align: middle;
+      background: #fff;
+    }
+
+    .nav-legend .dot.answered {
+      background: #e8f5e9;
+      border-color: var(--ok);
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.375rem;
+    }
+
+    .nav-btn {
+      min-height: 2.125rem;
+      padding: 0.25rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      background: #fff;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .nav-btn:hover { border-color: var(--accent); }
+
+    .nav-btn.current {
+      border-color: var(--accent);
+      background: #e3f2fd;
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .nav-btn.answered:not(.current) {
+      background: #e8f5e9;
+      border-color: var(--ok);
+    }
+
+    .quiz-main { flex: 1; min-width: 0; }
+
+    @media (max-width: 40em) {
+      .exam-layout { flex-direction: column; }
+      .exam-sidebar {
+        position: static;
+        flex: none;
+        width: 100%;
+      }
+      .nav-grid { grid-template-columns: repeat(6, 1fr); }
+    }
+
+    .review-head h2 {
+      margin: 0 0 0.375rem;
+      font-size: 1.125rem;
+    }
+
+    .review-note {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin: 0 0 0.75rem;
+    }
+
+    .review-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+
+    .review-item {
+      padding: 1rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .review-item .ri-head {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .review-item .ri-stem {
+      font-weight: 600;
+      margin: 0 0 0.625rem;
+      font-size: 0.9375rem;
+      line-height: 1.45;
+    }
+
+    .review-item .ri-line {
+      font-size: 0.875rem;
+      margin: 0.25rem 0;
+    }
+
+    .review-item .ri-line.ok { color: var(--ok); }
+    .review-item .ri-line.bad { color: var(--bad); }
+    .review-item .ri-line.skip { color: var(--muted); }
+
+    .review-item .ri-explain {
+      margin-top: 0.5rem;
+      padding: 0.625rem 0.75rem;
+      font-size: 0.875rem;
+      background: #e8eaf6;
+      border-radius: var(--radius);
+      border-left: 0.2rem solid var(--accent);
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <h1>Latihan UKOM<br><span style="font-weight:400;font-size:0.875rem;color:var(--muted)">Perencana Ahli Muda</span></h1>
+      <button type="button" class="btn-icon" id="btn-fullscreen" title="Layar penuh" aria-label="Layar penuh">&#x26F6;</button>
+    </header>
+
+    <section id="screen-home" class="screen active">
+      <div class="card">
+        <div class="stats" id="stats-grid">
+          <div class="stat"><span class="stat-num" id="stat-v1">—</span><span class="stat-label">Soal v1</span></div>
+          <div class="stat"><span class="stat-num" id="stat-kasus">—</span><span class="stat-label">Kasus</span></div>
+          <div class="stat"><span class="stat-num" id="stat-pretest">—</span><span class="stat-label">Pre Test</span></div>
+          <div class="stat"><span class="stat-num" id="stat-simulasi">—</span><span class="stat-label">Simulasi</span></div>
+          <div class="stat"><span class="stat-num" id="stat-gap">—</span><span class="stat-label">Gap 1</span></div>
+          <div class="stat"><span class="stat-num" id="stat-gap2">—</span><span class="stat-label">Gap 2</span></div>
+          <div class="stat"><span class="stat-num" id="stat-gap3">—</span><span class="stat-label">Gap 3</span></div>
+          <div class="stat"><span class="stat-num" id="stat-total">—</span><span class="stat-label">Total</span></div>
+        </div>
+      </div>
+
+      <p class="note">Pre Test dari dokumen (jawaban highlight ditinjau ulang)</p>
+
+      <div class="card form-grid">
+        <div>
+          <span class="field" style="margin-bottom:0.375rem">Mode</span>
+          <div class="mode-row">
+            <button type="button" class="mode-btn active" data-mode="latihan">Latihan</button>
+            <button type="button" class="mode-btn" data-mode="ujian">Ujian</button>
+          </div>
+          <p style="font-size:0.8125rem;color:var(--muted);margin:0.5rem 0 0">
+            <span id="mode-hint">Latihan: penjelasan setelah jawab.</span>
+          </p>
+        </div>
+
+        <label class="field">
+          Cluster
+          <select id="filter-cluster">
+            <option value="all">Semua</option>
+            <option value="teknis">Teknis</option>
+            <option value="ekonomi">Ekonomi</option>
+            <option value="sosial">Sosial</option>
+            <option value="spasial">Spasial</option>
+          </select>
+        </label>
+
+        <label class="field">
+          Level
+          <select id="filter-level">
+            <option value="all">Semua</option>
+            <option value="singkat">Singkat</option>
+            <option value="sedang">Sedang</option>
+            <option value="panjang">Panjang</option>
+            <option value="kasus">Kasus</option>
+          </select>
+        </label>
+
+        <label class="field">
+          Sumber
+          <select id="filter-source">
+            <option value="all">Semua</option>
+            <option value="v1">v1</option>
+            <option value="kasus">Kasus</option>
+            <option value="pretest">Pre Test</option>
+            <option value="pretest-varian">Pre Test Varian</option>
+            <option value="simulasi">Simulasi</option>
+            <option value="gap">Gap 1 (pembekalan)</option>
+            <option value="gap2">Gap 2 (pembekalan)</option>
+            <option value="gap3">Gap 3 (pembekalan)</option>
+          </select>
+        </label>
+
+        <label class="field">
+          Jumlah soal per sesi
+          <input type="number" id="session-count" min="1" max="470" value="25">
+        </label>
+
+        <label class="check-row">
+          <input type="checkbox" id="opt-shuffle" checked>
+          Acak urutan soal
+        </label>
+
+        <p id="pool-info" style="font-size:0.875rem;color:var(--muted);margin:0"></p>
+
+        <button type="button" class="btn btn-primary" id="btn-start">Mulai Sesi</button>
+      </div>
+
+      <p class="last-score" id="last-score"></p>
+    </section>
+
+    <section id="screen-quiz" class="screen">
+      <div class="quiz-bar">
+        <span id="quiz-progress">Soal 1 / 25</span>
+        <span id="quiz-timer" class="timer hidden"></span>
+        <button type="button" class="btn btn-secondary" id="btn-quit" style="padding:0.375rem 0.75rem;min-height:auto;font-size:0.8125rem">Keluar</button>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+      <div class="exam-layout" id="exam-layout">
+        <aside class="exam-sidebar hidden" id="exam-sidebar" aria-label="Navigasi soal">
+          <p class="nav-title">Daftar soal</p>
+          <div class="nav-legend">
+            <span><span class="dot answered"></span> Sudah dijawab</span>
+            <span><span class="dot"></span> Belum dijawab</span>
+          </div>
+          <div class="nav-grid" id="nav-grid"></div>
+        </aside>
+
+        <div class="quiz-main">
+          <div class="card">
+            <p class="latihan-hint hidden" id="latihan-hint">Pilih jawaban, lalu tekan <strong>Kunci jawaban</strong> untuk melihat pembahasan.</p>
+            <p class="q-meta" id="q-meta"></p>
+            <p class="q-stem" id="q-stem"></p>
+            <div class="options" id="q-options"></div>
+            <div class="explain" id="q-explain"></div>
+            <div class="quiz-actions">
+              <button type="button" class="btn btn-secondary hidden" id="btn-lock" disabled>Kunci jawaban</button>
+              <button type="button" class="btn btn-secondary hidden" id="btn-prev">Sebelumnya</button>
+              <button type="button" class="btn btn-primary" id="btn-next" disabled>Lanjut</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-review" class="screen">
+      <div class="card review-head">
+        <h2>Review jawaban</h2>
+        <p class="review-note" id="review-note"></p>
+        <button type="button" class="btn btn-secondary" id="review-back">Kembali</button>
+      </div>
+      <div class="review-list" id="review-list"></div>
+    </section>
+
+    <section id="screen-result" class="screen">
+      <div class="card result-score">
+        <div class="big" id="result-pct">0%</div>
+        <div class="sub" id="result-score">0 / 0 benar</div>
+      </div>
+      <p class="result-detail" id="result-detail"></p>
+      <div class="card" style="display:flex;flex-direction:column;gap:0.5rem">
+        <button type="button" class="btn btn-secondary hidden" id="btn-result-review">Review semua soal</button>
+        <button type="button" class="btn btn-primary" id="btn-home">Kembali ke Beranda</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="soal-bank.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var KEYS = ["A", "B", "C", "D", "E"];
+      var STORAGE_KEY = "ukom_last_score";
+      var SEC_PER_Q = 90;
+
+      var state = {
+        mode: "latihan",
+        session: null,
+        timerId: null,
+        timeLeft: 0
+      };
+
+      var BANK_ALL = BANK.map(function (q) {
+        return Object.assign({}, q, { source: "v1" });
+      }).concat(
+        BANK_KASUS.map(function (q) { return Object.assign({}, q, { source: "kasus" }); }),
+        BANK_PRETEST.map(function (q) { return Object.assign({}, q, { source: q.source || "pretest" }); }),
+        BANK_PRETEST_VARIAN.map(function (q) { return Object.assign({}, q, { source: q.source || "pretest-varian" }); }),
+        BANK_SIMULASI.map(function (q) { return Object.assign({}, q, { source: "simulasi" }); }),
+        BANK_GAP.map(function (q) { return Object.assign({}, q, { source: q.source || "gap" }); }),
+        BANK_GAP2.map(function (q) { return Object.assign({}, q, { source: q.source || "gap2" }; }),
+        BANK_GAP3.map(function (q) { return Object.assign({}, q, { source: q.source || "gap3" }); })
+      );
+
+      var $ = function (id) { return document.getElementById(id); };
+
+      function shuffle(arr) {
+        var a = arr.slice();
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+        return a;
+      }
+
+      function showScreen(name) {
+        document.querySelectorAll(".screen").forEach(function (el) {
+          el.classList.toggle("active", el.id === "screen-" + name);
+        });
+        var app = document.querySelector(".app");
+        if (!app) return;
+        var wide = name === "quiz" && state.session && state.session.mode === "ujian";
+        wide = wide || (name === "review");
+        app.classList.toggle("wide", wide);
+      }
+
+      function sourceLabel(src) {
+        var map = { v1: "v1", kasus: "Kasus", pretest: "Pre Test", "pretest-varian": "Pre Test Varian", simulasi: "Simulasi", gap: "Gap 1", gap2: "Gap 2", gap3: "Gap 3" };
+        return map[src] || src;
+      }
+
+      function clusterLabel(c) {
+        return c.charAt(0).toUpperCase() + c.slice(1);
+      }
+
+      function filterPool() {
+        var cluster = $("filter-cluster").value;
+        var level = $("filter-level").value;
+        var source = $("filter-source").value;
+        return BANK_ALL.filter(function (q) {
+          if (cluster !== "all" && q.cluster !== cluster) return false;
+          if (level !== "all" && q.level !== level) return false;
+          if (source !== "all" && q.source !== source) return false;
+          return true;
+        });
+      }
+
+      function updatePoolInfo() {
+        var pool = filterPool();
+        var count = parseInt($("session-count").value, 10) || 25;
+        var max = Math.min(count, pool.length);
+        $("pool-info").textContent = pool.length
+          ? "Tersedia " + pool.length + " soal sesuai filter. Sesi: " + max + " soal."
+          : "Tidak ada soal untuk filter ini. Ubah filter terlebih dahulu.";
+      }
+
+      function initStats() {
+        $("stat-v1").textContent = BANK.length;
+        $("stat-kasus").textContent = BANK_KASUS.length;
+        $("stat-pretest").textContent = BANK_PRETEST.length + "+" + BANK_PRETEST_VARIAN.length;
+        $("stat-simulasi").textContent = BANK_SIMULASI.length;
+        $("stat-gap").textContent = typeof BANK_GAP !== "undefined" ? BANK_GAP.length : 0;
+        $("stat-gap2").textContent = typeof BANK_GAP2 !== "undefined" ? BANK_GAP2.length : 0;
+        $("stat-gap3").textContent = typeof BANK_GAP3 !== "undefined" ? BANK_GAP3.length : 0;
+        $("stat-total").textContent = BANK_ALL.length;
+      }
+
+      function loadLastScore() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          var d = JSON.parse(raw);
+          $("last-score").textContent = "Skor terakhir (" + d.mode + "): " + d.correct + "/" + d.total +
+            " (" + d.pct + "%) — " + d.date;
+        } catch (e) { /* abaikan */ }
+      }
+
+      function saveScore(correct, total, mode) {
+        var pct = total ? Math.round((correct / total) * 100) : 0;
+        var entry = {
+          correct: correct,
+          total: total,
+          pct: pct,
+          mode: mode === "ujian" ? "Ujian" : "Latihan",
+          date: new Date().toLocaleString("id-ID")
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(entry));
+        loadLastScore();
+      }
+
+      function startSession() {
+        var pool = filterPool();
+        var count = parseInt($("session-count").value, 10) || 25;
+        if (!pool.length) {
+          alert("Tidak ada soal untuk filter yang dipilih.");
+          return;
+        }
+        count = Math.min(count, pool.length);
+        var questions = $("opt-shuffle").checked ? shuffle(pool) : pool.slice();
+        questions = questions.slice(0, count);
+
+        state.session = {
+          mode: state.mode,
+          questions: questions,
+          index: 0,
+          answers: [],
+          locked: [],
+          picked: null,
+          answered: false
+        };
+
+        if (state.mode === "ujian") {
+          state.timeLeft = count * SEC_PER_Q;
+          startTimer();
+        } else {
+          stopTimer();
+          $("quiz-timer").classList.add("hidden");
+        }
+
+        showScreen("quiz");
+        renderQuestion();
+      }
+
+      function startTimer() {
+        stopTimer();
+        var el = $("quiz-timer");
+        el.classList.remove("hidden");
+        updateTimerDisplay();
+        state.timerId = setInterval(function () {
+          state.timeLeft--;
+          updateTimerDisplay();
+          if (state.timeLeft <= 0) finishSession(true);
+        }, 1000);
+      }
+
+      function stopTimer() {
+        if (state.timerId) {
+          clearInterval(state.timerId);
+          state.timerId = null;
+        }
+      }
+
+      function updateTimerDisplay() {
+        var el = $("quiz-timer");
+        var m = Math.floor(state.timeLeft / 60);
+        var s = state.timeLeft % 60;
+        el.textContent = "\u23F1 " + m + ":" + (s < 10 ? "0" : "") + s;
+        el.classList.remove("warn", "danger");
+        if (state.timeLeft <= 60) el.classList.add("danger");
+        else if (state.timeLeft <= 180) el.classList.add("warn");
+      }
+
+      function renderQuestion() {
+        var s = state.session;
+        if (!s) return;
+        var q = s.questions[s.index];
+        var total = s.questions.length;
+        var n = s.index + 1;
+        var idx = s.index;
+        var isLatihan = s.mode === "latihan";
+        var isUjian = s.mode === "ujian";
+        var picked = s.answers[idx];
+        var locked = isLatihan && !!s.locked[idx];
+
+        $("exam-sidebar").classList.toggle("hidden", !isUjian);
+        $("latihan-hint").classList.toggle("hidden", !isLatihan);
+        $("btn-lock").classList.toggle("hidden", !isLatihan);
+        $("btn-prev").classList.toggle("hidden", !isUjian);
+        $("btn-prev").disabled = idx === 0;
+
+        $("quiz-progress").textContent = "Soal " + n + " / " + total;
+        $("progress-fill").style.width = ((n - 1) / total * 100) + "%";
+        $("q-meta").textContent = sourceLabel(q.source) + " \u00B7 " + clusterLabel(q.cluster) +
+          " \u00B7 " + q.level + (q.id ? " \u00B7 #" + q.id : "");
+        $("q-stem").textContent = q.stem;
+
+        var optsEl = $("q-options");
+        optsEl.innerHTML = "";
+        q.options.forEach(function (text, i) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "opt-btn";
+          btn.innerHTML = '<span class="opt-key">' + KEYS[i] + '</span><span>' + escapeHtml(text) + '</span>';
+          if (picked === i) btn.classList.add("selected");
+          if (locked) {
+            btn.disabled = true;
+            if (i === q.answer) btn.classList.add("correct");
+            else if (picked === i) btn.classList.add("wrong");
+          }
+          btn.addEventListener("click", function () {
+            if (locked) return;
+            pickAnswer(i);
+          });
+          optsEl.appendChild(btn);
+        });
+
+        var explainEl = $("q-explain");
+        explainEl.classList.remove("show");
+        explainEl.textContent = "";
+        if (locked && q.explain) {
+          explainEl.textContent = q.explain;
+          explainEl.classList.add("show");
+        }
+
+        $("btn-lock").disabled = picked === undefined || picked === null || locked;
+        $("btn-next").disabled = isLatihan && !locked;
+        $("btn-next").textContent = n === total ? "Selesai" : "Lanjut";
+
+        s.picked = picked !== undefined ? picked : null;
+        s.answered = locked;
+
+        if (isUjian) renderNavGrid();
+      }
+
+      function renderNavGrid() {
+        var s = state.session;
+        if (!s || s.mode !== "ujian") return;
+        var grid = $("nav-grid");
+        grid.innerHTML = "";
+        s.questions.forEach(function (q, i) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "nav-btn";
+          if (i === s.index) b.classList.add("current");
+          var ans = s.answers[i];
+          if (ans !== undefined && ans !== null) b.classList.add("answered");
+          b.textContent = String(i + 1);
+          b.addEventListener("click", function () { goToQuestion(i); });
+          grid.appendChild(b);
+        });
+      }
+
+      function goToQuestion(i) {
+        var s = state.session;
+        if (!s || i < 0 || i >= s.questions.length) return;
+        s.index = i;
+        renderQuestion();
+      }
+
+      function escapeHtml(str) {
+        var d = document.createElement("div");
+        d.textContent = str;
+        return d.innerHTML;
+      }
+
+      function pickAnswer(idx) {
+        var s = state.session;
+        if (!s) return;
+        var isLatihan = s.mode === "latihan";
+        if (isLatihan && s.locked[s.index]) return;
+
+        s.picked = idx;
+        s.answers[s.index] = idx;
+
+        var btns = $("q-options").querySelectorAll(".opt-btn");
+        btns.forEach(function (btn, i) {
+          btn.classList.remove("selected", "correct", "wrong");
+          if (i === idx) btn.classList.add("selected");
+        });
+
+        if (isLatihan) {
+          $("btn-lock").disabled = false;
+        } else {
+          renderNavGrid();
+        }
+      }
+
+      function lockAnswer() {
+        var s = state.session;
+        if (!s || s.mode !== "latihan") return;
+        var idx = s.index;
+        if (s.locked[idx]) return;
+        var picked = s.answers[idx];
+        if (picked === undefined || picked === null) return;
+        s.locked[idx] = true;
+        renderQuestion();
+      }
+
+      function nextQuestion() {
+        var s = state.session;
+        if (!s) return;
+
+        if (s.mode === "latihan" && !s.locked[s.index]) {
+          alert("Kunci jawaban terlebih dahulu sebelum lanjut.");
+          return;
+        }
+
+        if (s.index + 1 >= s.questions.length) {
+          finishSession(false);
+          return;
+        }
+
+        s.index++;
+        renderQuestion();
+      }
+
+      function prevQuestion() {
+        var s = state.session;
+        if (!s || s.index <= 0) return;
+        s.index--;
+        renderQuestion();
+      }
+
+      function finishSession(timedOut) {
+        stopTimer();
+        var s = state.session;
+        if (!s) return;
+
+        var correct = 0;
+        s.questions.forEach(function (q, i) {
+          if (s.answers[i] === q.answer) correct++;
+        });
+
+        var total = s.questions.length;
+        var pct = total ? Math.round((correct / total) * 100) : 0;
+
+        $("result-pct").textContent = pct + "%";
+        $("result-score").textContent = correct + " / " + total + " benar";
+        $("result-detail").textContent = (timedOut ? "Waktu habis. " : "") +
+          "Mode " + (s.mode === "ujian" ? "Ujian" : "Latihan") + " \u00B7 " + total + " soal";
+
+        saveScore(correct, total, s.mode);
+        state.lastReview = {
+          mode: s.mode,
+          questions: s.questions,
+          answers: s.answers.slice()
+        };
+        state.session = null;
+        $("btn-result-review").classList.toggle("hidden", s.mode !== "ujian");
+        showScreen("result");
+      }
+
+
+      function renderReview(data) {
+        var list = $("review-list");
+        list.innerHTML = "";
+        if (!data || !data.questions.length) {
+          list.innerHTML = '<p class="review-note">Tidak ada data review.</p>';
+          return;
+        }
+        data.questions.forEach(function (q, i) {
+          var picked = data.answers[i];
+          var item = document.createElement("div");
+          item.className = "review-item";
+          var head = "Soal " + (i + 1) + " \u00B7 " + sourceLabel(q.source) +
+            (q.id ? " #" + q.id : "");
+          var pickedKey = picked !== undefined && picked !== null ? KEYS[picked] : null;
+          var correctKey = KEYS[q.answer];
+          var pickedText = picked !== undefined && picked !== null ? q.options[picked] : "";
+          var correctText = q.options[q.answer];
+          var ok = picked === q.answer;
+          var html = '<p class="ri-head">' + escapeHtml(head) + '</p>' +
+            '<p class="ri-stem">' + escapeHtml(q.stem) + '</p>';
+          if (pickedKey === null) {
+            html += '<p class="ri-line skip">Jawaban Anda: (kosong)</p>';
+          } else {
+            html += '<p class="ri-line ' + (ok ? "ok" : "bad") + '">Jawaban Anda: ' +
+              pickedKey + ". " + escapeHtml(pickedText) + (ok ? " \u2713" : "") + '</p>';
+          }
+          html += '<p class="ri-line ok">Jawaban benar: ' + correctKey + ". " +
+            escapeHtml(correctText) + '</p>';
+          if (q.explain) {
+            html += '<div class="ri-explain"><strong>Pembahasan:</strong> ' +
+              escapeHtml(q.explain) + '</div>';
+          }
+          item.innerHTML = html;
+          list.appendChild(item);
+        });
+      }
+
+      function openReview() {
+        var data = state.lastReview;
+        if (!data) return;
+        state.reviewFrom = "result";
+        $("review-note").textContent = "Hasil ujian \u2014 " + data.questions.length +
+          " soal, jawaban Anda, kunci, dan pembahasan.";
+        renderReview(data);
+        showScreen("review");
+      }
+
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(function () { /* abaikan */ });
+        } else {
+          document.exitFullscreen();
+        }
+      }
+
+      document.querySelectorAll(".mode-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          document.querySelectorAll(".mode-btn").forEach(function (b) { b.classList.remove("active"); });
+          btn.classList.add("active");
+          state.mode = btn.dataset.mode;
+          $("mode-hint").textContent = state.mode === "ujian"
+            ? "Ujian: timer aktif, skor di akhir sesi."
+            : "Latihan: penjelasan setelah jawab.";
+        });
+      });
+
+      ["filter-cluster", "filter-level", "filter-source", "session-count"].forEach(function (id) {
+        $(id).addEventListener("change", updatePoolInfo);
+        $(id).addEventListener("input", updatePoolInfo);
+      });
+
+      $("btn-start").addEventListener("click", startSession);
+      $("btn-next").addEventListener("click", nextQuestion);
+      $("btn-quit").addEventListener("click", function () {
+        if (confirm("Keluar dari sesi? Progress sesi ini tidak disimpan.")) {
+          stopTimer();
+          state.session = null;
+          showScreen("home");
+        }
+      });
+      $("btn-home").addEventListener("click", function () { showScreen("home"); });
+      $("btn-lock").addEventListener("click", lockAnswer);
+      $("btn-prev").addEventListener("click", prevQuestion);
+      $("btn-result-review").addEventListener("click", openReview);
+      $("review-back").addEventListener("click", function () { showScreen("result"); });
+      $("btn-fullscreen").addEventListener("click", toggleFullscreen);
+
+      initStats();
+      updatePoolInfo();
+      loadLastScore();
+    })();
+  </script>
+</body>
+</html>

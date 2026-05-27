@@ -1,0 +1,103 @@
+{
+  "gaps": [
+    {
+      "id": "jfp",
+      "label": "JFP Permen PAN",
+      "re": {},
+      "c": "teknis",
+      "trans": 10,
+      "bah": 0,
+      "bnk": 0
+    },
+    {
+      "id": "eval-ante",
+      "label": "Evaluasi ante ex-post",
+      "re": {},
+      "c": "teknis",
+      "trans": 5,
+      "bah": 0,
+      "bnk": 0
+    },
+    {
+      "id": "ego",
+      "label": "Ego sektoral daerah",
+      "re": {},
+      "c": "teknis",
+      "trans": 10,
+      "bah": 0,
+      "bnk": 0
+    },
+    {
+      "id": "poac",
+      "label": "POAC POIC",
+      "re": {},
+      "c": "teknis",
+      "trans": 5,
+      "bah": 0,
+      "bnk": 0
+    },
+    {
+      "id": "5m",
+      "label": "5M input",
+      "re": {},
+      "c": "teknis",
+      "trans": 2,
+      "bah": 0,
+      "bnk": 0
+    },
+    {
+      "id": "kegagalan",
+      "label": "Kegagalan pasar",
+      "re": {},
+      "c": "ekonomi",
+      "trans": 30,
+      "bah": 0,
+      "bnk": 0
+    },
+    {
+      "id": "public",
+      "label": "Barang publik club common",
+      "re": {},
+      "c": "ekonomi",
+      "trans": 12,
+      "bah": 0,
+      "bnk": 0
+    },
+    {
+      "id": "capabilities",
+      "label": "Capabilities Todaro",
+      "re": {},
+      "c": "ekonomi",
+      "trans": 3,
+      "bah": 0,
+      "bnk": 0
+    },
+    {
+      "id": "permen900",
+      "label": "Permen 900 SIPD",
+      "re": {},
+      "c": "sosial",
+      "trans": 9,
+      "bah": 0,
+      "bnk": 0
+    },
+    {
+      "id": "pendampingan",
+      "label": "Pendampingan fasilitasi",
+      "re": {},
+      "c": "sosial",
+      "trans": 1,
+      "bah": 0,
+      "bnk": 0
+    },
+    {
+      "id": "asas",
+      "label": "Asas perencanaan",
+      "re": {},
+      "c": "spasial",
+      "trans": 2,
+      "bah": 0,
+      "bnk": 0
+    }
+  ]
+}

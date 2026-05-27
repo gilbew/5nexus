@@ -1,0 +1,15 @@
+# Netlify — publish folder Latihan UKOM (set di UI atau root = Latihan UKOM)
+[build]
+  publish = "."
+  command = "node scripts/merge-bank.mjs"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+
+[[headers]]
+  for = "/soal-bank.js"
+  [headers.values]
+    Cache-Control = "public, max-age=300"

@@ -1,0 +1,10 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Node (jika npx serve di lokal)
+node_modules/
+
+# Artefak build sementara
+scripts/_pretest_extract/
