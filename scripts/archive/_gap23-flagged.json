@@ -1,0 +1,2378 @@
+[
+  {
+    "id": "G2-T01",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Permen PPN 3/2011 vs 4/2020",
+    "stem": "Seorang pejabat menilai kinerja Perencana Ahli Muda dengan daftar angka kredit lama, sementara unit kepegawaian meminta penyesuaian ke Permen PANRB 4/2020. Sikap analitis yang paling tepat adalah?",
+    "options": [
+      "Tetap memakai seluruh rincian lama tanpa memetakan substansi ke ketentuan terbaru.",
+      "Menghapus bukti kerja lama tanpa kajian transisi administrasi.",
+      "Membandingkan substansi peran perencana dan memakai ketentuan terbaru untuk penilaian jabatan, sambil memastikan transisi administrasi tidak merugikan pegawai.",
+      "Mengubah jabatan perencana menjadi staf umum agar tidak perlu angka kredit.",
+      "Menyerahkan penilaian hanya pada preferensi atasan langsung tanpa pedoman."
+    ],
+    "answer": 2,
+    "explain": "Permen PPN 3/2011 dapat menjadi konteks historis, tetapi penilaian jabatan harus mengikuti kerangka terbaru yang berlaku dan dikelola secara tertib.",
+    "version": 1
+  },
+  {
+    "id": "G2-T02",
+    "cluster": "teknis",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Permen PPN 3/2011 vs 4/2020",
+    "stem": "Dalam rapat, peserta menyamakan tugas perencana menurut Permen PPN 3/2011 dengan uraian jabatan Permen PANRB 4/2020 tanpa melihat perubahan nomenklatur dan sistem pembinaan. Risiko utama dari cara baca tersebut adalah?",
+    "options": [
+      "Semua regulasi otomatis batal sehingga tidak perlu pedoman jabatan.",
+      "Perencana hanya boleh mengerjakan kegiatan fisik lapangan.",
+      "Dokumen perencanaan tidak lagi membutuhkan analisis data.",
+      "Penilaian kinerja cukup memakai jumlah halaman laporan.",
+      "Terjadi salah tafsir peran, bukti kerja, dan pembinaan karier karena regulasi lama dan baru dipakai tanpa pemetaan substansi."
+    ],
+    "answer": 4,
+    "explain": "Regulasi lama dan baru perlu dibaca secara kontekstual agar substansi tugas, pembinaan, dan bukti kinerja tidak tertukar.",
+    "version": 1
+  },
+  {
+    "id": "G2-T07",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "PP 39/2023 evaluasi",
+    "stem": "Tim pengendalian menemukan program prioritas nasional di daerah tidak mencapai target antara dan ada perbedaan data realisasi antar-OPD. Sesuai semangat evaluasi pembangunan dalam PP 39/2023, langkah paling tepat adalah?",
+    "options": [
+      "Mencatat deviasi sebagai masalah administrasi kecil saja.",
+      "Menunggu akhir RPJMN tanpa koreksi tahunan.",
+      "Menghapus target yang tidak tercapai dari laporan.",
+      "Menggunakan evaluasi untuk menilai capaian, hambatan, dan tindak lanjut perbaikan secara terukur.",
+      "Mengganti semua indikator dengan serapan anggaran."
+    ],
+    "answer": 3,
+    "explain": "Evaluasi pembangunan dipakai untuk mengukur capaian, menjelaskan deviasi, dan mendorong perbaikan pelaksanaan.",
+    "version": 1
+  },
+  {
+    "id": "G2-T08",
+    "cluster": "teknis",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "PP 39/2023 evaluasi",
+    "stem": "Dalam evaluasi semester, perangkat daerah hanya melaporkan foto kegiatan dan SPJ. Informasi minimum yang masih kurang untuk menilai kinerja program adalah?",
+    "options": [
+      "Nama pejabat yang membuka acara.",
+      "Jumlah konsumsi rapat koordinasi.",
+      "Daftar undangan yang tidak hadir.",
+      "Warna desain banner kegiatan.",
+      "Capaian output dan outcome terhadap target, masalah pelaksanaan, serta rencana tindak lanjut."
+    ],
+    "answer": 4,
+    "explain": "Evaluasi memerlukan data capaian terhadap target dan penjelasan deviasi, bukan sekadar bukti aktivitas.",
+    "version": 1
+  },
+  {
+    "id": "G2-T09",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Musrenbang tahapan",
+    "stem": "Dalam tahapan musrenbang, kelurahan mengusulkan banyak kegiatan, tetapi sebagian tidak sesuai prioritas RKPD dan kewenangan daerah. Peran perencana yang paling tepat sebelum forum kabupaten adalah?",
+    "options": [
+      "Memverifikasi kesesuaian usulan dengan masalah, kewenangan, prioritas, pagu indikatif, dan data teknis.",
+      "Menerima seluruh usulan agar tidak ada warga kecewa.",
+      "Menghapus semua usulan masyarakat karena mengganggu program OPD.",
+      "Menyerahkan keputusan ke kontraktor pembangunan.",
+      "Mengubah usulan menjadi belanja pegawai agar mudah diserap."
+    ],
+    "answer": 0,
+    "explain": "Usulan musrenbang perlu disaring secara teknokratis dan partisipatif agar selaras dengan kewenangan serta prioritas.",
+    "version": 1
+  },
+  {
+    "id": "G2-T10",
+    "cluster": "teknis",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Musrenbang tahapan",
+    "stem": "Pada forum perangkat daerah, dua OPD mengklaim kegiatan pemberdayaan UMKM yang sama. Agar musrenbang tidak menjadi daftar belanja ganda, keluaran yang harus dihasilkan adalah?",
+    "options": [
+      "Daftar semua usulan tanpa penanggung jawab.",
+      "Matriks kesepakatan program, lokasi, sasaran, indikator, penanggung jawab, dan sumber pendanaan.",
+      "Notulen singkat tanpa keputusan.",
+      "Surat larangan usulan baru dari masyarakat.",
+      "Poster prioritas daerah."
+    ],
+    "answer": 1,
+    "explain": "Forum perangkat daerah harus menajamkan program dan membagi peran agar tidak terjadi duplikasi kegiatan.",
+    "version": 1
+  },
+  {
+    "id": "G2-T11",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "RKP sinkronisasi",
+    "stem": "Pemerintah daerah menyusun RKPD dengan prioritas pengentasan kemiskinan, tetapi RKP tahun berjalan menekankan stunting, ketahanan pangan, dan produktivitas. Sinkronisasi yang paling tepat adalah?",
+    "options": [
+      "Menyalin semua program pusat tanpa melihat masalah daerah.",
+      "Menolak prioritas nasional karena RKPD sepenuhnya otonom.",
+      "Mencari irisan sasaran, indikator, lokasi prioritas, dan dukungan pendanaan agar prioritas nasional dan daerah saling menguatkan.",
+      "Menghapus program kemiskinan dari daerah.",
+      "Menyusun RKPD setelah APBD selesai."
+    ],
+    "answer": 2,
+    "explain": "Sinkronisasi RKP-RKPD bukan sekadar menyalin, tetapi menyelaraskan prioritas nasional dengan kebutuhan dan kewenangan daerah.",
+    "version": 1
+  },
+  {
+    "id": "G2-T12",
+    "cluster": "teknis",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "RKP sinkronisasi",
+    "stem": "Jika kegiatan daerah tidak tercantum sebagai prioritas nasional tetapi langsung menjawab masalah mendesak daerah, bagaimana perencana sebaiknya menempatkannya dalam RKPD?",
+    "options": [
+      "Wajib dihapus karena semua kegiatan harus identik dengan RKP.",
+      "Dimasukkan tanpa indikator agar fleksibel.",
+      "Dipindahkan ke belanja tidak terduga tanpa kajian.",
+      "Tetap dapat diusulkan jika berbasis data, sesuai kewenangan, mendukung sasaran daerah, dan tidak bertentangan dengan prioritas nasional.",
+      "Disembunyikan dari forum publik."
+    ],
+    "answer": 3,
+    "explain": "Otonomi daerah tetap memberi ruang prioritas lokal, selama konsisten dengan kerangka pembangunan dan bukti kebutuhan.",
+    "version": 1
+  },
+  {
+    "id": "G2-T13",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Ego dalam revisi RKPD",
+    "stem": "Saat revisi RKPD, beberapa OPD meminta tambahan kegiatan sendiri-sendiri dengan alasan arahan pimpinan, tetapi tidak menunjukkan perubahan asumsi makro atau kebutuhan mendesak. Ini menunjukkan risiko apa?",
+    "options": [
+      "Peningkatan akuntabilitas karena semua OPD bebas menambah kegiatan.",
+      "Kegagalan pasar barang publik murni.",
+      "Evaluasi ex post yang terlalu ketat.",
+      "Kelebihan kapasitas fiskal daerah.",
+      "Ego sektoral yang memanfaatkan revisi untuk memasukkan agenda OPD tanpa dasar perubahan kebijakan yang jelas."
+    ],
+    "answer": 4,
+    "explain": "Revisi RKPD harus berbasis perubahan asumsi atau kebutuhan prioritas, bukan sekadar kanal tambahan agenda sektoral.",
+    "version": 1
+  },
+  {
+    "id": "G2-T14",
+    "cluster": "teknis",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Ego dalam revisi RKPD",
+    "stem": "Kabupaten hulu menolak memasukkan kegiatan konservasi daerah aliran sungai dalam perubahan RKPD karena manfaat banjir lebih terasa di kota hilir. Instrumen perencanaan yang paling relevan untuk mengurangi ego daerah adalah?",
+    "options": [
+      "Menyusun kerja sama antardaerah dengan pembagian manfaat-biaya, indikator lintas wilayah, dan dukungan provinsi.",
+      "Menunda kegiatan sampai kota hilir membayar seluruh biaya tanpa kesepakatan.",
+      "Mengubah batas administrasi secara sepihak.",
+      "Menghapus data banjir lintas wilayah.",
+      "Membiarkan setiap daerah menyusun program drainase lokal saja."
+    ],
+    "answer": 0,
+    "explain": "Masalah eksternalitas lintas wilayah membutuhkan koordinasi dan pembagian manfaat-biaya antardaerah.",
+    "version": 1
+  },
+  {
+    "id": "G2-T15",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "POIC failure cases",
+    "stem": "Program satu data daerah gagal karena rencana sudah ada, tetapi tidak ada pembagian steward data, jadwal pemutakhiran, atau forum penyelesaian perbedaan angka. Fungsi POIC yang paling lemah adalah?",
+    "options": [
+      "Planning karena tujuan belum pernah ditulis sama sekali.",
+      "Organizing karena peran, struktur koordinasi, dan tanggung jawab data tidak dibentuk.",
+      "Actuating karena kegiatan lapangan terlalu banyak.",
+      "Controlling karena target selalu melampaui realisasi.",
+      "Budgeting karena semua anggaran habis."
+    ],
+    "answer": 1,
+    "explain": "Kegagalan membagi peran dan alur kerja menunjukkan masalah organizing.",
+    "version": 1
+  },
+  {
+    "id": "G2-T16",
+    "cluster": "teknis",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "POIC failure cases",
+    "stem": "Sebuah program padat karya memiliki tim lengkap dan SOP, tetapi kepala bidang tidak pernah menggerakkan pelaksana, jadwal sosialisasi mundur, dan kelompok sasaran tidak dihubungi. Fungsi POIC yang paling bermasalah adalah?",
+    "options": [
+      "Planning, karena tidak ada dokumen sama sekali.",
+      "Organizing, karena struktur pasti tidak ada.",
+      "Actuating, karena pelaksanaan dan penggerakan sumber daya tidak berjalan.",
+      "Controlling, karena evaluasi akhir terlalu rinci.",
+      "Forecasting, karena harga bahan berubah."
+    ],
+    "answer": 2,
+    "explain": "Actuating berkaitan dengan menggerakkan orang dan melaksanakan kegiatan sesuai rencana.",
+    "version": 1
+  },
+  {
+    "id": "G2-T17",
+    "cluster": "teknis",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "POIC failure cases",
+    "stem": "Pada akhir triwulan, realisasi fisik irigasi turun jauh dari target, tetapi manajer program hanya menunggu laporan akhir tahun. Fungsi POIC yang gagal diterapkan adalah?",
+    "options": [
+      "Planning karena target terlalu jelas.",
+      "Organizing karena semua staf punya tugas.",
+      "Actuating karena kontrak sudah berjalan.",
+      "Controlling karena deviasi tidak dipantau dan tidak ada koreksi tepat waktu.",
+      "Staffing karena pegawai terlalu banyak."
+    ],
+    "answer": 3,
+    "explain": "Controlling menuntut pemantauan deviasi dan tindakan korektif saat program berjalan.",
+    "version": 1
+  },
+  {
+    "id": "G2-T18",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Logframe",
+    "stem": "Dalam logframe program sanitasi, kegiatan pembangunan septic tank komunal sudah selesai, tetapi perilaku buang air besar sembarangan belum berubah. Bagian logika yang perlu diuji terutama adalah?",
+    "options": [
+      "Apakah input kas daerah cukup untuk membayar honor rapat.",
+      "Apakah judul program sudah panjang.",
+      "Apakah semua foto kegiatan berwarna.",
+      "Apakah jumlah halaman laporan meningkat.",
+      "Apakah output fisik cukup terhubung dengan outcome perubahan perilaku melalui edukasi, operasi, dan pemeliharaan."
+    ],
+    "answer": 4,
+    "explain": "Logframe menguji hubungan kegiatan-output-outcome serta asumsi yang diperlukan agar hasil terjadi.",
+    "version": 1
+  },
+  {
+    "id": "G2-T19",
+    "cluster": "teknis",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Logframe",
+    "stem": "Sebuah logframe mencantumkan tujuan 'petani sejahtera', output 'pelatihan 20 kali', indikator outcome 'jumlah peserta hadir', dan asumsi 'cuaca baik'. Kelemahan paling substantif adalah?",
+    "options": [
+      "Indikator outcome masih berupa output kehadiran sehingga belum mengukur perubahan kapasitas atau pendapatan petani.",
+      "Asumsi cuaca selalu tidak relevan untuk pertanian.",
+      "Pelatihan tidak boleh menjadi kegiatan program.",
+      "Tujuan petani sejahtera terlalu sempit untuk daerah.",
+      "Logframe tidak boleh memuat asumsi."
+    ],
+    "answer": 0,
+    "explain": "Indikator outcome harus menggambarkan perubahan pada sasaran, bukan hanya aktivitas atau kehadiran.",
+    "version": 1
+  },
+  {
+    "id": "G2-T20",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "5M market",
+    "stem": "Program olahan ikan memiliki mesin, pelatih, modal, dan SOP produksi, tetapi produk menumpuk karena kemasan tidak sesuai selera pembeli dan kanal pemasaran lemah. Dalam 5M, gap utama berada pada?",
+    "options": [
+      "Man karena jumlah pegawai pemerintah kurang.",
+      "Market karena kebutuhan pembeli, akses pasar, dan informasi permintaan belum dipenuhi.",
+      "Money karena semua masalah selalu anggaran.",
+      "Machine karena mesin pasti rusak.",
+      "Method karena tidak ada prosedur produksi sama sekali."
+    ],
+    "answer": 1,
+    "explain": "Aspek market menilai permintaan, pelanggan, saluran pemasaran, dan informasi pasar.",
+    "version": 1
+  },
+  {
+    "id": "G2-T21",
+    "cluster": "teknis",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "5M market",
+    "stem": "Ketika menganalisis kesiapan sentra kopi, perencana menemukan petani punya lahan dan alat, tetapi tidak tahu standar mutu roaster dan jadwal permintaan. Rekomendasi 5M yang paling tepat adalah?",
+    "options": [
+      "Membeli gedung kantor baru untuk sekretariat.",
+      "Mengurangi pelatihan mutu karena pasar tidak penting.",
+      "Memperbaiki aspek market melalui riset pembeli, kontrak pemasaran, standardisasi mutu, dan informasi harga.",
+      "Mengganti semua varietas tanpa uji coba.",
+      "Menghapus indikator penjualan."
+    ],
+    "answer": 2,
+    "explain": "Kesenjangan utama adalah hubungan dengan pasar dan standar permintaan, sehingga intervensi harus menutup gap market.",
+    "version": 1
+  },
+  {
+    "id": "G2-T22",
+    "cluster": "teknis",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "SMART kecuali",
+    "stem": "Indikator 'jumlah UMKM naik dari 1.000 menjadi 1.200 pada 2026 melalui pendampingan legalitas' sudah spesifik, terukur, relevan, dan berbatas waktu. Unsur SMART yang masih perlu diuji paling kuat adalah?",
+    "options": [
+      "Specific, karena angka dan sasaran belum ada.",
+      "Measurable, karena tidak ada satuan.",
+      "Time-bound, karena tahun tidak disebutkan.",
+      "Achievable, karena perlu dibandingkan dengan baseline, kapasitas pendamping, dan tren usaha.",
+      "Relevant, karena UMKM tidak terkait ekonomi daerah."
+    ],
+    "answer": 3,
+    "explain": "Achievable harus diuji terhadap kapasitas, tren, dan sumber daya, meski unsur lain sudah tampak.",
+    "version": 1
+  },
+  {
+    "id": "G2-T24",
+    "cluster": "teknis",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "PP 39/2023 evaluasi",
+    "stem": "Dalam evaluasi program prioritas, capaian output tinggi tetapi outcome tidak bergerak. Pertanyaan evaluatif yang paling tajam adalah?",
+    "options": [
+      "Apakah kegiatan menghasilkan output yang tepat, menjangkau sasaran yang benar, dan cukup kuat untuk memengaruhi outcome.",
+      "Apakah laporan memiliki banyak lampiran foto.",
+      "Apakah semua pegawai sudah menandatangani daftar hadir.",
+      "Apakah nama program terdengar menarik.",
+      "Apakah serapan anggaran bisa menjadi satu-satunya indikator."
+    ],
+    "answer": 0,
+    "explain": "Evaluasi kinerja perlu menguji rantai output-outcome dan ketepatan sasaran.",
+    "version": 1
+  },
+  {
+    "id": "G2-T25",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Musrenbang tahapan",
+    "stem": "Hasil musrenbang kecamatan memuat usulan jalan usaha tani di kawasan yang menurut RTRW masuk zona lindung. Respons perencana yang paling tepat adalah?",
+    "options": [
+      "Meloloskan usulan karena didukung banyak peserta.",
+      "Meminta penyesuaian lokasi atau desain berdasarkan tata ruang, fungsi lindung, dan alternatif kebutuhan akses.",
+      "Menolak tanpa memberi penjelasan teknis.",
+      "Mengubah peta tata ruang di notulen musrenbang.",
+      "Menyerahkan langsung ke kontraktor."
+    ],
+    "answer": 1,
+    "explain": "Musrenbang tetap harus konsisten dengan tata ruang dan mencari alternatif yang menjawab kebutuhan tanpa melanggar fungsi lindung.",
+    "version": 1
+  },
+  {
+    "id": "G2-E02",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Kegagalan pasar mixed cases",
+    "stem": "Pemerintah ingin mengembangkan kawasan industri halal, tetapi investor menunggu kepastian pemasok, pemasok menunggu pembeli, dan lembaga sertifikasi belum siap. Ini terutama menggambarkan?",
+    "options": [
+      "Barang private murni sehingga pemerintah tidak boleh terlibat.",
+      "Price ceiling yang menyebabkan surplus barang.",
+      "Giffen good karena permintaan naik saat harga naik.",
+      "Phillips curve jangka pendek.",
+      "Kegagalan koordinasi yang dapat diatasi dengan fasilitasi rantai nilai, standar, dan informasi pasar."
+    ],
+    "answer": 4,
+    "explain": "Keputusan para pelaku saling bergantung sehingga pasar tidak bergerak tanpa koordinasi awal.",
+    "version": 1
+  },
+  {
+    "id": "G2-E03",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Kegagalan pasar mixed cases",
+    "stem": "Di kawasan wisata, pelaku usaha membuang sampah ke pantai karena biaya pembersihan ditanggung masyarakat dan pemerintah. Intervensi yang paling tepat adalah?",
+    "options": [
+      "Standar pengelolaan limbah, retribusi atau denda berbasis pencemar, dan pengawasan kolektif.",
+      "Subsidi sampah tanpa kewajiban perubahan perilaku.",
+      "Menghapus seluruh usaha wisata.",
+      "Menetapkan harga maksimum kamar hotel.",
+      "Mencetak brosur tanpa penegakan aturan."
+    ],
+    "answer": 0,
+    "explain": "Biaya sosial tidak masuk ke keputusan usaha, sehingga perlu internalisasi eksternalitas negatif.",
+    "version": 1
+  },
+  {
+    "id": "G2-E04",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "Merit goods",
+    "stem": "Pendidikan dasar sering dikategorikan sebagai merit good. Alasan kebijakan publik yang paling tepat adalah?",
+    "options": [
+      "Pendidikan selalu non-rival dan mustahil mengecualikan siswa.",
+      "Manfaat sosial pendidikan lebih besar dari manfaat privat dan masyarakat dapat mengonsumsi terlalu sedikit jika dibiarkan murni pasar.",
+      "Pendidikan hanya bermanfaat untuk sekolah swasta.",
+      "Pendidikan adalah barang inferior yang harus dibatasi.",
+      "Pendidikan tidak memiliki dampak lintas generasi."
+    ],
+    "answer": 1,
+    "explain": "Merit good layak didorong negara karena manfaat sosial dan jangka panjangnya sering kurang dihargai individu.",
+    "version": 1
+  },
+  {
+    "id": "G2-E05",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Merit goods",
+    "stem": "Vaksinasi anak di daerah terpencil rendah karena keluarga meremehkan risiko penyakit dan biaya perjalanan tinggi. Kebijakan merit good yang paling tepat adalah?",
+    "options": [
+      "Menunggu permintaan pasar naik sendiri.",
+      "Menjual vaksin hanya kepada keluarga mampu.",
+      "Menyediakan layanan jemput bola, subsidi biaya akses, edukasi risiko, dan pencatatan sasaran.",
+      "Menurunkan standar keamanan vaksin.",
+      "Menghapus kampanye karena pilihan individu mutlak."
+    ],
+    "answer": 2,
+    "explain": "Untuk merit good, pemerintah dapat mengatasi under-consumption melalui penyediaan, subsidi, dan informasi.",
+    "version": 1
+  },
+  {
+    "id": "G2-E08",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "DLQ",
+    "stem": "Analisis Dynamic Location Quotient menunjukkan sektor pengolahan makanan memiliki DLQ lebih dari 1 meski LQ saat ini masih di bawah 1. Interpretasi paling hati-hati adalah?",
+    "options": [
+      "Sektor belum basis saat ini, tetapi punya kecenderungan tumbuh lebih cepat dan berpotensi menjadi basis.",
+      "Sektor pasti sudah basis dan tidak perlu dukungan.",
+      "Sektor harus ditutup karena DLQ lebih dari 1.",
+      "Sektor hanya cocok untuk belanja aparatur.",
+      "DLQ tidak terkait dinamika pertumbuhan sektor."
+    ],
+    "answer": 0,
+    "explain": "DLQ memberi sinyal dinamika perubahan relatif, bukan hanya posisi basis saat ini.",
+    "version": 1
+  },
+  {
+    "id": "G2-E09",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "DLQ",
+    "stem": "Jika sektor perikanan memiliki LQ tinggi tetapi DLQ di bawah 1 selama beberapa tahun, rekomendasi perencana yang paling tepat adalah?",
+    "options": [
+      "Menganggap sektor pasti tumbuh cepat selamanya.",
+      "Mewaspadai pelemahan daya saing relatif dan menguji faktor produktivitas, pasar, serta keberlanjutan stok.",
+      "Menghapus seluruh program perikanan tanpa analisis.",
+      "Menjadikan DLQ sebagai indikator kemiskinan rumah tangga.",
+      "Mengabaikan tren karena LQ cukup satu kali."
+    ],
+    "answer": 1,
+    "explain": "LQ tinggi menunjukkan basis saat ini, tetapi DLQ rendah memberi peringatan dinamika relatif melemah.",
+    "version": 1
+  },
+  {
+    "id": "G2-E10",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "Shift-share intro",
+    "stem": "Dalam shift-share, pertumbuhan sektor daerah dipisah menjadi pengaruh pertumbuhan wilayah acuan, struktur industri, dan daya saing lokal. Kegunaan utamanya adalah?",
+    "options": [
+      "Menentukan warna peta administrasi.",
+      "Menghitung angka kemiskinan individu.",
+      "Membedakan apakah pertumbuhan sektor karena tren umum, komposisi sektor, atau keunggulan kompetitif daerah.",
+      "Menetapkan harga maksimum pasar.",
+      "Mengukur kepuasan layanan publik."
+    ],
+    "answer": 2,
+    "explain": "Shift-share membantu mengurai sumber pertumbuhan sektor secara relatif.",
+    "version": 1
+  },
+  {
+    "id": "G2-E11",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Shift-share intro",
+    "stem": "Sektor akomodasi daerah tumbuh tinggi, tetapi provinsi secara umum juga mengalami boom pariwisata. Analisis shift-share diperlukan agar perencana tidak keliru menyimpulkan bahwa?",
+    "options": [
+      "Pertumbuhan pariwisata tidak terkait tren provinsi sama sekali.",
+      "Data sektoral tidak bisa dibandingkan.",
+      "Pertumbuhan tinggi selalu berarti ketimpangan turun.",
+      "Seluruh pertumbuhan sektor otomatis dianggap unggulan lokal tanpa analisis komponen.",
+      "Akomodasi adalah barang publik."
+    ],
+    "answer": 3,
+    "explain": "Shift-share memisahkan efek tren umum dari keunggulan lokal.",
+    "version": 1
+  },
+  {
+    "id": "G2-E12",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "ICOR interpret",
+    "stem": "Sebuah daerah memiliki ICOR meningkat dari 4 menjadi 7, sementara pertumbuhan ekonomi melambat. Interpretasi kebijakan yang paling masuk akal adalah?",
+    "options": [
+      "Investasi makin efisien karena butuh lebih banyak modal untuk pertumbuhan yang sama.",
+      "ICOR tidak pernah terkait produktivitas modal.",
+      "Pertumbuhan pasti akan melonjak tanpa perbaikan.",
+      "Belanja modal harus dihentikan permanen.",
+      "Efisiensi investasi menurun sehingga perlu menilai kualitas proyek, waktu konstruksi, dan hambatan produktivitas."
+    ],
+    "answer": 4,
+    "explain": "ICOR lebih tinggi biasanya menunjukkan kebutuhan investasi lebih besar untuk menghasilkan tambahan output yang sama.",
+    "version": 1
+  },
+  {
+    "id": "G2-E13",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "ICOR interpret",
+    "stem": "Jika ICOR rendah tetapi layanan dasar belum membaik, kehati-hatian analitis yang diperlukan adalah?",
+    "options": [
+      "Memeriksa apakah pertumbuhan terkonsentrasi pada sektor tertentu dan tidak otomatis meningkatkan kesejahteraan luas.",
+      "Langsung menyimpulkan semua investasi sudah inklusif.",
+      "Mengabaikan indikator sosial karena ICOR cukup.",
+      "Menurunkan seluruh pajak tanpa kajian.",
+      "Menghapus belanja kesehatan."
+    ],
+    "answer": 0,
+    "explain": "Efisiensi modal secara agregat tidak selalu berarti manfaat pembangunan terdistribusi merata.",
+    "version": 1
+  },
+  {
+    "id": "G2-E14",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Gini policy",
+    "stem": "Rasio Gini daerah naik meski PDRB tumbuh karena pekerjaan baru terkonsentrasi pada tenaga berpendidikan tinggi. Paket kebijakan yang paling sesuai adalah?",
+    "options": [
+      "Menaikkan PDRB saja tanpa melihat distribusi.",
+      "Meningkatkan akses pendidikan dan pelatihan, perlindungan sosial adaptif, serta dukungan UMKM produktif.",
+      "Menghapus data ketimpangan agar investasi masuk.",
+      "Membatasi sekolah hanya untuk kelompok kaya.",
+      "Menetapkan semua harga sama di seluruh pasar."
+    ],
+    "answer": 1,
+    "explain": "Ketimpangan membutuhkan intervensi pada akses kemampuan, kesempatan kerja, dan perlindungan kelompok rentan.",
+    "version": 1
+  },
+  {
+    "id": "G2-E15",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Gini policy",
+    "stem": "Dua kecamatan memiliki kemiskinan sama, tetapi kecamatan A memiliki Gini jauh lebih tinggi. Implikasi perencanaan yang paling tepat adalah?",
+    "options": [
+      "A cukup diberi program rata-rata tanpa targeting.",
+      "Gini tinggi berarti semua orang miskin sama rata.",
+      "A membutuhkan analisis distribusi manfaat dan desain program yang menjangkau kelompok terbawah, bukan hanya menaikkan rata-rata pendapatan.",
+      "Kecamatan B harus dihapus dari prioritas.",
+      "Ketimpangan tidak relevan untuk kebijakan daerah."
+    ],
+    "answer": 2,
+    "explain": "Gini membantu melihat sebaran pendapatan sehingga program perlu menarget kelompok yang tertinggal.",
+    "version": 1
+  },
+  {
+    "id": "G2-E16",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Phillips policy tradeoff",
+    "stem": "Inflasi pangan naik tajam, tetapi pengangguran terbuka juga tinggi. Dilema kebijakan yang paling sesuai dengan trade-off Phillips jangka pendek adalah?",
+    "options": [
+      "Inflasi dan pengangguran selalu turun bersamaan tanpa biaya.",
+      "Pemerintah daerah dapat mencetak uang sendiri untuk semua masalah.",
+      "Pengangguran tidak dipengaruhi kondisi permintaan.",
+      "Menekan inflasi terlalu agresif dapat memperlambat kegiatan ekonomi, tetapi membiarkan inflasi tinggi merusak daya beli.",
+      "Harga pangan tidak terkait kesejahteraan."
+    ],
+    "answer": 3,
+    "explain": "Dalam jangka pendek terdapat dilema antara stabilisasi harga dan aktivitas ekonomi, meski tidak mekanis dalam semua situasi.",
+    "version": 1
+  },
+  {
+    "id": "G2-E17",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "Phillips policy tradeoff",
+    "stem": "Respons daerah yang paling proporsional saat inflasi cabai tinggi karena pasokan terganggu adalah?",
+    "options": [
+      "Membekukan semua harga selamanya.",
+      "Melarang petani menjual ke luar daerah tanpa kajian.",
+      "Menghapus survei harga.",
+      "Menurunkan upah semua pekerja.",
+      "Memperbaiki distribusi, operasi pasar terbatas, informasi harga, dan dukungan produksi tanpa mematikan insentif petani."
+    ],
+    "answer": 4,
+    "explain": "Inflasi pasokan lebih tepat direspons dengan perbaikan distribusi dan pasokan, bukan kontrol harga ekstrem.",
+    "version": 1
+  },
+  {
+    "id": "G2-E18",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Chenery applied",
+    "stem": "Daerah agraris mulai mengalami kenaikan produktivitas pertanian, tumbuhnya agroindustri, urbanisasi kota kecil, dan peningkatan pendidikan tenaga kerja. Dalam kerangka Chenery, gejala ini terutama menunjukkan?",
+    "options": [
+      "Transformasi struktural melalui akumulasi, realokasi sumber daya, dan perubahan permintaan.",
+      "Kegagalan pemerintah karena semua perubahan dilarang.",
+      "Price ceiling pasar tenaga kerja.",
+      "Barang publik murni tanpa rivalitas.",
+      "Tragedy of the commons."
+    ],
+    "answer": 0,
+    "explain": "Chenery menekankan pola transformasi seiring pembangunan: akumulasi, realokasi, urbanisasi, dan perubahan struktur permintaan.",
+    "version": 1
+  },
+  {
+    "id": "G2-E19",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Chenery applied",
+    "stem": "Jika industrialisasi daerah terjadi tanpa peningkatan keterampilan lokal, banyak tenaga kerja hanya masuk pekerjaan informal rendah upah. Pelajaran Chenery yang relevan adalah?",
+    "options": [
+      "Pendidikan tidak berhubungan dengan industrialisasi.",
+      "Transformasi sektor perlu diikuti akumulasi modal manusia agar perubahan struktur menghasilkan produktivitas dan kesejahteraan.",
+      "Pekerja informal harus segera dipindah ke sektor formal tanpa transisi.",
+      "PDRB saja dianggap cukup tanpa indikator kesejahteraan tenaga kerja.",
+      "Urbanisasi selalu harus dihentikan."
+    ],
+    "answer": 1,
+    "explain": "Akumulasi modal manusia penting agar transformasi struktural tidak meninggalkan tenaga kerja lokal.",
+    "version": 1
+  },
+  {
+    "id": "G2-E20",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "Klassen policy",
+    "stem": "Daerah maju tetapi tertekan dalam tipologi Klassen paling membutuhkan strategi apa?",
+    "options": [
+      "Fokus hanya pada bantuan darurat karena semua indikator rendah.",
+      "Mengabaikan sektor basis karena pendapatan tinggi.",
+      "Menjaga sektor lama sambil melakukan diversifikasi, inovasi, dan peningkatan produktivitas agar pertumbuhan pulih.",
+      "Menghapus investasi baru.",
+      "Menurunkan kualitas layanan dasar."
+    ],
+    "answer": 2,
+    "explain": "Daerah maju tertekan memiliki pendapatan relatif tinggi tetapi pertumbuhan rendah, sehingga perlu pembaruan mesin pertumbuhan.",
+    "version": 1
+  },
+  {
+    "id": "G2-E21",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Klassen policy",
+    "stem": "Kabupaten dengan pertumbuhan tinggi tetapi PDRB per kapita masih rendah sebaiknya tidak hanya mengejar proyek besar, tetapi juga?",
+    "options": [
+      "Mengunci semua lahan untuk spekulasi.",
+      "Mengurangi data sektoral agar cepat mengambil keputusan.",
+      "Menolak investasi karena statusnya belum maju.",
+      "Memperkuat kualitas pekerjaan, konektivitas, SDM, dan linkage lokal agar pertumbuhan mengejar pendapatan warga.",
+      "Menaikkan harga kebutuhan pokok."
+    ],
+    "answer": 3,
+    "explain": "Daerah berkembang cepat perlu memastikan pertumbuhan berujung pada peningkatan pendapatan dan produktivitas lokal.",
+    "version": 1
+  },
+  {
+    "id": "G2-E22",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Government failure corruption",
+    "stem": "Bantuan alat pertanian diberikan melalui kontraktor yang dipilih karena kedekatan politik. Alat tidak sesuai kebutuhan petani dan harga jauh di atas pasar. Ini contoh?",
+    "options": [
+      "Eksternalitas positif yang berhasil.",
+      "Barang publik murni karena alat dipakai individu.",
+      "Giffen good karena harga naik.",
+      "Kegagalan koordinasi tanpa unsur tata kelola.",
+      "Government failure akibat korupsi, rent seeking, dan desain pengadaan yang tidak berbasis kebutuhan."
+    ],
+    "answer": 4,
+    "explain": "Korupsi dan rente dapat membuat intervensi pemerintah lebih mahal dan tidak efektif.",
+    "version": 1
+  },
+  {
+    "id": "G2-E23",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Government failure corruption",
+    "stem": "Regulasi pasar tradisional dibuat untuk melindungi pedagang kecil, tetapi oknum menarik biaya informal untuk mendapatkan kios. Evaluasi kebijakan yang paling tepat adalah?",
+    "options": [
+      "Regulasi perlu diaudit karena tujuan perlindungan berubah menjadi rente dan eksklusi akses.",
+      "Biaya informal selalu meningkatkan efisiensi.",
+      "Pedagang kecil tidak boleh dilibatkan.",
+      "Semua pasar harus ditutup.",
+      "Masalah tersebut murni akibat permintaan konsumen."
+    ],
+    "answer": 0,
+    "explain": "Kebijakan publik dapat gagal ketika implementasi membuka pungli dan menghambat kelompok sasaran.",
+    "version": 1
+  },
+  {
+    "id": "G2-E24",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "Floor/ceiling combined",
+    "stem": "Pemerintah menetapkan harga dasar gabah dan harga eceran tertinggi beras secara bersamaan. Risiko desain yang harus diantisipasi adalah?",
+    "options": [
+      "Kombinasi kebijakan harga dianggap bebas distorsi tanpa subsidi atau stok.",
+      "Selisih insentif produsen dan harga konsumen dapat menekan margin, menciptakan kekurangan, atau membutuhkan subsidi dan stok penyangga.",
+      "Harga dasar selalu menurunkan produksi.",
+      "Harga maksimum selalu menciptakan surplus konsumen tanpa kelangkaan.",
+      "Tidak perlu data pasokan."
+    ],
+    "answer": 1,
+    "explain": "Kombinasi floor dan ceiling perlu dukungan stok, subsidi, dan logistik agar tidak menimbulkan distorsi baru.",
+    "version": 1
+  },
+  {
+    "id": "G2-E25",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Floor/ceiling combined",
+    "stem": "Jika upah minimum ditetapkan naik tajam saat produktivitas UMKM stagnan, sementara harga produk UMKM dibatasi agar inflasi rendah, dampak yang mungkin muncul adalah?",
+    "options": [
+      "UMKM dianggap tetap menyerap tenaga kerja meski margin tertekan.",
+      "Tidak ada perubahan insentif usaha.",
+      "Tekanan biaya pada usaha kecil, pengurangan jam kerja, atau pasar informal jika tidak ada dukungan produktivitas.",
+      "Produktivitas naik tanpa pelatihan tambahan.",
+      "Harga produk bebas naik tanpa kontrol kebijakan."
+    ],
+    "answer": 2,
+    "explain": "Price floor pada upah dan pembatasan harga produk dapat menekan margin usaha bila produktivitas tidak meningkat.",
+    "version": 1
+  },
+  {
+    "id": "G2-E26",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Kegagalan pasar mixed cases",
+    "stem": "Sebuah aplikasi transportasi menjadi satu-satunya penghubung desa wisata dengan pasar setelah pesaing keluar. Tarif naik dan pengemudi sulit berpindah platform. Kegagalan pasar yang perlu diperhatikan adalah?",
+    "options": [
+      "Barang publik murni.",
+      "Eksternalitas positif vaksin.",
+      "DLQ lebih dari satu.",
+      "Monopoli atau kekuatan pasar platform yang membutuhkan pengawasan persaingan dan perlindungan pengguna.",
+      "Price floor gabah."
+    ],
+    "answer": 3,
+    "explain": "Kekuatan pasar dapat menaikkan harga dan menurunkan kesejahteraan ketika pilihan pengguna terbatas.",
+    "version": 1
+  },
+  {
+    "id": "G2-E27",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "Merit goods",
+    "stem": "Mengapa pemerintah tidak cukup hanya memberi brosur tentang gizi untuk mengatasi anemia remaja putri?",
+    "options": [
+      "Karena anemia tidak berhubungan dengan kebijakan publik.",
+      "Karena semua remaja pasti sudah punya informasi sempurna.",
+      "Karena brosur selalu lebih mahal dari layanan.",
+      "Karena gizi adalah common-pool resource.",
+      "Karena informasi penting, tetapi konsumsi tablet tambah darah, akses layanan, norma sosial, dan pemantauan sekolah juga memengaruhi konsumsi merit good."
+    ],
+    "answer": 4,
+    "explain": "Merit good sering membutuhkan kombinasi informasi, penyediaan, akses, dan pemantauan.",
+    "version": 1
+  },
+  {
+    "id": "G2-E29",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Gini policy",
+    "stem": "Program bantuan modal UMKM ternyata lebih banyak diterima pelaku usaha yang sudah kuat karena mampu memenuhi syarat administrasi. Dampak terhadap ketimpangan dan koreksi yang tepat adalah?",
+    "options": [
+      "Program UMKM dianggap meratakan distribusi pendapatan tanpa verifikasi penerima.",
+      "Dapat memperlebar ketimpangan; perlu penyederhanaan akses, pendampingan kelompok rentan, dan targeting berbasis data.",
+      "Seleksi administratif dianggap netral tanpa verifikasi penerima rentan.",
+      "Cukup menaikkan bunga pinjaman tanpa perbaikan akses.",
+      "Menghapus semua pelaporan penerima."
+    ],
+    "answer": 1,
+    "explain": "Program ekonomi inklusif harus memeriksa siapa yang benar-benar mampu mengakses manfaat.",
+    "version": 1
+  },
+  {
+    "id": "G2-S01",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "SIPD Renja-RKPD",
+    "stem": "Renja OPD mengusulkan kegiatan pelatihan 1.000 pemuda, tetapi RKPD menargetkan penurunan pengangguran muda di tiga kecamatan industri. Konsistensi SIPD yang perlu diperbaiki adalah?",
+    "options": [
+      "Menghapus target RKPD agar kegiatan OPD bebas.",
+      "Mengisi semua kolom dengan narasi umum.",
+      "Mengaitkan kegiatan Renja dengan sasaran RKPD, lokasi prioritas, indikator hasil kerja, dan target penerima manfaat.",
+      "Mengganti indikator menjadi jumlah rapat internal.",
+      "Menyamakan semua kecamatan tanpa data."
+    ],
+    "answer": 2,
+    "explain": "Renja harus menurunkan prioritas RKPD ke kegiatan, lokasi, sasaran, dan indikator yang konsisten.",
+    "version": 1
+  },
+  {
+    "id": "G2-S02",
+    "cluster": "sosial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "SIPD Renja-RKPD",
+    "stem": "Dalam SIPD, satu kegiatan Renja punya indikator output 'jumlah paket bantuan', tetapi tidak terhubung dengan indikator RKPD tentang keluarga miskin yang keluar dari kemiskinan ekstrem. Tindakan perencana adalah?",
+    "options": [
+      "Menghapus indikator RKPD karena sulit.",
+      "Menilai cukup dari jumlah paket saja.",
+      "Memecah kegiatan agar lebih banyak nama program.",
+      "Menambahkan atau memperjelas indikator kinerja yang menjembatani bantuan dengan perubahan kondisi keluarga sasaran.",
+      "Mengubah sasaran menjadi seluruh penduduk."
+    ],
+    "answer": 3,
+    "explain": "Konsistensi indikator diperlukan agar output kegiatan dapat ditelusuri terhadap outcome RKPD.",
+    "version": 1
+  },
+  {
+    "id": "G2-S03",
+    "cluster": "sosial",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "IKU daerah",
+    "stem": "IKU kepala daerah sebaiknya dipilih dari indikator yang?",
+    "options": [
+      "Paling mudah dinaikkan dengan menambah rapat.",
+      "Hanya mengukur jumlah surat masuk.",
+      "Tidak perlu baseline dan target.",
+      "Tidak diketahui perangkat daerah mana pun.",
+      "Mewakili tujuan strategis, dapat diukur berkala, relevan dengan kewenangan, dan memengaruhi akuntabilitas kinerja utama."
+    ],
+    "answer": 4,
+    "explain": "IKU harus menunjukkan keberhasilan strategis, bukan sekadar aktivitas administratif.",
+    "version": 1
+  },
+  {
+    "id": "G2-S04",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "IKU daerah",
+    "stem": "Jika visi daerah adalah kota inklusif, indikator mana yang paling layak menjadi IKU dibanding sekadar output?",
+    "options": [
+      "Persentase fasilitas publik utama yang memenuhi standar aksesibilitas dan layanan inklusif.",
+      "Jumlah seminar inklusi yang dilakukan.",
+      "Jumlah spanduk kampanye kota inklusif.",
+      "Jumlah undangan rapat lintas OPD.",
+      "Jumlah dokumen paparan kepala dinas."
+    ],
+    "answer": 0,
+    "explain": "IKU perlu menangkap perubahan layanan strategis yang dirasakan publik.",
+    "version": 1
+  },
+  {
+    "id": "G2-S05",
+    "cluster": "sosial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Stakeholder conflict",
+    "stem": "Rencana relokasi pasar ditolak pedagang lama, didukung pengembang, dan didorong pemda karena alasan kemacetan. Langkah awal manajemen konflik yang paling tepat adalah?",
+    "options": [
+      "Mengabaikan pedagang karena tidak punya kewenangan formal.",
+      "Memetakan kepentingan, pengaruh, kerugian, manfaat, dan opsi kompensasi tiap aktor sebelum mengambil keputusan final.",
+      "Mengikuti pengembang karena punya modal terbesar.",
+      "Menyembunyikan desain sampai konstruksi dimulai.",
+      "Mengganti seluruh pedagang dengan penyewa baru."
+    ],
+    "answer": 1,
+    "explain": "Konflik stakeholder perlu dipahami melalui posisi, kepentingan, pengaruh, dan dampak sebelum negosiasi.",
+    "version": 1
+  },
+  {
+    "id": "G2-S06",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Stakeholder conflict",
+    "stem": "Dalam pembangunan tempat pengolahan sampah, warga sekitar menolak karena khawatir bau, sementara kota membutuhkan fasilitas. Strategi engagement yang paling tepat adalah?",
+    "options": [
+      "Memaksa persetujuan karena fasilitas penting.",
+      "Memberi informasi hanya setelah proyek selesai.",
+      "Dialog risiko-manfaat, desain mitigasi bau, kunjungan pembanding, kompensasi proporsional, dan mekanisme keluhan.",
+      "Menghapus kajian lingkungan agar cepat.",
+      "Memindahkan masalah ke kecamatan lain tanpa konsultasi."
+    ],
+    "answer": 2,
+    "explain": "Fasilitas yang berpotensi menimbulkan dampak perlu komunikasi risiko dan mitigasi yang kredibel.",
+    "version": 1
+  },
+  {
+    "id": "G2-S08",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "PRA transect",
+    "stem": "Hasil transect menunjukkan wilayah atas punya mata air rusak, tengah kekurangan drainase, dan bawah sering banjir. Cara memakai temuan PRA yang paling tepat adalah?",
+    "options": [
+      "Merata-ratakan semua masalah menjadi satu kegiatan umum.",
+      "Mengabaikan catatan warga karena bukan survei mahal.",
+      "Memakai hasil hanya sebagai foto dokumentasi.",
+      "Menentukan prioritas berdasarkan lokasi rumah tokoh.",
+      "Menghubungkan masalah ruang dengan prioritas intervensi berbeda menurut zona dan kesepakatan warga."
+    ],
+    "answer": 4,
+    "explain": "Temuan transect berguna untuk menyesuaikan intervensi dengan karakter zona dan pengalaman warga.",
+    "version": 1
+  },
+  {
+    "id": "G2-S09",
+    "cluster": "sosial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "RRA vs PRA timing",
+    "stem": "Tim hanya punya tiga hari untuk memperoleh gambaran awal kemiskinan desa sebelum studi mendalam bulan depan. Pendekatan yang lebih sesuai adalah?",
+    "options": [
+      "RRA, karena cepat dan eksploratif untuk pemahaman awal dengan triangulasi terbatas.",
+      "PRA penuh yang selalu membutuhkan keputusan warga final saat itu juga.",
+      "Sensus lengkap semua rumah tangga.",
+      "Eksperimen acak multi-tahun.",
+      "Audit investigatif pengadaan."
+    ],
+    "answer": 0,
+    "explain": "RRA lebih cepat untuk appraisal awal; PRA lebih menekankan partisipasi dan proses pemberdayaan.",
+    "version": 1
+  },
+  {
+    "id": "G2-S10",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "RRA vs PRA timing",
+    "stem": "Jika tujuan utama adalah membangun rencana aksi desa yang dimiliki warga dan memunculkan kelompok pelaksana lokal, pendekatan yang lebih tepat adalah?",
+    "options": [
+      "RRA singkat oleh konsultan tanpa forum warga.",
+      "PRA karena proses partisipatifnya membantu analisis bersama, prioritas, dan kepemilikan rencana.",
+      "Survei online tertutup untuk pejabat.",
+      "Desk study dokumen pusat saja.",
+      "Wawancara satu tokoh sebagai wakil semua kelompok."
+    ],
+    "answer": 1,
+    "explain": "PRA dirancang untuk pembelajaran dan perencanaan bersama masyarakat, bukan hanya ekstraksi informasi cepat.",
+    "version": 1
+  },
+  {
+    "id": "G2-S12",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Chambers applied",
+    "stem": "Keluarga lansia miskin tidak mampu ikut pelatihan kerja karena sakit kronis, merawat cucu, dan tidak punya transportasi. Desain program yang paling sesuai dengan perspektif Chambers adalah?",
+    "options": [
+      "Mewajibkan hadir atau bantuan dicabut.",
+      "Menganggap mereka tidak mau berubah.",
+      "Menambah materi kewirausahaan tanpa bantuan akses.",
+      "Mengganti pelatihan umum dengan dukungan layanan sosial, kesehatan, transportasi, dan bantuan yang sesuai kerentanan.",
+      "Memindahkan lokasi lebih jauh."
+    ],
+    "answer": 3,
+    "explain": "Kerentanan dan kelemahan fisik harus dijawab dengan desain layanan yang sesuai kondisi nyata.",
+    "version": 1
+  },
+  {
+    "id": "G2-S13",
+    "cluster": "sosial",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "Social capital case",
+    "stem": "Desa dengan gotong royong kuat berhasil merawat jaringan air minum tanpa biaya besar karena ada norma saling percaya dan sanksi sosial. Ini menunjukkan peran?",
+    "options": [
+      "Price ceiling air minum.",
+      "Barang Giffen.",
+      "Monopoli alamiah tanpa regulasi.",
+      "ICOR rendah.",
+      "Modal sosial dalam menurunkan biaya koordinasi dan menjaga aksi kolektif."
+    ],
+    "answer": 4,
+    "explain": "Kepercayaan, norma, dan jaringan dapat memperkuat kerja kolektif masyarakat.",
+    "version": 1
+  },
+  {
+    "id": "G2-S14",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Social capital case",
+    "stem": "Program koperasi desa gagal karena elite lokal menguasai keputusan dan anggota miskin takut menyampaikan keberatan. Pelajaran tentang modal sosial yang tepat adalah?",
+    "options": [
+      "Modal sosial bonding yang kuat bisa eksklusif; perlu transparansi, akuntabilitas, dan jembatan ke kelompok rentan.",
+      "Semua modal sosial selalu baik tanpa risiko.",
+      "Koperasi tidak membutuhkan aturan formal.",
+      "Anggota miskin sebaiknya tidak dilibatkan.",
+      "Kepercayaan cukup menggantikan laporan keuangan."
+    ],
+    "answer": 0,
+    "explain": "Modal sosial dapat memperkuat atau mengecualikan, tergantung distribusi kuasa dan akuntabilitas.",
+    "version": 1
+  },
+  {
+    "id": "G2-S15",
+    "cluster": "sosial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Gender budget",
+    "stem": "Analisis anggaran menunjukkan program transportasi sekolah tidak mempertimbangkan siswi yang pulang sore melewati rute rawan kekerasan. Respons penganggaran responsif gender adalah?",
+    "options": [
+      "Menyatakan transportasi netral sehingga tidak perlu data gender.",
+      "Menambahkan analisis kebutuhan keamanan, alokasi rute atau armada aman, penerangan, pengawasan, dan indikator manfaat terpilah gender.",
+      "Menghapus siswi dari sasaran.",
+      "Mengganti semua kegiatan dengan seminar umum.",
+      "Menunda sampai ada kasus besar."
+    ],
+    "answer": 1,
+    "explain": "Gender budget menghubungkan alokasi anggaran dengan kebutuhan, akses, kontrol, dan manfaat berbeda antar kelompok.",
+    "version": 1
+  },
+  {
+    "id": "G2-S16",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Gender budget",
+    "stem": "Sebuah OPD mengklaim anggarannya responsif gender karena peserta perempuan 50%, tetapi jadwal pelatihan membuat ibu pekerja informal sulit menyelesaikan kelas. Audit sederhana yang tepat adalah?",
+    "options": [
+      "Menerima klaim karena proporsi awal cukup.",
+      "Menghapus data kelulusan.",
+      "Menilai tidak hanya jumlah peserta, tetapi hambatan akses, kelulusan, manfaat ekonomi, dan beban pengasuhan.",
+      "Membatasi peserta hanya yang tidak punya anak.",
+      "Memindahkan jadwal makin malam."
+    ],
+    "answer": 2,
+    "explain": "Responsif gender tidak berhenti pada kuota peserta; manfaat dan hambatan riil perlu diuji.",
+    "version": 1
+  },
+  {
+    "id": "G2-S17",
+    "cluster": "sosial",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "Difabel UU",
+    "stem": "Dalam layanan publik, prinsip akomodasi yang layak bagi penyandang disabilitas berarti?",
+    "options": [
+      "Bantuan sukarela jika petugas sedang sempat.",
+      "Pemisahan layanan difabel dari semua layanan umum.",
+      "Kewajiban difabel membawa pendamping pribadi.",
+      "Penyesuaian yang perlu dan sesuai agar difabel dapat menikmati hak dan layanan secara setara tanpa beban tidak proporsional.",
+      "Pengurangan standar keselamatan."
+    ],
+    "answer": 3,
+    "explain": "Akomodasi layak adalah kewajiban untuk memastikan akses setara sesuai kebutuhan.",
+    "version": 1
+  },
+  {
+    "id": "G2-S18",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Difabel UU",
+    "stem": "Aplikasi pengaduan bansos hanya memakai captcha visual dan tidak kompatibel dengan pembaca layar. Rekomendasi inklusi difabel yang tepat adalah?",
+    "options": [
+      "Meminta difabel datang langsung saja.",
+      "Menutup kanal pengaduan daring.",
+      "Menganggap masalah selesai karena aplikasi modern.",
+      "Membatasi pengaduan hanya jam kerja kantor pusat.",
+      "Menyediakan alternatif aksesibel, kompatibilitas screen reader, kanal bantuan, dan uji pengguna difabel."
+    ],
+    "answer": 4,
+    "explain": "Aksesibilitas digital bagian dari layanan publik inklusif.",
+    "version": 1
+  },
+  {
+    "id": "G2-S19",
+    "cluster": "sosial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "MBG logistics",
+    "stem": "Program Makan Bergizi Gratis di kepulauan menghadapi biaya dingin tinggi, jadwal kapal tidak pasti, dan risiko mutu makanan turun. Desain logistik yang paling tepat adalah?",
+    "options": [
+      "Dapur atau titik produksi lokal, menu berbasis pangan setempat, standar mutu, rute distribusi adaptif, dan monitoring keamanan pangan.",
+      "Satu dapur pusat jauh untuk semua pulau tanpa cadangan.",
+      "Mengirim menu yang sama tanpa melihat transportasi.",
+      "Menghapus standar gizi agar mudah.",
+      "Mencatat keterlambatan sebagai hal biasa."
+    ],
+    "answer": 0,
+    "explain": "Wilayah kepulauan butuh desain logistik afirmatif yang menjaga mutu, gizi, dan ketepatan waktu.",
+    "version": 1
+  },
+  {
+    "id": "G2-S20",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "MBG logistics",
+    "stem": "Di wilayah pegunungan, pasokan bahan segar untuk MBG sering terputus saat hujan. Strategi yang paling menjaga keberlanjutan program adalah?",
+    "options": [
+      "Menghentikan program setiap musim hujan.",
+      "Mengembangkan pemasok lokal, stok penyangga aman, menu musiman, dan rencana kontinjensi distribusi.",
+      "Memaksa satu pemasok kota tanpa cadangan.",
+      "Mengganti semua menu dengan makanan instan tanpa standar.",
+      "Tidak mencatat gangguan pasokan."
+    ],
+    "answer": 1,
+    "explain": "Keberlanjutan layanan gizi membutuhkan cadangan, fleksibilitas menu, dan pemasok lokal.",
+    "version": 1
+  },
+  {
+    "id": "G2-S21",
+    "cluster": "sosial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Evaluasi program sosial",
+    "stem": "Evaluasi bantuan tunai menunjukkan realisasi 98%, tetapi penerima lansia banyak membayar biaya transportasi besar untuk mencairkan bantuan. Ukuran efektivitas yang perlu ditambahkan adalah?",
+    "options": [
+      "Jumlah spanduk pencairan.",
+      "Jumlah pejabat yang hadir.",
+      "Biaya akses, ketepatan sasaran, ketepatan waktu, dan manfaat bersih yang diterima kelompok rentan.",
+      "Panjang laporan bank.",
+      "Jumlah loket tanpa melihat jarak."
+    ],
+    "answer": 2,
+    "explain": "Program sosial efektif jika manfaat bersih diterima sasaran, bukan hanya tersalurkan secara administratif.",
+    "version": 1
+  },
+  {
+    "id": "G2-S22",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Evaluasi program sosial",
+    "stem": "Program pelatihan kerja melaporkan peserta puas, tetapi hanya sedikit yang bekerja setelah enam bulan. Desain evaluasi yang lebih kuat adalah?",
+    "options": [
+      "Menambah survei kepuasan saat konsumsi dibagikan.",
+      "Menganggap sertifikat sebagai dampak akhir.",
+      "Menghapus indikator pekerjaan.",
+      "Tracer study outcome kerja, pembandingan dengan kebutuhan pasar, dan analisis hambatan penempatan.",
+      "Mengukur jumlah foto kelas."
+    ],
+    "answer": 3,
+    "explain": "Evaluasi program sosial perlu menilai outcome nyata setelah intervensi, bukan hanya kepuasan segera.",
+    "version": 1
+  },
+  {
+    "id": "G2-S23",
+    "cluster": "sosial",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "Stakeholder conflict",
+    "stem": "Kelompok adat menolak proyek wisata karena situs sakral tidak dipetakan dalam dokumen awal. Prinsip sosial yang harus dipulihkan adalah?",
+    "options": [
+      "Mempercepat konstruksi agar penolakan berhenti.",
+      "Menghapus kelompok adat dari daftar stakeholder.",
+      "Mengganti situs sakral dengan spot foto.",
+      "Membatasi informasi peta.",
+      "Pengakuan hak dan pengetahuan lokal melalui konsultasi bermakna, pemetaan partisipatif, dan perlindungan situs."
+    ],
+    "answer": 4,
+    "explain": "Konflik sosial sering muncul ketika hak, identitas, dan pengetahuan lokal tidak diakui.",
+    "version": 1
+  },
+  {
+    "id": "G2-S24",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "SIPD Renja-RKPD",
+    "stem": "Dalam SIPD, indikator Renja 'jumlah keluarga didampingi' naik, tetapi RKPD menargetkan penurunan kekerasan terhadap perempuan. Perbaikan indikator yang paling tepat adalah?",
+    "options": [
+      "Menambahkan indikator kualitas layanan seperti persentase korban mendapat layanan terpadu sesuai standar dan kasus berulang menurun.",
+      "Mengganti semua indikator dengan jumlah rapat.",
+      "Menghapus target korban karena sensitif.",
+      "Mengukur jumlah poster kampanye saja.",
+      "Menilai keberhasilan dari total honor pendamping."
+    ],
+    "answer": 0,
+    "explain": "Output pendampingan perlu ditautkan dengan kualitas layanan dan perubahan risiko kekerasan.",
+    "version": 1
+  },
+  {
+    "id": "G2-S25",
+    "cluster": "sosial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "IKU daerah",
+    "stem": "Daerah menetapkan IKU 'semua warga bahagia' tanpa metode ukur. Koreksi yang paling tepat adalah?",
+    "options": [
+      "Membiarkan karena visi harus selalu abstrak.",
+      "Mengubahnya menjadi indikator terukur seperti indeks kepuasan layanan, prevalensi kemiskinan, atau indikator kesejahteraan yang punya baseline, target, dan sumber data.",
+      "Menghapus semua IKU agar fleksibel.",
+      "Mengukur dari jumlah pidato kepala daerah.",
+      "Menggunakan komentar media sosial saja tanpa metode."
+    ],
+    "answer": 1,
+    "explain": "IKU harus operasional, punya sumber data, baseline, target, dan relevansi strategis.",
+    "version": 1
+  },
+  {
+    "id": "G2-P01",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "KKPR vs izin lain",
+    "stem": "Investor sudah memiliki NIB, tetapi lokasi gudang berada dekat kawasan lindung dan belum jelas kesesuaian ruangnya. Dokumen yang harus dipastikan sebelum izin teknis lain berjalan adalah?",
+    "options": [
+      "SLF karena bangunan belum dibangun.",
+      "SPPT PBB sebagai pengganti tata ruang.",
+      "KKPR atau konfirmasi/persetujuan kesesuaian kegiatan pemanfaatan ruang sesuai ketentuan tata ruang.",
+      "Surat domisili RT sebagai izin utama.",
+      "Sertifikat merek dagang."
+    ],
+    "answer": 2,
+    "explain": "KKPR memastikan kegiatan sesuai rencana tata ruang sebelum perizinan teknis lanjutan.",
+    "version": 1
+  },
+  {
+    "id": "G2-P02",
+    "cluster": "spasial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "KKPR vs izin lain",
+    "stem": "Sebuah pabrik memiliki PBG, tetapi kemudian diketahui kegiatan industrinya tidak sesuai zonasi RDTR. Pelajaran tata ruang yang paling tepat adalah?",
+    "options": [
+      "PBG dianggap mengesampingkan ketentuan zonasi RDTR.",
+      "RDTR hanya hiasan peta.",
+      "KKPR hanya diperlukan setelah bangunan digunakan.",
+      "PBG tidak menggantikan KKPR; kesesuaian kegiatan pemanfaatan ruang harus jelas sebelum persetujuan bangunan.",
+      "Zonasi dapat diubah oleh kontraktor."
+    ],
+    "answer": 3,
+    "explain": "Persetujuan bangunan dan kesesuaian ruang adalah instrumen berbeda yang harus saling konsisten.",
+    "version": 1
+  },
+  {
+    "id": "G2-P03",
+    "cluster": "spasial",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "RDTR skala",
+    "stem": "RDTR membutuhkan skala peta lebih rinci daripada RTRW karena digunakan untuk?",
+    "options": [
+      "Mengganti seluruh sertifikat tanah.",
+      "Menghapus partisipasi publik.",
+      "Menentukan harga semua properti.",
+      "Mengukur inflasi daerah.",
+      "Mengatur zonasi dan ketentuan pemanfaatan ruang yang menjadi dasar operasional perizinan."
+    ],
+    "answer": 4,
+    "explain": "RDTR adalah rencana rinci yang menerjemahkan arahan RTRW ke aturan zonasi operasional.",
+    "version": 1
+  },
+  {
+    "id": "G2-P04",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "RDTR skala",
+    "stem": "Jika batas zona perdagangan dan permukiman di RDTR terlalu kasar, risiko utama dalam pelayanan perizinan adalah?",
+    "options": [
+      "Ketidakpastian lokasi kegiatan, sengketa interpretasi zonasi, dan keputusan KKPR yang tidak konsisten.",
+      "Semua izin otomatis lebih cepat dan akurat.",
+      "Tidak ada hubungan antara skala peta dan perizinan.",
+      "Harga tanah pasti turun sama rata.",
+      "Peta tidak perlu metadata."
+    ],
+    "answer": 0,
+    "explain": "Skala dan ketelitian RDTR memengaruhi kepastian zonasi dan keputusan pemanfaatan ruang.",
+    "version": 1
+  },
+  {
+    "id": "G2-P05",
+    "cluster": "spasial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "LP2B",
+    "stem": "Kabupaten ingin mengubah sawah irigasi produktif menjadi kawasan pergudangan karena akses tol baru. Kajian LP2B paling penting untuk memastikan?",
+    "options": [
+      "Peningkatan reklame gudang.",
+      "Perlindungan lahan pangan berkelanjutan, dampak terhadap produksi pangan, dan alternatif lokasi non-produktif.",
+      "Jumlah parkir truk saja.",
+      "Warna bangunan gudang.",
+      "Penghapusan data petani."
+    ],
+    "answer": 1,
+    "explain": "LP2B melindungi lahan pangan strategis agar alih fungsi tidak merusak ketahanan pangan.",
+    "version": 1
+  },
+  {
+    "id": "G2-P06",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "LP2B",
+    "stem": "Petani setuju menjual sawah LP2B karena harga tinggi, tetapi desa bergantung pada irigasi dan produksi padi lokal. Respons perencana yang paling tepat adalah?",
+    "options": [
+      "Menerima transaksi sebagai urusan privat sepenuhnya.",
+      "Menghapus peta LP2B agar investasi masuk.",
+      "Menilai status LP2B, dampak ketahanan pangan, kompensasi atau penggantian lahan, serta kesesuaian tata ruang sebelum perubahan.",
+      "Memindahkan irigasi tanpa kajian.",
+      "Mengabaikan petani penggarap."
+    ],
+    "answer": 2,
+    "explain": "Alih fungsi LP2B memiliki konsekuensi publik sehingga perlu pengendalian sesuai aturan dan kajian dampak.",
+    "version": 1
+  },
+  {
+    "id": "G2-P07",
+    "cluster": "spasial",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "RTH breakdown 20+10",
+    "stem": "Ketentuan umum RTH kota 30% sering dijelaskan sebagai komposisi?",
+    "options": [
+      "30% seluruhnya parkir privat.",
+      "10% publik dan 20% jalan tol.",
+      "15% industri dan 15% permukiman.",
+      "20% RTH publik dan 10% RTH privat.",
+      "30% hanya taman kantor pemerintah."
+    ],
+    "answer": 3,
+    "explain": "RTH kota umumnya diarahkan minimal 30%, terdiri dari 20% publik dan 10% privat.",
+    "version": 1
+  },
+  {
+    "id": "G2-P08",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "RTH breakdown 20+10",
+    "stem": "Kota melaporkan RTH 30%, tetapi 24% berasal dari halaman privat kompleks tertutup dan hanya 6% taman publik. Catatan evaluasi yang tepat adalah?",
+    "options": [
+      "Target dianggap tercapai hanya karena angka agregat 30%.",
+      "RTH privat dianggap setara fungsi taman publik terbuka.",
+      "RTH tidak terkait akses masyarakat.",
+      "Semua halaman privat harus dihitung sebagai jalan.",
+      "Komposisi belum memenuhi kebutuhan RTH publik; akses warga dan fungsi ekologis publik perlu diperkuat."
+    ],
+    "answer": 4,
+    "explain": "Proporsi publik penting karena RTH juga berfungsi sebagai ruang ekologis dan sosial yang dapat diakses masyarakat.",
+    "version": 1
+  },
+  {
+    "id": "G2-P09",
+    "cluster": "spasial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "SIG buffer analysis",
+    "stem": "Bappeda ingin mengetahui sekolah yang berada dalam radius 500 meter dari jalan arteri rawan kecelakaan. Analisis SIG yang tepat adalah?",
+    "options": [
+      "Membuat buffer 500 meter dari jalan arteri lalu melakukan intersect atau select by location terhadap titik sekolah.",
+      "Mengubah warna titik sekolah secara manual.",
+      "Menghapus layer jalan agar peta bersih.",
+      "Menghitung rata-rata nilai ujian.",
+      "Membuat legenda tanpa koordinat."
+    ],
+    "answer": 0,
+    "explain": "Buffer dan overlay lokasi digunakan untuk menemukan objek dalam jarak tertentu dari fitur spasial.",
+    "version": 1
+  },
+  {
+    "id": "G2-P10",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "SIG buffer analysis",
+    "stem": "Analisis buffer puskesmas 2 km menunjukkan cakupan tinggi, tetapi warga di pulau kecil tetap sulit mengakses layanan karena harus menyeberang laut. Kelemahan analisis yang perlu dicatat adalah?",
+    "options": [
+      "Buffer jarak lurus dianggap lebih andal daripada analisis akses lapangan.",
+      "Buffer Euclidean tidak selalu mencerminkan waktu tempuh, moda transportasi, hambatan alam, dan jaringan layanan.",
+      "Pulau kecil harus dihapus dari peta.",
+      "Cakupan spasial tinggi dianggap menutup masalah akses layanan.",
+      "SIG tidak boleh memakai data transportasi."
+    ],
+    "answer": 1,
+    "explain": "Jarak lurus perlu dilengkapi analisis jaringan dan konteks geografis.",
+    "version": 1
+  },
+  {
+    "id": "G2-P11",
+    "cluster": "spasial",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "Citra satelit",
+    "stem": "Untuk memantau perubahan tutupan lahan hutan menjadi kebun, data yang paling relevan adalah?",
+    "options": [
+      "Daftar hadir rapat desa.",
+      "Foto gedung kantor.",
+      "Citra satelit multitemporal yang diklasifikasi dan diverifikasi dengan data lapangan.",
+      "Tabel inflasi bulanan saja.",
+      "Surat undangan musrenbang."
+    ],
+    "answer": 2,
+    "explain": "Citra satelit multitemporal membantu mendeteksi perubahan spasial dari waktu ke waktu.",
+    "version": 1
+  },
+  {
+    "id": "G2-P12",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Citra satelit",
+    "stem": "Hasil klasifikasi citra menunjukkan sawah berkurang, tetapi awan menutup sebagian wilayah saat perekaman. Sikap teknis yang tepat adalah?",
+    "options": [
+      "Menganggap semua area awan sebagai sawah hilang.",
+      "Menghapus wilayah berawan dari kabupaten.",
+      "Menerbitkan angka final tanpa catatan kualitas.",
+      "Melakukan masking awan, memakai citra tanggal lain atau sensor lain, dan validasi lapangan sebelum menyimpulkan.",
+      "Mengganti citra dengan opini warga saja."
+    ],
+    "answer": 3,
+    "explain": "Kualitas citra dan gangguan awan harus ditangani agar interpretasi perubahan lahan tidak bias.",
+    "version": 1
+  },
+  {
+    "id": "G2-P13",
+    "cluster": "spasial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "LVC betterment levy",
+    "stem": "Pembangunan MRT menaikkan nilai lahan koridor secara besar. Pemerintah mempertimbangkan pungutan atas kenaikan manfaat untuk membiayai akses pejalan kaki. Instrumen yang paling sesuai adalah?",
+    "options": [
+      "Price ceiling sewa rumah.",
+      "Subsidi BBM umum.",
+      "Bantuan sosial tunai.",
+      "Kuota tangkap ikan.",
+      "Betterment levy sebagai bentuk land value capture atas kenaikan nilai akibat investasi publik."
+    ],
+    "answer": 4,
+    "explain": "Betterment levy menangkap sebagian kenaikan nilai lahan yang timbul dari investasi publik.",
+    "version": 1
+  },
+  {
+    "id": "G2-P14",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "LVC betterment levy",
+    "stem": "Agar betterment levy tidak dianggap tidak adil, prinsip desain yang penting adalah?",
+    "options": [
+      "Dasar perhitungan transparan, hubungan jelas dengan manfaat, kemampuan bayar, perlindungan warga rentan, dan penggunaan dana yang akuntabel.",
+      "Tarif rahasia agar tidak diprotes.",
+      "Pungutan sama untuk semua wilayah meski manfaat berbeda.",
+      "Dana boleh dipakai tanpa laporan.",
+      "Penyewa miskin menanggung seluruh pungutan."
+    ],
+    "answer": 0,
+    "explain": "LVC membutuhkan legitimasi, keadilan, dan transparansi agar tidak membebani pihak yang tidak menikmati manfaat sepadan.",
+    "version": 1
+  },
+  {
+    "id": "G2-P15",
+    "cluster": "spasial",
+    "level": "sedang",
+    "source": "gap2",
+    "topic": "Asas keadilan",
+    "stem": "Dalam tata ruang, asas keadilan menuntut agar?",
+    "options": [
+      "Kawasan bernilai tinggi hanya untuk pemilik modal.",
+      "Manfaat dan beban pemanfaatan ruang dibagi secara proporsional, termasuk perlindungan kelompok rentan dan wilayah terdampak.",
+      "Informasi zonasi disimpan untuk pejabat.",
+      "Semua daerah menerima proyek identik tanpa kebutuhan.",
+      "Dampak negatif dipindahkan ke warga miskin."
+    ],
+    "answer": 1,
+    "explain": "Keadilan ruang memperhatikan distribusi manfaat, risiko, akses, dan perlindungan hak.",
+    "version": 1
+  },
+  {
+    "id": "G2-P16",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Asas keadilan",
+    "stem": "Kawasan tempat tinggal MBR terdampak perluasan jalan, sementara manfaat kenaikan nilai lahan lebih banyak dinikmati pemilik properti besar. Koreksi perencanaan yang sesuai asas keadilan adalah?",
+    "options": [
+      "Menggusur cepat karena proyek strategis.",
+      "Mengabaikan penyewa karena bukan pemilik lahan.",
+      "Menyediakan kompensasi layak, hunian pengganti terjangkau, perlindungan mata pencaharian, dan pembagian manfaat kawasan.",
+      "Menaikkan nilai tanah tanpa program sosial.",
+      "Membatasi informasi desain jalan."
+    ],
+    "answer": 2,
+    "explain": "Asas keadilan menuntut perlindungan terhadap pihak yang menanggung beban pembangunan.",
+    "version": 1
+  },
+  {
+    "id": "G2-P17",
+    "cluster": "spasial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "Institutional SOP",
+    "stem": "Daerah memiliki RDTR digital, tetapi setiap dinas memakai versi peta berbeda dan pembaruan tidak terdokumentasi. Solusi institusional paling tepat adalah?",
+    "options": [
+      "Membiarkan setiap dinas menyimpan file sendiri.",
+      "Menghapus metadata agar cepat dibuka.",
+      "Mengandalkan pesan pribadi untuk berbagi peta.",
+      "SOP pemutakhiran data, wali data spasial, metadata, repositori bersama, dan mekanisme persetujuan versi.",
+      "Mencetak peta sekali untuk semua waktu."
+    ],
+    "answer": 3,
+    "explain": "Tata kelola data spasial membutuhkan SOP, peran, metadata, dan kontrol versi.",
+    "version": 1
+  },
+  {
+    "id": "G2-P18",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "IKN penyangga",
+    "stem": "Daerah penyangga IKN mengalami lonjakan permintaan perumahan pekerja dan spekulasi lahan. Respons tata ruang yang paling tepat adalah?",
+    "options": [
+      "Membiarkan pasar lahan bergerak tanpa rencana.",
+      "Mengubah semua hutan menjadi komersial.",
+      "Menolak seluruh pendatang tanpa dasar hukum.",
+      "Menunda perencanaan sampai harga stabil sendiri.",
+      "Menyiapkan RDTR kawasan tumbuh, pengendalian alih fungsi, perumahan terjangkau, konektivitas, dan perlindungan masyarakat lokal."
+    ],
+    "answer": 4,
+    "explain": "Daerah penyangga perlu mengelola tekanan ruang, hunian, lingkungan, dan sosial secara antisipatif.",
+    "version": 1
+  },
+  {
+    "id": "G2-P19",
+    "cluster": "spasial",
+    "level": "panjang",
+    "source": "gap2",
+    "topic": "PSN mitigasi sosial",
+    "stem": "PSN bendungan membutuhkan pengadaan tanah dan relokasi beberapa dusun. Agar mitigasi sosial tidak sekadar formalitas, perencana daerah harus memastikan?",
+    "options": [
+      "Data warga terdampak lengkap, konsultasi bermakna, pemulihan mata pencaharian, kompensasi layak, dan mekanisme keluhan berjalan.",
+      "Relokasi dilakukan dulu baru pendataan.",
+      "Konsultasi cukup lewat poster.",
+      "Pekerjaan fisik tidak perlu mempertimbangkan warga.",
+      "Keluhan warga ditutup agar proyek cepat."
+    ],
+    "answer": 0,
+    "explain": "PSN tetap memerlukan mitigasi sosial yang melindungi hak dan penghidupan warga terdampak.",
+    "version": 1
+  },
+  {
+    "id": "G2-P20",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap2",
+    "topic": "Mitigasi banjir dan Delphi",
+    "stem": "Kota pesisir sulit memilih strategi banjir karena data historis terbatas, penurunan tanah cepat, dan ahli berbeda pendapat. Kombinasi pendekatan yang paling tepat adalah?",
+    "options": [
+      "Menunggu banjir besar berikutnya sebelum bertindak.",
+      "Menggunakan pemodelan skenario banjir, peta risiko, konsultasi ahli Delphi untuk asumsi kunci, dan prioritas adaptasi bertahap.",
+      "Memilih proyek terbesar tanpa skenario.",
+      "Menghapus masukan ahli karena tidak sama.",
+      "Mengandalkan satu angka curah hujan lama."
+    ],
+    "answer": 1,
+    "explain": "Ketidakpastian tinggi dapat ditangani dengan skenario, peta risiko, dan konsensus ahli terstruktur seperti Delphi.",
+    "version": 1
+  },
+  {
+    "id": "G3-T02",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Renstra PBD",
+    "stem": "OPD menyusun Renstra Program Berbasis Data, tetapi indikatornya masih berupa daftar kegiatan tahunan. Koreksi paling penting agar Renstra benar-benar berorientasi hasil adalah?",
+    "options": [
+      "Memperbanyak narasi visi agar dokumen terlihat komprehensif.",
+      "Menyamakan semua target dengan realisasi tahun sebelumnya.",
+      "Memindahkan seluruh indikator ke lampiran tanpa baseline.",
+      "Menurunkan sasaran strategis ke indikator outcome, baseline, target tahunan, sumber data, dan penanggung jawab data.",
+      "Menghapus indikator yang sulit dicapai agar laporan lebih ringan."
+    ],
+    "answer": 3,
+    "explain": "Renstra berbasis data membutuhkan ukuran hasil yang punya baseline, target, sumber data, dan akuntabilitas pemutakhiran.",
+    "version": 1
+  },
+  {
+    "id": "G3-T03",
+    "cluster": "teknis",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "Indikator antara",
+    "stem": "Program penurunan stunting menargetkan prevalensi turun dalam tiga tahun. Indikator antara yang paling berguna untuk pengendalian tahunan adalah?",
+    "options": [
+      "Jumlah spanduk kampanye gizi yang dipasang di kantor kecamatan.",
+      "Jumlah rapat koordinasi lintas perangkat daerah selama satu tahun.",
+      "Persentase balita berisiko yang mendapat paket lengkap layanan gizi, kesehatan, sanitasi, dan pendampingan keluarga.",
+      "Panjang laporan pelaksanaan kegiatan konvergensi stunting.",
+      "Jumlah foto kegiatan posyandu dalam laporan bulanan."
+    ],
+    "answer": 2,
+    "explain": "Indikator antara menjembatani output kegiatan dengan outcome akhir sehingga dapat dipakai mengoreksi pelaksanaan lebih dini.",
+    "version": 1
+  },
+  {
+    "id": "G3-T04",
+    "cluster": "teknis",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Evaluasi impact",
+    "stem": "Evaluasi program pelatihan digital UMKM menunjukkan peserta puas dan sertifikat terbit, tetapi penjualan belum jelas berubah. Desain evaluasi impact yang lebih kuat adalah?",
+    "options": [
+      "Membandingkan perubahan penjualan peserta dengan kelompok pembanding yang serupa, memakai baseline dan follow-up setelah periode yang cukup.",
+      "Menambah survei kepuasan pada hari penutupan pelatihan.",
+      "Menganggap jumlah sertifikat sebagai dampak akhir program.",
+      "Mengukur keberhasilan dari total materi presentasi yang dibagikan.",
+      "Memilih testimoni peserta yang paling menarik untuk laporan."
+    ],
+    "answer": 0,
+    "explain": "Evaluasi impact perlu mengisolasi perubahan yang dapat dikaitkan dengan intervensi, bukan sekadar output atau kepuasan segera.",
+    "version": 1
+  },
+  {
+    "id": "G3-T07",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Musrenbang hasil",
+    "stem": "Hasil musrenbang kecamatan berisi 120 usulan, tetapi tidak memuat prioritas, indikator, lokasi rinci, atau kesepakatan OPD pengampu. Keluaran yang perlu diperbaiki adalah?",
+    "options": [
+      "Daftar hadir peserta dengan tanda tangan lengkap saja.",
+      "Dokumentasi foto forum dari berbagai sudut ruangan.",
+      "Narasi sambutan camat sebagai bukti partisipasi.",
+      "Berita acara dan matriks prioritas yang memuat masalah, lokasi, sasaran, indikator, pagu indikatif, OPD pengampu, dan status usulan.",
+      "Daftar usulan mentah tanpa pembobotan."
+    ],
+    "answer": 3,
+    "explain": "Musrenbang harus menghasilkan kesepakatan yang dapat ditelusuri ke perencanaan, bukan sekadar daftar aspirasi.",
+    "version": 1
+  },
+  {
+    "id": "G3-T08",
+    "cluster": "teknis",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "RAN dan RKPD",
+    "stem": "Rencana aksi nasional penurunan emisi meminta daerah memperkuat transportasi rendah karbon, sementara RKPD daerah fokus kemacetan dan kualitas udara. Harmonisasi yang paling tepat adalah?",
+    "options": [
+      "Menyalin semua kegiatan pusat tanpa menilai masalah transportasi daerah.",
+      "Menolak rencana aksi nasional karena RKPD bersifat daerah.",
+      "Memisahkan program emisi dan kemacetan agar tidak saling memengaruhi.",
+      "Mengganti indikator lingkungan dengan jumlah rapat koordinasi.",
+      "Memilih kegiatan yang menjawab kedua agenda, seperti angkutan umum, manajemen parkir, jalur pejalan kaki, indikator emisi, dan target kemacetan."
+    ],
+    "answer": 4,
+    "explain": "Harmonisasi mencari irisan sasaran, indikator, dan intervensi agar prioritas nasional serta daerah saling menguatkan.",
+    "version": 1
+  },
+  {
+    "id": "G3-T09",
+    "cluster": "teknis",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "Partisipatif vs teknokratik",
+    "stem": "Perencanaan partisipatif dan teknokratik sering dianggap bertentangan. Cara memadukannya secara sehat adalah?",
+    "options": [
+      "Memakai data teknis untuk menguji kelayakan usulan warga, lalu menjelaskan alasan prioritas dan alternatif dalam forum terbuka.",
+      "Menerima seluruh aspirasi warga tanpa verifikasi data dan kewenangan.",
+      "Menyerahkan semua keputusan kepada model statistik tanpa konsultasi publik.",
+      "Menghapus forum warga karena pakar sudah memiliki data.",
+      "Menyusun daftar proyek berdasarkan urutan kedatangan proposal."
+    ],
+    "answer": 0,
+    "explain": "Partisipasi memberi legitimasi dan pengetahuan lokal, sedangkan teknokrasi menjaga kelayakan, data, dan konsistensi kebijakan.",
+    "version": 1
+  },
+  {
+    "id": "G3-T10",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "PP 17/2017 sinkronisasi",
+    "stem": "K/L mengusulkan kegiatan prioritas baru setelah pagu indikatif disepakati, tetapi tidak menunjukkan perubahan sasaran nasional atau evidence gap. Sesuai prinsip sinkronisasi PP 17/2017, sikap perencana adalah?",
+    "options": [
+      "Memasukkan usulan karena setiap unit berhak menambah kegiatan kapan pun.",
+      "Meminta justifikasi berbasis prioritas, output, lokasi, kebutuhan anggaran, dan konsekuensi terhadap kegiatan lain sebelum memasukkan usulan.",
+      "Menghapus seluruh kegiatan lama agar kegiatan baru mendapat ruang.",
+      "Menunda penyusunan rencana sampai semua usulan sektoral berhenti.",
+      "Menilai usulan cukup dari kesesuaian nama kegiatan dengan arahan pimpinan."
+    ],
+    "answer": 1,
+    "explain": "Perubahan usulan harus tetap terhubung dengan prioritas, output, dan konsekuensi anggaran.",
+    "version": 1
+  },
+  {
+    "id": "G3-T11",
+    "cluster": "teknis",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Indikator antara",
+    "stem": "Dalam program reformasi birokrasi, target akhir adalah kepuasan layanan meningkat. Manakah indikator antara yang paling tajam untuk memantau perubahan sebelum survei akhir tahun?",
+    "options": [
+      "Jumlah pegawai yang mengikuti apel pagi setiap minggu.",
+      "Jumlah halaman dokumen SOP yang dicetak ulang.",
+      "Persentase layanan prioritas yang memenuhi standar waktu, kanal pengaduan aktif, dan penyelesaian keluhan sesuai SLA.",
+      "Jumlah banner budaya kerja di ruang pelayanan.",
+      "Jumlah rapat internal tanpa catatan keputusan."
+    ],
+    "answer": 2,
+    "explain": "Indikator antara harus menangkap perubahan proses layanan yang logis menuju kepuasan pengguna.",
+    "version": 1
+  },
+  {
+    "id": "G3-T12",
+    "cluster": "teknis",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Evaluasi impact",
+    "stem": "Program subsidi alat tangkap ramah lingkungan diklaim berhasil karena alat dibagikan seluruhnya. Namun nelayan kembali memakai alat lama setelah tiga bulan. Pertanyaan impact yang perlu dijawab adalah?",
+    "options": [
+      "Apakah semua kuitansi pengadaan tersusun sesuai nomor urut.",
+      "Apakah warna alat tangkap sesuai desain katalog.",
+      "Apakah acara penyerahan bantuan dihadiri pejabat lengkap.",
+      "Apakah subsidi mengubah perilaku penangkapan dan pendapatan nelayan secara berkelanjutan dibanding kondisi sebelum program.",
+      "Apakah jumlah paket sama dengan rencana belanja."
+    ],
+    "answer": 3,
+    "explain": "Impact menilai perubahan perilaku dan kesejahteraan sasaran, bukan berhenti pada distribusi bantuan.",
+    "version": 1
+  },
+  {
+    "id": "G3-T13",
+    "cluster": "teknis",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "Efisiensi vs efektivitas",
+    "stem": "Sebuah intervensi sanitasi memakai biaya per sambungan rumah lebih rendah daripada daerah pembanding, tetapi banyak sambungan tidak dipakai warga. Kesimpulan paling tepat adalah?",
+    "options": [
+      "Program berhasil penuh karena biaya satuan rendah.",
+      "Penggunaan warga tidak relevan dalam evaluasi sanitasi.",
+      "Biaya rendah membuktikan outcome kesehatan tercapai.",
+      "Sambungan tidak terpakai cukup dicatat sebagai variasi administrasi.",
+      "Efisiensi biaya perlu diakui, tetapi efektivitas rendah jika layanan tidak digunakan dan perilaku sanitasi tidak berubah."
+    ],
+    "answer": 4,
+    "explain": "Biaya satuan rendah tidak cukup jika output tidak dimanfaatkan dan outcome tidak bergerak.",
+    "version": 1
+  },
+  {
+    "id": "G3-E01",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "DLQ interpretasi",
+    "stem": "Sektor ekonomi kreatif memiliki LQ di bawah 1, tetapi DLQ konsisten di atas 1 selama tiga tahun. Implikasi perencanaan yang paling hati-hati adalah?",
+    "options": [
+      "Sektor belum menjadi basis, tetapi momentum pertumbuhannya layak diuji melalui dukungan talenta, pasar, dan infrastruktur digital.",
+      "Sektor pasti sudah basis sehingga tidak perlu analisis lanjutan.",
+      "Sektor harus dikeluarkan dari perencanaan karena LQ rendah.",
+      "DLQ membuktikan ketimpangan pendapatan sudah turun.",
+      "DLQ tidak dapat memberi informasi dinamika sektor."
+    ],
+    "answer": 0,
+    "explain": "DLQ di atas 1 memberi sinyal pertumbuhan relatif lebih cepat, bukan status basis saat ini.",
+    "version": 1
+  },
+  {
+    "id": "G3-E02",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Shift-share komponen",
+    "stem": "Analisis shift-share menunjukkan sektor logistik daerah tumbuh terutama karena komponen pertumbuhan nasional, sedangkan komponen daya saing lokal negatif. Rekomendasi yang paling tepat adalah?",
+    "options": [
+      "Mengklaim pertumbuhan sepenuhnya akibat keunggulan lokal.",
+      "Menguji hambatan lokal seperti biaya bongkar muat, konektivitas, perizinan, dan kualitas SDM karena daerah belum menangkap keunggulan sendiri.",
+      "Menghentikan semua investasi logistik karena tren nasional positif.",
+      "Mengabaikan komponen daya saing karena shift-share hanya menghitung inflasi.",
+      "Mengganti sektor logistik dengan bantuan sosial dalam tabel PDRB."
+    ],
+    "answer": 1,
+    "explain": "Komponen daya saing negatif menunjukkan kinerja lokal tertinggal dari tren yang lebih luas.",
+    "version": 1
+  },
+  {
+    "id": "G3-E03",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "ICOR angka",
+    "stem": "Jika tambahan investasi Rp8 triliun menghasilkan tambahan output Rp2 triliun, nilai ICOR sederhana adalah?",
+    "options": [
+      "0,25 karena output dibagi investasi.",
+      "2 karena investasi dikurangi output.",
+      "4, karena ICOR adalah tambahan investasi dibagi tambahan output.",
+      "6 karena investasi dan output dijumlahkan lalu dibagi dua.",
+      "10 karena investasi dan output harus dijumlahkan."
+    ],
+    "answer": 2,
+    "explain": "ICOR sederhana dihitung sebagai delta modal atau investasi dibagi delta output.",
+    "version": 1
+  },
+  {
+    "id": "G3-E04",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Gini redistribusi",
+    "stem": "Gini daerah meningkat setelah kawasan industri tumbuh karena pekerja lokal berpendidikan rendah tidak masuk rantai nilai utama. Kebijakan redistribusi yang paling produktif adalah?",
+    "options": [
+      "Menaikkan PDRB tanpa melihat siapa yang menikmati manfaat.",
+      "Menghapus pengukuran Gini agar citra investasi membaik.",
+      "Membatasi pendidikan vokasi untuk pekerja luar daerah.",
+      "Pelatihan terarah, beasiswa vokasi, dukungan UMKM pemasok, dan perlindungan sosial untuk kelompok tertinggal.",
+      "Menyamaratakan bantuan tanpa memeriksa kelompok terbawah."
+    ],
+    "answer": 3,
+    "explain": "Redistribusi produktif memperluas akses kemampuan dan manfaat pertumbuhan bagi kelompok yang tertinggal.",
+    "version": 1
+  },
+  {
+    "id": "G3-E05",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "Merit goods",
+    "stem": "Imunisasi dan pendidikan dasar disebut merit goods terutama karena?",
+    "options": [
+      "Keduanya tidak pernah memerlukan biaya produksi.",
+      "Keduanya dapat dikonsumsi tanpa kapasitas layanan.",
+      "Keduanya tidak memberi manfaat kepada orang lain.",
+      "Keduanya harus disediakan eksklusif oleh pasar.",
+      "Manfaat sosialnya besar dan masyarakat dapat mengonsumsi terlalu sedikit jika akses, informasi, atau kemampuan bayar terbatas."
+    ],
+    "answer": 4,
+    "explain": "Merit goods sering didorong pemerintah karena manfaat sosialnya kurang diperhitungkan oleh keputusan individu.",
+    "version": 1
+  },
+  {
+    "id": "G3-E06",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Normal vs inferior goods",
+    "stem": "Ketika pendapatan rumah tangga naik, konsumsi mi instan murah menurun dan konsumsi protein segar meningkat. Interpretasi yang paling tepat adalah?",
+    "options": [
+      "Mi instan murah dalam kasus ini berperilaku sebagai barang inferior, sedangkan protein segar cenderung barang normal.",
+      "Keduanya pasti barang publik karena dikonsumsi banyak orang.",
+      "Protein segar adalah barang inferior karena lebih mahal.",
+      "Mi instan murah pasti barang Giffen dalam semua kondisi.",
+      "Perubahan pendapatan tidak dapat memengaruhi pola konsumsi."
+    ],
+    "answer": 0,
+    "explain": "Barang inferior dikonsumsi lebih sedikit saat pendapatan naik, sedangkan barang normal naik seiring pendapatan.",
+    "version": 1
+  },
+  {
+    "id": "G3-E07",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "Multiplier sederhana",
+    "stem": "Jika pemerintah daerah membelanjakan Rp100 miliar untuk proyek padat karya dan marginal propensity to consume lokal 0,8, multiplier Keynesian sederhana adalah?",
+    "options": [
+      "0,2, sehingga dampak pasti turun menjadi Rp20 miliar.",
+      "5, sehingga potensi dampak pendapatan bruto dapat mencapai Rp500 miliar sebelum kebocoran lain diperhitungkan.",
+      "1,25, karena multiplier adalah 1 dikali MPC.",
+      "8, karena MPC dikalikan 10.",
+      "100, karena belanja awal menjadi multiplier."
+    ],
+    "answer": 1,
+    "explain": "Multiplier sederhana adalah 1/(1-MPC), sehingga 1/(1-0,8)=5.",
+    "version": 1
+  },
+  {
+    "id": "G3-E08",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Economic base export",
+    "stem": "Dalam teori economic base, mengapa ekspor komoditas olahan ke luar daerah dapat mendorong pertumbuhan lokal?",
+    "options": [
+      "Ekspor membuat uang keluar sehingga kegiatan lokal pasti turun.",
+      "Sektor basis adalah sektor yang melayani warga setempat saja.",
+      "Pendapatan dari luar daerah masuk, meningkatkan permintaan lokal, dan memicu kegiatan non-basis melalui belanja turunan.",
+      "Pertumbuhan lokal hanya ditentukan oleh jumlah kantor pemerintah.",
+      "Ekspor tidak terkait pendapatan karena barang berpindah lokasi."
+    ],
+    "answer": 2,
+    "explain": "Sektor basis membawa permintaan eksternal yang menjadi penggerak pendapatan dan multiplier lokal.",
+    "version": 1
+  },
+  {
+    "id": "G3-E10",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "Oligopoli",
+    "stem": "Pasar semen daerah dikuasai tiga distributor besar yang saling memantau harga dan enggan menurunkan margin. Risiko utama struktur oligopoli tersebut adalah?",
+    "options": [
+      "Harga pasti turun ke biaya marjinal seperti persaingan sempurna.",
+      "Konsumen selalu memperoleh pilihan tidak terbatas.",
+      "Distributor kecil otomatis menguasai pasar.",
+      "Struktur pasar tidak memengaruhi harga.",
+      "Harga dapat tetap tinggi karena interdependensi strategi dan hambatan masuk bagi pesaing baru."
+    ],
+    "answer": 4,
+    "explain": "Oligopoli membuat keputusan harga saling bergantung dan dapat mengurangi tekanan persaingan.",
+    "version": 1
+  },
+  {
+    "id": "G3-E11",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "DLQ interpretasi",
+    "stem": "Sektor pertanian memiliki LQ tinggi, tetapi DLQ turun di bawah 1 karena produktivitas stagnan dan tenaga kerja muda keluar. Pesan kebijakan yang paling tepat adalah?",
+    "options": [
+      "Basis saat ini perlu diremajakan melalui produktivitas, hilirisasi, dan regenerasi agar tidak melemah secara relatif.",
+      "Sektor pasti aman karena LQ tinggi pada satu tahun pengamatan.",
+      "DLQ rendah berarti sektor tidak pernah menyumbang ekonomi daerah.",
+      "LQ tinggi membuat inovasi tidak diperlukan.",
+      "Perencana cukup menaikkan target tanpa intervensi."
+    ],
+    "answer": 0,
+    "explain": "LQ menggambarkan posisi saat ini, sedangkan DLQ memberi peringatan tentang arah dinamika relatif.",
+    "version": 1
+  },
+  {
+    "id": "G3-E12",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Shift-share komponen",
+    "stem": "Komponen bauran industri dalam shift-share sektor farmasi daerah positif, tetapi komponen kompetitif lokal negatif. Interpretasi yang paling tepat adalah?",
+    "options": [
+      "Sektor farmasi pasti tidak memiliki pasar nasional.",
+      "Sektor berada pada industri yang tumbuh cepat secara acuan, tetapi kinerja lokal kalah dibanding daerah lain dalam industri yang sama.",
+      "Komponen positif berarti semua aspek lokal sudah unggul.",
+      "Komponen kompetitif tidak berguna untuk strategi daerah.",
+      "Pertumbuhan farmasi hanya dipengaruhi jumlah penduduk miskin."
+    ],
+    "answer": 1,
+    "explain": "Bauran industri positif menunjukkan sektor acuan sedang menarik, sementara komponen kompetitif negatif menunjukkan masalah lokal.",
+    "version": 1
+  },
+  {
+    "id": "G3-E13",
+    "cluster": "ekonomi",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "ICOR angka",
+    "stem": "ICOR daerah turun dari 6 menjadi 4, tetapi investasi terkonsentrasi pada tambang padat modal dengan serapan kerja rendah. Kehati-hatian analitis yang tepat adalah?",
+    "options": [
+      "ICOR turun membuktikan semua warga mendapat pekerjaan layak.",
+      "Analisis sosial tidak diperlukan jika rasio makro membaik.",
+      "Efisiensi output membaik secara agregat, namun dampak inklusi kerja dan keberlanjutan lingkungan tetap perlu diuji.",
+      "ICOR rendah berarti investasi bebas risiko lingkungan.",
+      "Serapan kerja tidak berkaitan dengan kualitas pertumbuhan."
+    ],
+    "answer": 2,
+    "explain": "ICOR agregat perlu dibaca bersama indikator distribusi manfaat, pekerjaan, dan keberlanjutan.",
+    "version": 1
+  },
+  {
+    "id": "G3-E14",
+    "cluster": "ekonomi",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "Merit goods",
+    "stem": "Mengapa subsidi transportasi pelajar miskin dapat dibaca sebagai kebijakan merit good?",
+    "options": [
+      "Karena transportasi pelajar tidak membutuhkan kendaraan dan pengemudi.",
+      "Karena semua perjalanan adalah barang publik murni.",
+      "Karena subsidi membuat pendidikan tidak lagi memiliki manfaat privat.",
+      "Karena membantu konsumsi layanan pendidikan yang manfaat sosialnya besar dan sering terkendala biaya akses.",
+      "Karena pelajar miskin tidak perlu memilih sekolah."
+    ],
+    "answer": 3,
+    "explain": "Subsidi akses dapat mencegah under-consumption pendidikan akibat biaya perjalanan.",
+    "version": 1
+  },
+  {
+    "id": "G3-E15",
+    "cluster": "ekonomi",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Oligopoli",
+    "stem": "Empat perusahaan penggilingan padi besar membeli gabah dari banyak petani kecil. Jika mereka memiliki kekuatan tawar tinggi, kebijakan daerah yang paling proporsional adalah?",
+    "options": [
+      "Membiarkan asimetri tawar karena petani pasti mendapat harga adil.",
+      "Melarang semua penggilingan besar beroperasi tanpa analisis pasokan.",
+      "Menetapkan satu harga tetap sepanjang tahun tanpa melihat kualitas gabah.",
+      "Menghapus data harga agar pasar tidak bereaksi.",
+      "Memperkuat informasi harga, koperasi petani, akses gudang, pembiayaan, dan pengawasan persaingan tanpa menetapkan harga sembarangan."
+    ],
+    "answer": 4,
+    "explain": "Kekuatan pasar pembeli dapat ditekan melalui transparansi, kelembagaan petani, dan pengawasan yang proporsional.",
+    "version": 1
+  },
+  {
+    "id": "G3-S01",
+    "cluster": "sosial",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "Transect walk",
+    "stem": "Dalam transect walk, tim menemukan area permukiman bawah sering tergenang karena saluran tertutup sampah dan elevasi rendah. Keluaran PRA yang paling berguna adalah?",
+    "options": [
+      "Sketsa lintasan, titik masalah, penyebab lokal, kelompok terdampak, dan prioritas tindakan yang disepakati warga.",
+      "Daftar belanja alat kebersihan tanpa lokasi masalah.",
+      "Foto kegiatan tanpa catatan ruang dan aktor.",
+      "Kesimpulan tunggal dari fasilitator tanpa validasi warga.",
+      "Peta administrasi kabupaten tanpa detail dusun."
+    ],
+    "answer": 0,
+    "explain": "Transect walk menghubungkan pengamatan ruang dengan pengetahuan warga dan prioritas tindakan.",
+    "version": 1
+  },
+  {
+    "id": "G3-S02",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Social mapping",
+    "stem": "Program rumah layak huni gagal menjangkau janda lansia karena ia tidak dekat dengan pengurus RT dan tidak tercatat sebagai penerima. Social mapping seharusnya membantu dengan cara?",
+    "options": [
+      "Mengambil data dari tokoh dominan sebagai sumber tunggal.",
+      "Memetakan jaringan kuasa, kelompok rentan, akses informasi, dan warga yang tidak terlihat dalam daftar formal.",
+      "Mengabaikan relasi sosial karena bantuan rumah bersifat teknis.",
+      "Mengurutkan penerima berdasarkan kedekatan dengan panitia.",
+      "Menghapus warga yang tidak hadir dalam rapat malam."
+    ],
+    "answer": 1,
+    "explain": "Social mapping membantu melihat struktur sosial, akses, dan eksklusi yang tidak tampak dalam data administratif.",
+    "version": 1
+  },
+  {
+    "id": "G3-S04",
+    "cluster": "sosial",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Kemiskinan ekstrem",
+    "stem": "Daerah ingin menurunkan kemiskinan ekstrem, tetapi bantuan tersebar ke rumah tangga miskin umum tanpa memprioritaskan desil terbawah. Perbaikan strategi yang paling tepat adalah?",
+    "options": [
+      "Membagi bantuan sama rata ke semua penduduk agar proses cepat.",
+      "Menghapus verifikasi lapangan karena data awal cukup untuk semua kasus.",
+      "Mengalihkan semua anggaran ke kegiatan seremonial anti-kemiskinan.",
+      "Menggunakan data mikro terpadu untuk memprioritaskan keluarga ekstrem, memastikan paket bantuan lengkap, dan memantau perubahan kesejahteraan.",
+      "Mengukur keberhasilan dari jumlah rapat koordinasi kemiskinan."
+    ],
+    "answer": 3,
+    "explain": "Kemiskinan ekstrem membutuhkan targeting presisi, konvergensi layanan, dan pemantauan rumah tangga sasaran.",
+    "version": 1
+  },
+  {
+    "id": "G3-S05",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Remitansi",
+    "stem": "Banyak keluarga pekerja migran menerima remitansi, tetapi sebagian besar dipakai untuk konsumsi jangka pendek dan biaya sosial. Kebijakan pemberdayaan yang paling sesuai adalah?",
+    "options": [
+      "Membatasi seluruh konsumsi keluarga penerima remitansi.",
+      "Menganggap remitansi selalu cukup menggantikan layanan publik.",
+      "Memungut biaya tinggi dari remitansi untuk menambah PAD.",
+      "Menghapus pendampingan karena uang berasal dari luar negeri.",
+      "Literasi keuangan, akses tabungan aman, investasi produktif kecil, dan perlindungan keluarga migran dari biaya informal."
+    ],
+    "answer": 4,
+    "explain": "Remitansi dapat memperkuat ketahanan keluarga jika didukung pengelolaan keuangan dan perlindungan yang baik.",
+    "version": 1
+  },
+  {
+    "id": "G3-S06",
+    "cluster": "sosial",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Desa berdaya",
+    "stem": "Desa disebut berdaya bukan karena banyak menerima proyek, tetapi karena?",
+    "options": [
+      "Warga dan kelembagaan lokal mampu mengenali masalah, mengelola aset, mengambil keputusan inklusif, dan mempertanggungjawabkan hasil.",
+      "Semua keputusan pembangunan diambil oleh konsultan luar.",
+      "Bantuan datang tanpa proses musyawarah dan pengawasan warga.",
+      "Kegiatan desa bergantung pada tokoh tunggal yang menentukan penerima.",
+      "Dokumen desa dibuat rapi meski warga tidak memahami isinya."
+    ],
+    "answer": 0,
+    "explain": "Pemberdayaan menekankan kapasitas, kontrol, inklusi, dan akuntabilitas lokal.",
+    "version": 1
+  },
+  {
+    "id": "G3-S07",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Perencanaan berbasis komunitas",
+    "stem": "Komunitas pesisir menyusun rencana adaptasi abrasi. Agar rencana berbasis komunitas tidak sekadar konsultasi formal, proses yang perlu dijaga adalah?",
+    "options": [
+      "Rencana selesai di kantor konsultan lalu dimintakan tanda tangan warga.",
+      "Warga memetakan risiko, memilih prioritas, membagi peran, menyepakati indikator, dan mendapat akses informasi teknis yang mudah dipahami.",
+      "Masukan warga dibatasi pada warna desain papan informasi.",
+      "Kelompok nelayan kecil dilibatkan setelah keputusan anggaran final.",
+      "Data risiko disimpan agar warga tidak khawatir."
+    ],
+    "answer": 1,
+    "explain": "Community-based planning menempatkan komunitas sebagai pelaku analisis dan keputusan, dengan dukungan teknis yang dapat diakses.",
+    "version": 1
+  },
+  {
+    "id": "G3-S08",
+    "cluster": "sosial",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "UU Perlindungan Disabilitas",
+    "stem": "Dalam perspektif UU Penyandang Disabilitas, layanan publik inklusif menuntut pemerintah daerah untuk?",
+    "options": [
+      "Menyediakan layanan bila ada sisa anggaran kegiatan sosial.",
+      "Memisahkan semua warga difabel dari ruang layanan umum.",
+      "Menyediakan aksesibilitas, akomodasi yang layak, data kebutuhan, dan pelibatan penyandang disabilitas dalam perencanaan layanan.",
+      "Menyerahkan seluruh dukungan kepada keluarga masing-masing.",
+      "Membatasi kanal pengaduan karena penyesuaian layanan sulit."
+    ],
+    "answer": 2,
+    "explain": "Hak penyandang disabilitas menuntut akses setara, akomodasi layak, dan partisipasi bermakna.",
+    "version": 1
+  },
+  {
+    "id": "G3-S09",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Anggaran responsif gender",
+    "stem": "Program revitalisasi pasar meningkatkan kios, tetapi tidak menyediakan ruang laktasi, toilet aman, dan penerangan bagi pedagang perempuan yang pulang malam. Respons anggaran responsif gender adalah?",
+    "options": [
+      "Menyatakan pasar netral gender karena semua pedagang membayar retribusi.",
+      "Mengganti fasilitas dasar dengan seminar pemberdayaan satu hari.",
+      "Menghapus data pedagang perempuan agar desain lebih sederhana.",
+      "Memasukkan kebutuhan keamanan, fasilitas pendukung, indikator manfaat terpilah, dan alokasi yang menjawab hambatan perempuan.",
+      "Menunggu keluhan viral sebelum mengubah desain."
+    ],
+    "answer": 3,
+    "explain": "Anggaran responsif gender melihat akses, partisipasi, kontrol, dan manfaat yang berbeda antar kelompok.",
+    "version": 1
+  },
+  {
+    "id": "G3-S10",
+    "cluster": "sosial",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Social mapping",
+    "stem": "Pemetaan sosial di kawasan kumuh menemukan penyewa kontrakan tidak ikut musyawarah karena dianggap bukan warga tetap, padahal mereka paling rentan banjir. Implikasi perencanaan yang tepat adalah?",
+    "options": [
+      "Penyewa dapat diabaikan karena tidak memiliki sertifikat tanah.",
+      "Musyawarah cukup mewakili pemilik bangunan yang hadir.",
+      "Program banjir sebaiknya ditunda sampai penyewa pindah.",
+      "Data kerentanan tidak perlu membedakan status hunian.",
+      "Mekanisme partisipasi dan data sasaran perlu memasukkan penyewa rentan agar manfaat program tidak hanya diterima pemilik rumah."
+    ],
+    "answer": 4,
+    "explain": "Pemetaan sosial mengungkap kelompok rentan yang mudah tersisih dari proses formal.",
+    "version": 1
+  },
+  {
+    "id": "G3-S11",
+    "cluster": "sosial",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "IPM komponen",
+    "stem": "Jika IPM naik karena pengeluaran per kapita membaik, tetapi harapan lama sekolah stagnan, catatan kebijakan yang paling tepat adalah?",
+    "options": [
+      "Perbaikan ekonomi belum otomatis memperkuat dimensi pendidikan sehingga intervensi akses dan mutu sekolah tetap diperlukan.",
+      "Kenaikan satu dimensi membuat seluruh dimensi IPM tidak perlu diperiksa.",
+      "Harapan lama sekolah tidak berhubungan dengan pembangunan manusia.",
+      "Pengeluaran per kapita cukup untuk menggantikan layanan pendidikan.",
+      "IPM hanya mengukur pendapatan daerah."
+    ],
+    "answer": 0,
+    "explain": "IPM perlu dibaca per dimensi agar kebijakan tidak menutup kelemahan pada pendidikan atau kesehatan.",
+    "version": 1
+  },
+  {
+    "id": "G3-S12",
+    "cluster": "sosial",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Kemiskinan ekstrem",
+    "stem": "Keluarga miskin ekstrem menerima bantuan pangan, tetapi anaknya putus sekolah dan rumah belum memiliki sanitasi. Pendekatan yang paling tepat adalah?",
+    "options": [
+      "Menambah bantuan pangan saja karena satu program lebih mudah dilaporkan.",
+      "Konvergensi bantuan sosial, pendidikan, kesehatan, sanitasi, dan pendampingan keluarga berdasarkan profil kebutuhan rumah tangga.",
+      "Mengeluarkan keluarga dari sasaran karena masalahnya terlalu banyak.",
+      "Menunggu pendapatan naik tanpa intervensi layanan dasar.",
+      "Mengganti semua bantuan dengan acara motivasi."
+    ],
+    "answer": 1,
+    "explain": "Kemiskinan ekstrem bersifat multidimensi sehingga perlu paket layanan yang saling melengkapi.",
+    "version": 1
+  },
+  {
+    "id": "G3-S13",
+    "cluster": "sosial",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Remitansi",
+    "stem": "Remitansi meningkatkan konsumsi desa, tetapi harga tanah naik dan keluarga non-migran makin sulit membeli lahan. Analisis sosial yang paling tepat adalah?",
+    "options": [
+      "Remitansi pasti menguntungkan semua warga dengan proporsi sama.",
+      "Kenaikan harga tanah tidak terkait struktur sosial desa.",
+      "Remitansi membawa manfaat sekaligus risiko ketimpangan lokal sehingga perlu kebijakan akses lahan, usaha produktif, dan perlindungan kelompok non-penerima.",
+      "Keluarga non-migran harus dikeluarkan dari program desa.",
+      "Perencana cukup mencatat total uang masuk tanpa melihat distribusi."
+    ],
+    "answer": 2,
+    "explain": "Dampak remitansi perlu dibaca dari sisi distribusi manfaat, harga aset, dan kerentanan kelompok yang tidak menerima.",
+    "version": 1
+  },
+  {
+    "id": "G3-P01",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Mitigasi banjir struktur",
+    "stem": "Kota hilir ingin membangun tanggul tinggi untuk mengurangi banjir, tetapi kapasitas sungai dan drainase lingkungan tetap buruk. Mitigasi struktural yang lebih utuh adalah?",
+    "options": [
+      "Membangun tanggul saja tanpa rencana operasi dan pemeliharaan.",
+      "Menutup semua saluran kecil agar air tidak terlihat di permukiman.",
+      "Mengandalkan pompa darurat tanpa peta genangan.",
+      "Menggabungkan tanggul, kolam retensi, normalisasi selektif, drainase lingkungan, operasi pintu air, dan pemeliharaan berbasis risiko.",
+      "Memindahkan banjir ke wilayah tetangga tanpa koordinasi."
+    ],
+    "answer": 3,
+    "explain": "Mitigasi struktural banjir perlu dirancang sebagai sistem, bukan satu bangunan terpisah.",
+    "version": 1
+  },
+  {
+    "id": "G3-P02",
+    "cluster": "spasial",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Adaptasi iklim RDTR",
+    "stem": "RDTR kawasan pesisir disusun tanpa memperhitungkan kenaikan muka laut dan rob yang makin sering. Integrasi adaptasi iklim yang paling tepat adalah?",
+    "options": [
+      "Menetapkan seluruh pesisir sebagai komersial agar nilai lahan naik.",
+      "Menggunakan data rob lama tanpa skenario perubahan iklim.",
+      "Menghapus zona rawan dari peta agar investasi tidak khawatir.",
+      "Membuat aturan sama untuk semua blok meski tingkat bahaya berbeda.",
+      "Memasukkan peta bahaya iklim, aturan zonasi adaptif, elevasi bangunan, sempadan aman, ruang retensi, dan jalur evakuasi."
+    ],
+    "answer": 4,
+    "explain": "RDTR dapat menjadi instrumen adaptasi melalui zonasi, ketentuan pemanfaatan ruang, dan standar bangunan berbasis risiko.",
+    "version": 1
+  },
+  {
+    "id": "G3-P03",
+    "cluster": "spasial",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "Tapak bangunan",
+    "stem": "Dalam analisis tapak bangunan fasilitas publik, aspek yang paling perlu diperiksa sebelum desain detail adalah?",
+    "options": [
+      "Kemiringan lahan, akses, drainase, orientasi, utilitas, risiko bencana, dan hubungan dengan lingkungan sekitar.",
+      "Warna cat gedung dan nama ruang rapat utama.",
+      "Jumlah undangan peresmian dan desain spanduk.",
+      "Preferensi kontraktor terhadap merek material tertentu.",
+      "Panjang sambutan kepala daerah saat peletakan batu pertama."
+    ],
+    "answer": 0,
+    "explain": "Analisis tapak memastikan bangunan sesuai kondisi fisik, akses, utilitas, risiko, dan konteks sekitar.",
+    "version": 1
+  },
+  {
+    "id": "G3-P04",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "ROW jalan",
+    "stem": "Pengembang ingin membangun kios permanen di ruang milik jalan karena lokasi ramai. Pertimbangan ROW jalan yang paling tepat adalah?",
+    "options": [
+      "Kios dapat dibangun jika ramai pembeli meski mengganggu utilitas.",
+      "Ruang milik jalan harus menjaga fungsi jalan, keselamatan, utilitas, drainase, pelebaran, dan akses pemeliharaan.",
+      "ROW jalan hanya berlaku setelah jalan rusak.",
+      "Ruang milik jalan dapat diabaikan jika retribusi tinggi.",
+      "Keselamatan pejalan kaki cukup ditangani dengan imbauan."
+    ],
+    "answer": 1,
+    "explain": "ROW melindungi fungsi jalan dan ruang pendukungnya dari pemanfaatan yang mengganggu keselamatan serta operasi.",
+    "version": 1
+  },
+  {
+    "id": "G3-P05",
+    "cluster": "spasial",
+    "level": "panjang",
+    "source": "gap3",
+    "topic": "Kawasan lindung",
+    "stem": "Usulan vila masuk ke lereng curam yang berfungsi sebagai kawasan lindung resapan air. Sikap perencana tata ruang yang paling tepat adalah?",
+    "options": [
+      "Menyetujui vila karena investasi properti meningkatkan pajak daerah.",
+      "Mengubah fungsi lindung melalui notulen rapat teknis.",
+      "Menolak atau mengarahkan ulang pemanfaatan ke lokasi sesuai zonasi, sambil menjaga fungsi lindung dan mitigasi risiko longsor.",
+      "Membiarkan pembangunan selama desain bangunan terlihat hijau.",
+      "Menghapus informasi lereng dari peta kerja."
+    ],
+    "answer": 2,
+    "explain": "Kawasan lindung memiliki fungsi ekologis dan risiko yang harus dijaga melalui pengendalian pemanfaatan ruang.",
+    "version": 1
+  },
+  {
+    "id": "G3-P06",
+    "cluster": "spasial",
+    "level": "sedang",
+    "source": "gap3",
+    "topic": "Citra NDVI",
+    "stem": "Dalam interpretasi citra, nilai NDVI yang tinggi umumnya menunjukkan?",
+    "options": [
+      "Permukaan kedap air yang sangat panas.",
+      "Kedalaman sungai yang lebih besar.",
+      "Kepadatan bangunan bertingkat.",
+      "Vegetasi lebih rapat atau sehat dibanding area dengan NDVI rendah.",
+      "Status kepemilikan lahan."
+    ],
+    "answer": 3,
+    "explain": "NDVI memakai perbedaan reflektansi merah dan inframerah dekat untuk membaca kondisi vegetasi.",
+    "version": 1
+  },
+  {
+    "id": "G3-P07",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "Overlay flood",
+    "stem": "Bappeda ingin mengidentifikasi sekolah yang berada pada zona banjir 25 tahunan dan melayani anak dari keluarga miskin. Analisis SIG yang paling tepat adalah?",
+    "options": [
+      "Mengubah simbol sekolah menjadi warna biru tanpa analisis spasial.",
+      "Menghitung rata-rata nilai ujian sebagai pengganti risiko banjir.",
+      "Menghapus layer keluarga miskin karena bukan data fisik.",
+      "Memilih sekolah terdekat kantor bupati sebagai prioritas.",
+      "Overlay zona banjir dengan titik sekolah dan data sosial wilayah layanan untuk menentukan prioritas mitigasi."
+    ],
+    "answer": 4,
+    "explain": "Overlay menggabungkan bahaya, lokasi fasilitas, dan kerentanan sosial untuk menentukan prioritas risiko.",
+    "version": 1
+  },
+  {
+    "id": "G3-P09",
+    "cluster": "spasial",
+    "level": "kasus",
+    "source": "gap3",
+    "topic": "PSN dampak sosial",
+    "stem": "PSN jalan tol membuka akses baru, tetapi memutus jalur petani ke sawah dan menaikkan harga sewa di desa sekitar gerbang tol. Mitigasi sosial-spasial yang perlu dimasukkan adalah?",
+    "options": [
+      "Mencatat dampak sosial setelah konstruksi selesai saja.",
+      "Akses pengganti lahan usaha, konsultasi warga, perlindungan penyewa rentan, pemulihan mata pencaharian, dan pemantauan dampak harga lahan.",
+      "Menganggap akses tol otomatis menguntungkan semua kelompok.",
+      "Menutup keluhan warga agar jadwal proyek tidak berubah.",
+      "Memindahkan petani tanpa rencana akses produksi."
+    ],
+    "answer": 1,
+    "explain": "PSN dapat membawa manfaat dan beban ruang yang berbeda, sehingga mitigasi sosial harus konkret dan terpantau.",
+    "version": 1
+  }
+]

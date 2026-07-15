@@ -1,22 +1,16 @@
 # Latihan UKOM — Perencana Ahli Muda
 
-Aplikasi latihan soal pilihan ganda (statis, tanpa server backend).
+Aplikasi latihan soal pilihan ganda (statis: `index.html` + `soal-bank.js`).
 
-## Isi bank soal
+## Bank soal (470)
 
 | Sumber | Jumlah |
 |--------|--------|
 | V1 | 60 |
 | Kasus | 40 |
-| Pre Test | 40 |
-| Pre Test Varian | 40 |
+| Pre Test + Varian | 40 + 40 |
 | Simulasi | 40 |
-| Gap 1 (pembekalan) | 100 |
-| Gap 2 (pembekalan) | 100 |
-| Gap 3 (pembekalan) | 50 |
-| **Total** | **470** |
-
-Buka `index.html` di browser, atau jalankan server lokal (lihat `DEPLOY.md`).
+| Gap 1 / 2 / 3 | 100 + 100 + 50 |
 
 ## Regenerasi bank
 
@@ -24,7 +18,20 @@ Buka `index.html` di browser, atau jalankan server lokal (lihat `DEPLOY.md`).
 node scripts/merge-bank.mjs
 ```
 
-## Dokumen terkait
+Sumber per bagian: `scripts/parts/*.js`. Audit kualitas: `node scripts/audit-quality.mjs`.
 
-- `DEPLOY.md` — cara deploy ke web (Netlify / GitHub Pages / Vercel)
-- `GAP-BAHAN-SCREENING.md` — prioritas topik gap untuk melengkapi bahan ajar HTML
+## Deploy
+
+Lihat `docs/DEPLOY.md` (Vercel / Netlify / GitHub Pages).
+
+## Struktur
+
+```
+index.html          UI latihan/ujian
+soal-bank.js        bank gabungan (hasil merge)
+scripts/parts/      sumber soal per bank
+scripts/merge-bank.mjs
+scripts/audit-quality.mjs
+docs/               panduan deploy & screening
+scripts/archive/    skrip sekali-pakai (tidak dipakai runtime)
+```

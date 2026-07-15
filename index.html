@@ -113,6 +113,15 @@
       color: var(--muted);
     }
 
+    .stats-group-label {
+      margin: 0 0 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
     .note {
       font-size: 0.875rem;
       color: var(--muted);
@@ -227,9 +236,14 @@
       align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       font-size: 0.875rem;
       color: var(--muted);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      padding: 0.625rem 0;
+      background: var(--bg);
     }
 
     .timer {
@@ -280,13 +294,15 @@
       align-items: flex-start;
       gap: 0.625rem;
       width: 100%;
-      padding: 0.75rem 0.875rem;
+      padding: 0.875rem 1rem;
       border: 2px solid var(--border);
       border-radius: var(--radius);
       background: var(--surface);
       font: inherit;
+      line-height: 1.45;
       text-align: left;
       cursor: pointer;
+      min-height: 3.25rem;
       transition: border-color 0.15s, background 0.15s;
     }
 
@@ -527,12 +543,18 @@
     </header>
 
     <section id="screen-home" class="screen active">
+      <div id="bank-error" class="note hidden" style="background:#ffebee;border-color:#ef9a9a;color:#b71c1c"></div>
+
       <div class="card">
+        <p class="stats-group-label">Bank inti</p>
         <div class="stats" id="stats-grid">
           <div class="stat"><span class="stat-num" id="stat-v1">—</span><span class="stat-label">Soal v1</span></div>
           <div class="stat"><span class="stat-num" id="stat-kasus">—</span><span class="stat-label">Kasus</span></div>
           <div class="stat"><span class="stat-num" id="stat-pretest">—</span><span class="stat-label">Pre Test</span></div>
           <div class="stat"><span class="stat-num" id="stat-simulasi">—</span><span class="stat-label">Simulasi</span></div>
+        </div>
+        <p class="stats-group-label" style="margin-top:0.875rem">Gap pembekalan</p>
+        <div class="stats">
           <div class="stat"><span class="stat-num" id="stat-gap">—</span><span class="stat-label">Gap 1</span></div>
           <div class="stat"><span class="stat-num" id="stat-gap2">—</span><span class="stat-label">Gap 2</span></div>
           <div class="stat"><span class="stat-num" id="stat-gap3">—</span><span class="stat-label">Gap 3</span></div>
@@ -540,7 +562,7 @@
         </div>
       </div>
 
-      <p class="note">Pre Test dari dokumen (jawaban highlight ditinjau ulang)</p>
+      <p class="note">470 soal · filter cluster/level/sumber · mode Latihan (bahas setelah jawab) atau Ujian (timer + navigasi).</p>
 
       <div class="card form-grid">
         <div>
@@ -599,6 +621,11 @@
         <label class="check-row">
           <input type="checkbox" id="opt-shuffle" checked>
           Acak urutan soal
+        </label>
+
+        <label class="check-row">
+          <input type="checkbox" id="opt-shuffle-opts" checked>
+          Acak urutan opsi A–E
         </label>
 
         <p id="pool-info" style="font-size:0.875rem;color:var(--muted);margin:0"></p>
@@ -682,6 +709,25 @@
         timeLeft: 0
       };
 
+      // Guard: pastikan semua bank termuat sebelum membangun pool
+      var bankOk = typeof BANK !== "undefined" &&
+        typeof BANK_KASUS !== "undefined" &&
+        typeof BANK_PRETEST !== "undefined" &&
+        typeof BANK_PRETEST_VARIAN !== "undefined" &&
+        typeof BANK_SIMULASI !== "undefined" &&
+        typeof BANK_GAP !== "undefined" &&
+        typeof BANK_GAP2 !== "undefined" &&
+        typeof BANK_GAP3 !== "undefined";
+
+      if (!bankOk) {
+        var errEl = document.getElementById("bank-error");
+        if (errEl) {
+          errEl.classList.remove("hidden");
+          errEl.textContent = "Bank soal gagal dimuat. Pastikan soal-bank.js tersedia lalu hard-refresh (Ctrl+Shift+R).";
+        }
+        return;
+      }
+
       var BANK_ALL = BANK.map(function (q) {
         return Object.assign({}, q, { source: "v1" });
       }).concat(
@@ -703,6 +749,15 @@
           var t = a[i]; a[i] = a[j]; a[j] = t;
         }
         return a;
+      }
+
+      // Acak posisi opsi sambil menjaga kunci jawaban tetap benar
+      function withShuffledOptions(q) {
+        var order = shuffle([0, 1, 2, 3, 4]);
+        return Object.assign({}, q, {
+          options: order.map(function (i) { return q.options[i]; }),
+          answer: order.indexOf(q.answer)
+        });
       }
 
       function showScreen(name) {
@@ -790,6 +845,9 @@
         count = Math.min(count, pool.length);
         var questions = $("opt-shuffle").checked ? shuffle(pool) : pool.slice();
         questions = questions.slice(0, count);
+        if ($("opt-shuffle-opts").checked) {
+          questions = questions.map(withShuffledOptions);
+        }
 
         state.session = {
           mode: state.mode,
@@ -1109,6 +1167,21 @@
       $("btn-result-review").addEventListener("click", openReview);
       $("review-back").addEventListener("click", function () { showScreen("result"); });
       $("btn-fullscreen").addEventListener("click", toggleFullscreen);
+
+      // Pintasan keyboard A–E saat mengerjakan soal
+      document.addEventListener("keydown", function (e) {
+        if (!state.session || !$("screen-quiz").classList.contains("active")) return;
+        var tag = (e.target && e.target.tagName) || "";
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+        var key = e.key.toUpperCase();
+        var idx = KEYS.indexOf(key);
+        if (idx < 0) return;
+        var s = state.session;
+        var locked = s.mode === "latihan" && !!s.locked[s.index];
+        if (locked) return;
+        e.preventDefault();
+        pickAnswer(idx);
+      });
 
       initStats();
       updatePoolInfo();

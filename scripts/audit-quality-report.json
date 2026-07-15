@@ -1,0 +1,271 @@
+{
+  "generated": "2026-07-15T04:36:07.134Z",
+  "total": 470,
+  "bySeverity": {
+    "high": 0,
+    "med": 0,
+    "low": 4
+  },
+  "bySource": {
+    "v1": {
+      "total": 60,
+      "high": 0,
+      "med": 0,
+      "flagged": 0
+    },
+    "kasus": {
+      "total": 40,
+      "high": 0,
+      "med": 0,
+      "flagged": 0
+    },
+    "pretest": {
+      "total": 40,
+      "high": 0,
+      "med": 0,
+      "flagged": 0
+    },
+    "pretest-varian": {
+      "total": 40,
+      "high": 0,
+      "med": 0,
+      "flagged": 0
+    },
+    "simulasi": {
+      "total": 40,
+      "high": 0,
+      "med": 0,
+      "flagged": 0
+    },
+    "gap": {
+      "total": 100,
+      "high": 0,
+      "med": 0,
+      "flagged": 1,
+      "low": null
+    },
+    "gap2": {
+      "total": 100,
+      "high": 0,
+      "med": 0,
+      "flagged": 3,
+      "low": null
+    },
+    "gap3": {
+      "total": 50,
+      "high": 0,
+      "med": 0,
+      "flagged": 0
+    }
+  },
+  "items": [
+    {
+      "id": "G-T04",
+      "source": "gap",
+      "cluster": "teknis",
+      "severity": "low",
+      "flags": [
+        {
+          "type": "absolute",
+          "severity": "low",
+          "detail": {
+            "type": "absolute",
+            "severity": "low",
+            "count": 2
+          }
+        }
+      ],
+      "stem": "Tim Bappeda menerima data kemiskinan, akses sanitasi, dan angka putus sekolah. Peserta ujian diminta memilih indikator prioritas untuk ranca",
+      "options": [
+        {
+          "i": 0,
+          "len": 82,
+          "text": "C1, karena peserta hanya diminta menghafal nama indikator kemiskinan dan sanitasi.",
+          "correct": false
+        },
+        {
+          "i": 1,
+          "len": 88,
+          "text": "C2, karena peserta hanya diminta menjelaskan definisi indikator tanpa memilih prioritas.",
+          "correct": false
+        },
+        {
+          "i": 2,
+          "len": 81,
+          "text": "C5, karena peserta diminta menilai etika politik anggaran daerah secara normatif.",
+          "correct": false
+        },
+        {
+          "i": 3,
+          "len": 66,
+          "text": "C3, karena peserta menerapkan konsep dan kriteria pada data kasus.",
+          "correct": true
+        },
+        {
+          "i": 4,
+          "len": 78,
+          "text": "C6, karena peserta diminta merancang teori baru tentang pengukuran kemiskinan.",
+          "correct": false
+        }
+      ],
+      "answer": 3,
+      "explain": "C3 menekankan penerapan pengetahuan pada situasi konkret; peserta menggunakan kriteria untuk memilih indikator."
+    },
+    {
+      "id": "G2-E09",
+      "source": "gap2",
+      "cluster": "ekonomi",
+      "severity": "low",
+      "flags": [
+        {
+          "type": "absolute",
+          "severity": "low",
+          "detail": {
+            "type": "absolute",
+            "severity": "low",
+            "count": 2
+          }
+        }
+      ],
+      "stem": "Jika sektor perikanan memiliki LQ tinggi tetapi DLQ di bawah 1 selama beberapa tahun, rekomendasi perencana yang paling tepat adalah?",
+      "options": [
+        {
+          "i": 0,
+          "len": 84,
+          "text": "Menganggap sektor perikanan pasti tumbuh cepat selamanya karena LQ-nya masih tinggi.",
+          "correct": false
+        },
+        {
+          "i": 1,
+          "len": 106,
+          "text": "Mewaspadai pelemahan daya saing relatif dan menguji faktor produktivitas, pasar, serta keberlanjutan",
+          "correct": true
+        },
+        {
+          "i": 2,
+          "len": 85,
+          "text": "Menghapus seluruh program perikanan tanpa analisis hanya karena nilai DLQ di bawah 1.",
+          "correct": false
+        },
+        {
+          "i": 3,
+          "len": 85,
+          "text": "Menjadikan DLQ sebagai indikator langsung kemiskinan rumah tangga di wilayah pesisir.",
+          "correct": false
+        },
+        {
+          "i": 4,
+          "len": 94,
+          "text": "Mengabaikan tren pelemahan karena LQ tinggi sekali sudah cukup untuk kebijakan jangka panjang.",
+          "correct": false
+        }
+      ],
+      "answer": 1,
+      "explain": "LQ tinggi menunjukkan basis saat ini, tetapi DLQ rendah memberi peringatan dinamika relatif melemah."
+    },
+    {
+      "id": "G2-E12",
+      "source": "gap2",
+      "cluster": "ekonomi",
+      "severity": "low",
+      "flags": [
+        {
+          "type": "absolute",
+          "severity": "low",
+          "detail": {
+            "type": "absolute",
+            "severity": "low",
+            "count": 2
+          }
+        }
+      ],
+      "stem": "Sebuah daerah memiliki ICOR meningkat dari 4 menjadi 7, sementara pertumbuhan ekonomi melambat. Interpretasi kebijakan yang paling masuk aka",
+      "options": [
+        {
+          "i": 0,
+          "len": 92,
+          "text": "Investasi makin efisien karena butuh lebih banyak modal untuk menghasilkan pertumbuhan sama.",
+          "correct": false
+        },
+        {
+          "i": 1,
+          "len": 91,
+          "text": "ICOR umumnya tidak terkait produktivitas modal sehingga tidak perlu dibaca untuk kebijakan.",
+          "correct": false
+        },
+        {
+          "i": 2,
+          "len": 91,
+          "text": "Pertumbuhan dianggap pasti akan melonjak tanpa perbaikan kualitas proyek dan produktivitas.",
+          "correct": false
+        },
+        {
+          "i": 3,
+          "len": 92,
+          "text": "Belanja modal harus dihentikan permanen karena ICOR tinggi berarti investasi selalu sia-sia.",
+          "correct": false
+        },
+        {
+          "i": 4,
+          "len": 113,
+          "text": "Efisiensi investasi menurun sehingga perlu menilai kualitas proyek, waktu konstruksi, dan hambatan p",
+          "correct": true
+        }
+      ],
+      "answer": 4,
+      "explain": "ICOR lebih tinggi biasanya menunjukkan kebutuhan investasi lebih besar untuk menghasilkan tambahan output yang sama."
+    },
+    {
+      "id": "G2-P04",
+      "source": "gap2",
+      "cluster": "spasial",
+      "severity": "low",
+      "flags": [
+        {
+          "type": "absolute",
+          "severity": "low",
+          "detail": {
+            "type": "absolute",
+            "severity": "low",
+            "count": 2
+          }
+        }
+      ],
+      "stem": "Jika batas zona perdagangan dan permukiman di RDTR terlalu kasar, risiko utama dalam pelayanan perizinan adalah?",
+      "options": [
+        {
+          "i": 0,
+          "len": 102,
+          "text": "Ketidakpastian lokasi kegiatan, sengketa interpretasi zonasi, dan keputusan KKPR yang tidak konsiste",
+          "correct": true
+        },
+        {
+          "i": 1,
+          "len": 89,
+          "text": "Semua izin langsung dianggap lebih cepat dan akurat meski batas zona masih terlalu kasar.",
+          "correct": false
+        },
+        {
+          "i": 2,
+          "len": 90,
+          "text": "Tidak ada hubungan antara skala peta dan perizinan sehingga ketelitian zona tidak penting.",
+          "correct": false
+        },
+        {
+          "i": 3,
+          "len": 86,
+          "text": "Harga tanah dianggap pasti turun sama rata jika batas zona perdagangan digambar kasar.",
+          "correct": false
+        },
+        {
+          "i": 4,
+          "len": 80,
+          "text": "Peta tidak perlu metadata karena keputusan KKPR hanya bergantung pada nama zona.",
+          "correct": false
+        }
+      ],
+      "answer": 0,
+      "explain": "Skala dan ketelitian RDTR memengaruhi kepastian zonasi dan keputusan pemanfaatan ruang."
+    }
+  ]
+}

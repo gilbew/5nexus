@@ -3,7 +3,7 @@ const BANK = [
     id: 1,
     cluster: "teknis",
     level: "singkat",
-    stem: "Dokumen rencana pembangunan jangka panjang nasional (20 tahun) menurut UU 25/2004 adalah …",
+    stem: "Menurut UU No. 25 Tahun 2004, dokumen manakah yang berfungsi sebagai rencana pembangunan jangka panjang nasional untuk periode 20 tahun?",
     options: [
       "RPJMD (5 tahun)",
       "RPJPN (20 tahun)",
@@ -13,29 +13,29 @@ const BANK = [
     ],
     answer: 1,
     explain: "RPJPN = Rencana Pembangunan Jangka Panjang Nasional (20 tahun). RPJMD adalah daerah; RKPD tahunan daerah.",
-    version: 2
+    version: 3
   },
   {
     id: 2,
     cluster: "teknis",
     level: "singkat",
-    stem: "UU No. 25 Tahun 2004 tentang Sistem Perencanaan Pembangunan Nasional berstatus sebagai …",
+    stem: "Secara hukum, UU No. 25 Tahun 2004 tentang Sistem Perencanaan Pembangunan Nasional termasuk dalam kategori apa?",
     options: [
-      "Undang-Undang",
-      "Peraturan Pemerintah",
-      "Produk hukum / peraturan perundang-undangan",
-      "Naskah akademik perencanaan",
-      "Panduan teknis internal",
+      "Undang-Undang sebagai produk legislatif",
+      "Peraturan Pemerintah pelaksana teknis",
+      "Produk hukum perundang-undangan yang mengikat",
+      "Naskah akademik tanpa kekuatan hukum",
+      "Panduan teknis internal tanpa dasar hukum",
     ],
     answer: 2,
     explain: "UU 25/2004 adalah produk hukum yang mengatur tata cara perencanaan, bukan teori atau konsep akademis semata.",
-    version: 2
+    version: 3
   },
   {
     id: 3,
     cluster: "teknis",
     level: "singkat",
-    stem: "Dokumen perencanaan daerah untuk satu tahun fiskal adalah …",
+    stem: "Dokumen perencanaan daerah manakah yang disusun untuk kebutuhan satu tahun fiskal (anggaran tahunan)?",
     options: [
       "RPJPD",
       "RPJMD",
@@ -45,13 +45,13 @@ const BANK = [
     ],
     answer: 2,
     explain: "RKPD = Rencana Kerja Pemerintah Daerah (1 tahun), turunan RPJMD dan dasar APBD.",
-    version: 2
+    version: 3
   },
   {
     id: 4,
     cluster: "teknis",
     level: "singkat",
-    stem: "Kegiatan memantau realisasi anggaran triwulan I termasuk dalam tahap …",
+    stem: "Kegiatan memantau realisasi anggaran pada triwulan I termasuk dalam tahap apa pada siklus perencanaan?",
     options: [
       "Evaluasi akhir periode",
       "Pengendalian saja",
@@ -61,13 +61,13 @@ const BANK = [
     ],
     answer: 2,
     explain: "Monitoring dilakukan selama pelaksanaan untuk memantau kemajuan; evaluasi setelah periode tertentu.",
-    version: 2
+    version: 3
   },
   {
     id: 5,
     cluster: "teknis",
     level: "sedang",
-    stem: "Urutan alur dokumen perencanaan daerah yang benar adalah …",
+    stem: "Manakah urutan alur dokumen perencanaan daerah yang benar, dari jangka panjang hingga anggaran tahunan?",
     options: [
       "RKPD → RPJMD → RPJPD → APBD",
       "RPJPD → RPJMD → Renstra PD → RKPD → APBD",
@@ -77,29 +77,29 @@ const BANK = [
     ],
     answer: 1,
     explain: "Alur: RPJPD (20 th) → RPJMD (5 th) → Renstra PD → RKPD (1 th) → APBD.",
-    version: 2
+    version: 3
   },
   {
     id: 6,
     cluster: "teknis",
     level: "sedang",
-    stem: "Pertumbuhan ekonomi dan pembangunan — pernyataan yang tepat adalah …",
+    stem: "Manakah pernyataan yang paling tepat mengenai hubungan pertumbuhan ekonomi dengan pembangunan?",
     options: [
-      "Keduanya identik dan diukur hanya dengan PDB",
-      "Pembangunan hanya fokus pada kenaikan PDB",
-      "Pertumbuhan ekonomi adalah salah satu aspek pembangunan yang lebih luas",
-      "Pertumbuhan ekonomi selalu menurunkan kemiskinan",
-      "Pembangunan tidak memerlukan perencanaan",
+      "Pertumbuhan ekonomi identik dengan pembangunan sehingga cukup diukur dari angka PDB saja",
+      "Pembangunan dinilai berhasil begitu PDB naik, tanpa melihat distribusi maupun kualitas hidup",
+      "Pertumbuhan ekonomi merupakan salah satu aspek pembangunan yang bersifat multidimensi",
+      "Kenaikan PDB dipercaya langsung mengurangi kemiskinan tanpa kebijakan pemerataan",
+      "Pembangunan daerah dijalankan tanpa memerlukan dokumen rencana maupun arah kebijakan",
     ],
     answer: 2,
-    explain: "Pertumbuhan diukur PDB/PDRB; pembangunan multidimensi (ekonomi, sosial, lingkungan, dll.).",
-    version: 2
+    explain: "Pertumbuhan diukur PDB/PDRB; pembangunan multidimensi (ekonomi, sosial, lingkungan, dll.), bukan sekadar naiknya satu indikator.",
+    version: 4
   },
   {
     id: 7,
     cluster: "teknis",
     level: "sedang",
-    stem: "Evaluasi program pembangunan bertujuan utama untuk …",
+    stem: "Apa tujuan utama dari evaluasi program pembangunan?",
     options: [
       "Mengganti seluruh struktur organisasi",
       "Menilai capaian dan menentukan lanjut/henti/perbaiki",
@@ -109,13 +109,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "Evaluasi dilakukan setelah periode tertentu untuk menilai efektivitas dan keputusan tindak lanjut.",
-    version: 2
+    version: 3
   },
   {
     id: 8,
     cluster: "teknis",
     level: "sedang",
-    stem: "Dokumen rencana pembangunan jangka menengah nasional (5 tahun) adalah …",
+    stem: "Dokumen manakah yang berfungsi sebagai rencana pembangunan jangka menengah nasional untuk periode 5 tahun?",
     options: [
       "RPJPN (20 tahun)",
       "RPJMN (5 tahun)",
@@ -125,13 +125,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "RPJMN = Rencana Pembangunan Jangka Menengah Nasional. Di daerah padanannya RPJMD.",
-    version: 2
+    version: 3
   },
   {
     id: 9,
     cluster: "teknis",
     level: "sedang",
-    stem: "Pengendalian dalam siklus perencanaan berfungsi sebagai tindakan …",
+    stem: "Pengendalian dalam siklus perencanaan pembangunan berfungsi sebagai tindakan apa?",
     options: [
       "Tindakan preventif tanpa data capaian",
       "Tindakan korektif berdasarkan temuan monitoring/evaluasi",
@@ -141,13 +141,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "Pengendalian korektif, misalnya mengalihkan anggaran ke kegiatan yang tertinggal.",
-    version: 2
+    version: 3
   },
   {
     id: 10,
     cluster: "teknis",
     level: "sedang",
-    stem: "Stakeholder yang umumnya berperan sebagai inisiator perencanaan pembangunan daerah adalah …",
+    stem: "Stakeholder manakah yang umumnya berperan sebagai inisiator dalam perencanaan pembangunan daerah?",
     options: [
       "Masyarakat sipil",
       "Media massa",
@@ -157,7 +157,7 @@ const BANK = [
     ],
     answer: 2,
     explain: "Pemerintah memiliki mandat hukum menyusun dan menetapkan rencana pembangunan.",
-    version: 2
+    version: 3
   },
   {
     id: 11,
@@ -165,21 +165,21 @@ const BANK = [
     level: "panjang",
     stem: "Dalam rapat tim perencana, anggota A mengatakan RPJMN 2025–2029 harus langsung diturunkan ke RKPD tanpa RPJPN karena jangka 5 tahun sudah cukup. Anggota B menegaskan RPJPN 2025–2045 sebagai payung transformasi digital. Anggota C menyamakan pertumbuhan 6% dengan peningkatan IPM otomatis. Manakah penilaian yang PALING sesuai kerangka SPPN UU 25/2004?",
     options: [
-      "A benar; RPJPN boleh dilewati",
-      "B benar; RPJPN memberi konsistensi arah jangka panjang sebelum RPJMN/RKPD",
-      "C benar; pertumbuhan PDB sama dengan pembangunan manusiawi",
-      "A dan C benar",
-      "Semua salah karena hanya APBD yang penting",
+      "A benar; RPJMN dapat langsung diturunkan ke RKPD tanpa RPJPN",
+      "B benar; RPJPN menjaga arah jangka panjang sebelum RPJMN dan RKPD disusun",
+      "C benar; kenaikan PDB dianggap setara dengan peningkatan kualitas manusia",
+      "A dan C benar; RPJPN dan RPJMN dapat disusun tanpa keterkaitan",
+      "Semua salah; RKPD dan RPJMN cukup tanpa mengacu pada RPJPN",
     ],
     answer: 1,
-    explain: "RPJPN (20 th) → RPJMN (5 th) → RKP/RKPD. Pertumbuhan ≠ pembangunan multidimensi otomatis.",
-    version: 2
+    explain: "RPJPN (20 th) → RPJMN (5 th) → RKP/RKPD. Pertumbuhan ≠ pembangunan manusia yang multidimensi secara otomatis.",
+    version: 3
   },
   {
     id: 12,
     cluster: "teknis",
     level: "panjang",
-    stem: "Kecuali yang berikut, semuanya termasuk dalam empat tahapan perencanaan pembangunan nasional menurut materi SPPN …",
+    stem: "Manakah dari pilihan berikut yang TIDAK termasuk dalam empat tahapan perencanaan pembangunan nasional menurut SPPN?",
     options: [
       "Penyusunan rencana",
       "Penetapan rencana",
@@ -189,13 +189,13 @@ const BANK = [
     ],
     answer: 4,
     explain: "Empat tahap: susun, tetapkan, kendali, evaluasi. Tarif pajak bukan tahap inti SPPN.",
-    version: 2
+    version: 3
   },
   {
     id: 13,
     cluster: "teknis",
     level: "panjang",
-    stem: "Visi dalam dokumen perencanaan daerah pada umumnya menggambarkan …",
+    stem: "Visi dalam dokumen perencanaan daerah pada umumnya menggambarkan apa?",
     options: [
       "Pernyataan operasional misi untuk mencapai visi",
       "Keadaan/gambaran masa depan daerah yang ingin dicapai",
@@ -205,13 +205,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "Visi = gambaran keadaan masa depan yang diinginkan; misi/strategi menjabarkan cara mencapainya.",
-    version: 2
+    version: 3
   },
   {
     id: 14,
     cluster: "teknis",
     level: "panjang",
-    stem: "Pada kasus program infrastruktur jalan desa: realisasi fisik 45% di triwulan II, serapan anggaran 70%, keluhan warga soal akses. Tim monitoring mencatat deviasi; tim evaluasi di akhir tahun menilai target 80% tidak tercapai. Langkah pengendalian yang tepat adalah …",
+    stem: "Pada kasus program infrastruktur jalan desa: realisasi fisik 45% di triwulan II, serapan anggaran 70%, keluhan warga soal akses. Tim monitoring mencatat deviasi; tim evaluasi di akhir tahun menilai target 80% tidak tercapai. Manakah langkah pengendalian yang paling tepat?",
     options: [
       "Menghentikan seluruh program tanpa analisis capaian",
       "Menunggu periode rencana baru tanpa penyesuaian program",
@@ -221,7 +221,7 @@ const BANK = [
     ],
     answer: 2,
     explain: "Monitoring (selama) + evaluasi (setelah) → pengendalian korektif, bukan mengabaikan temuan.",
-    version: 2
+    version: 3
   },
   {
     id: 15,
@@ -237,45 +237,45 @@ const BANK = [
     ],
     answer: 3,
     explain: "RPJPD = 20 tahun (bukan 5). RPJMD daerah = 5 tahun. Jebakan: menukar jangka RPJPD/RPJMD.",
-    version: 2
+    version: 3
   },
   {
     id: 16,
     cluster: "ekonomi",
     level: "singkat",
-    stem: "Location Quotient (LQ) > 1 pada suatu sektor di daerah menunjukkan sektor tersebut …",
+    stem: "Location Quotient (LQ) > 1 pada suatu sektor di suatu daerah menunjukkan bahwa sektor tersebut bersifat apa?",
     options: [
-      "Tertinggal dan perlu ditutup",
-      "Merupakan sektor basis/unggulan relatif terhadap rujukan",
-      "Tidak berkontribusi pada PDB daerah",
-      "Selalu elastis terhadap harga",
-      "Sama dengan DLQ < 1",
+      "Sektor tertinggal yang sebaiknya dihentikan pengembangannya",
+      "Sektor basis atau unggulan relatif terhadap wilayah rujukan",
+      "Sektor yang tidak memberi kontribusi apa pun pada PDRB daerah",
+      "Sektor yang selalu bersifat elastis terhadap perubahan harga",
+      "Kondisi yang identik dengan DLQ bernilai kurang dari satu",
     ],
     answer: 1,
     explain: "LQ > 1 = konsentrasi sektor di daerah lebih besar daripada rujukan (nasional) → basis.",
-    version: 2
+    version: 3
   },
   {
     id: 17,
     cluster: "ekonomi",
     level: "singkat",
-    stem: "Inflasi yang benar secara konsep adalah …",
+    stem: "Manakah definisi inflasi yang paling tepat secara konsep ekonomi makro?",
     options: [
-      "Kenaikan harga satu jenis barang sekali",
-      "Penurunan harga umum berkelanjutan",
-      "Kenaikan harga barang dan jasa secara umum secara terus-menerus",
-      "Kenaikan nilai tukar rupiah",
-      "Penurunan jumlah uang beredar saja",
+      "Kenaikan harga hanya pada satu jenis barang tertentu",
+      "Penurunan harga barang secara umum dan berkelanjutan",
+      "Kenaikan harga barang/jasa secara umum dan terus-menerus",
+      "Kenaikan nilai tukar rupiah terhadap mata uang asing",
+      "Penurunan jumlah uang beredar di masyarakat",
     ],
     answer: 2,
     explain: "Inflasi = kenaikan harga umum berkelanjutan; bukan satu komoditas atau deflasi.",
-    version: 2
+    version: 3
   },
   {
     id: 18,
     cluster: "ekonomi",
     level: "singkat",
-    stem: "Hukum permintaan (ceteris paribus) menyatakan bahwa jika harga naik, jumlah yang diminta …",
+    stem: "Menurut hukum permintaan (ceteris paribus), jika harga suatu barang naik, bagaimana perubahan jumlah yang diminta?",
     options: [
       "Naik",
       "Tetap",
@@ -285,13 +285,13 @@ const BANK = [
     ],
     answer: 2,
     explain: "Harga ↑ → Qd ↓; harga ↓ → Qd ↑ (faktor lain dianggap tetap).",
-    version: 2
+    version: 3
   },
   {
     id: 19,
     cluster: "ekonomi",
     level: "singkat",
-    stem: "Rumus pendekatan pengeluaran untuk PDB adalah …",
+    stem: "Manakah rumus pendekatan pengeluaran (expenditure approach) yang benar untuk menghitung PDB?",
     options: [
       "PDB = C + I + G + (X − M)",
       "PDB = Gini × ICOR",
@@ -301,13 +301,13 @@ const BANK = [
     ],
     answer: 0,
     explain: "Pendekatan pengeluaran: Konsumsi + Investasi + Belanja pemerintah + Ekspor neto.",
-    version: 2
+    version: 3
   },
   {
     id: 20,
     cluster: "ekonomi",
     level: "sedang",
-    stem: "Produksi warga negara Indonesia di luar negeri masuk dalam pengukuran …",
+    stem: "Produksi yang dihasilkan warga negara Indonesia di luar negeri termasuk dalam pengukuran apa?",
     options: [
       "PDB Indonesia",
       "PDRB kabupaten setempat",
@@ -317,13 +317,13 @@ const BANK = [
     ],
     answer: 2,
     explain: "PDB/PDRB = produksi di dalam wilayah; GNI = pendapatan warga negara di mana pun.",
-    version: 2
+    version: 3
   },
   {
     id: 21,
     cluster: "ekonomi",
     level: "sedang",
-    stem: "PDB konstan: produksi 500 unit dengan harga dasar Rp 300.000 per unit. Nilai PDB konstan adalah …",
+    stem: "PDB konstan: produksi 500 unit dengan harga dasar Rp 300.000 per unit. Berapa nilai PDB konstan tersebut?",
     options: [
       "Rp 90.000.000",
       "Rp 150.000.000",
@@ -333,29 +333,29 @@ const BANK = [
     ],
     answer: 1,
     explain: "500 × 300.000 = Rp 150.000.000. Harga dasar agar tidak bias inflasi.",
-    version: 2
+    version: 3
   },
   {
     id: 22,
     cluster: "ekonomi",
     level: "sedang",
-    stem: "ICOR (Incremental Capital Output Ratio) yang semakin kecil berarti …",
+    stem: "Apa arti dari nilai ICOR (Incremental Capital Output Ratio) yang semakin kecil?",
     options: [
-      "Modal semakin boros",
-      "Investasi kurang efisien menghasilkan output",
-      "Modal relatif lebih efisien menghasilkan pertumbuhan output",
-      "Inflasi pasti tinggi",
-      "Gini coefficient mendekati 1",
+      "Kebutuhan modal untuk berproduksi menjadi semakin boros dan mahal",
+      "Investasi yang ditanam kurang efisien dalam menghasilkan output",
+      "Modal digunakan lebih efisien untuk menghasilkan pertumbuhan output",
+      "Inflasi diperkirakan naik signifikan tanpa hubungan langsung dengan ICOR",
+      "Koefisien Gini bergerak mendekati nilai 1 secara langsung",
     ],
     answer: 2,
     explain: "ICOR = ΔK/ΔY; nilai kecil = butuh modal lebih sedikit per unit pertumbuhan output.",
-    version: 2
+    version: 3
   },
   {
     id: 23,
     cluster: "ekonomi",
     level: "sedang",
-    stem: "Kurva Phillips menggambarkan trade-off jangka pendek antara …",
+    stem: "Kurva Phillips menggambarkan trade-off jangka pendek antara variabel makroekonomi apa?",
     options: [
       "Ekspor dan impor",
       "Inflasi dan pengangguran",
@@ -365,13 +365,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "Phillips: inflasi rendah sering beriringan pengangguran lebih tinggi (dan sebaliknya) jangka pendek.",
-    version: 2
+    version: 3
   },
   {
     id: 24,
     cluster: "ekonomi",
     level: "sedang",
-    stem: "Elastisitas harga permintaan |Ed| > 1 berarti permintaan bersifat …",
+    stem: "Jika elastisitas harga permintaan |Ed| > 1, permintaan tersebut bersifat apa?",
     options: [
       "Inelastis",
       "Unitary",
@@ -381,13 +381,13 @@ const BANK = [
     ],
     answer: 2,
     explain: "|Ed| > 1 elastis; < 1 inelastis; = 1 unitary.",
-    version: 2
+    version: 3
   },
   {
     id: 25,
     cluster: "ekonomi",
     level: "sedang",
-    stem: "Koefisien Gini yang meningkat dari 0,32 ke 0,41 menunjukkan …",
+    stem: "Jika koefisien Gini meningkat dari 0,32 menjadi 0,41, apa yang ditunjukkan oleh perubahan tersebut?",
     options: [
       "Distribusi pendapatan semakin merata",
       "Distribusi pendapatan semakin tidak merata",
@@ -397,45 +397,45 @@ const BANK = [
     ],
     answer: 1,
     explain: "Gini 0 = sempurna merata; mendekati 1 = sangat tidak merata. Naik = lebih tidak merata.",
-    version: 2
+    version: 3
   },
   {
     id: 26,
     cluster: "ekonomi",
     level: "sedang",
-    stem: "DLQ (Dynamic Location Quotient) > 1 pada umumnya diartikan sektor tersebut …",
+    stem: "DLQ (Dynamic Location Quotient) > 1 pada suatu sektor umumnya diartikan bagaimana?",
     options: [
-      "Mengalami pertumbuhan lebih lambat dari nasional",
-      "Prospektif (pertumbuhan sektor lokal lebih cepat dari nasional)",
-      "Bukan sektor unggulan",
-      "Sama persis dengan LQ < 1",
-      "Menyebabkan deflasi",
+      "Sektor yang pertumbuhannya justru lebih lambat dibanding level nasional",
+      "Sektor prospektif, tumbuh lebih cepat dibanding level nasional",
+      "Sektor yang bukan termasuk kategori unggulan daerah",
+      "Kondisi yang sama persis dengan nilai LQ kurang dari satu",
+      "Kondisi yang berpotensi menyebabkan deflasi harga barang",
     ],
     answer: 1,
     explain: "DLQ > 1 = dinamika pertumbuhan sektor lokal lebih baik dibanding rujukan nasional.",
-    version: 2
+    version: 3
   },
   {
     id: 27,
     cluster: "ekonomi",
     level: "panjang",
-    stem: "Data: IHK 2021 = 107,66; IHK 2022 = 113,59. Tim ekonomi juga mencatat harga cabai naik 80% karena panen gagal, sementara harga umum lain relatif stabil. Inflasi tahunan yang sesuai definasi makro dan angka materi pelatihan adalah …",
+    stem: "Data: IHK 2021 = 107,66; IHK 2022 = 113,59. Harga cabai naik 80% akibat gagal panen, sementara harga barang/jasa lain relatif stabil. Berapa inflasi tahunan yang sesuai dengan definisi makroekonomi berbasis data IHK tersebut?",
     options: [
-      "Inflasi = 80% karena cabai",
-      "Tidak ada inflasi karena hanya satu komoditas",
-      "Inflasi umum ≈ 5,51% dari perubahan IHK, bukan kenaikan satu barang",
-      "Inflasi = 113,59%",
-      "Deflasi karena IHK naik",
+      "Inflasi dianggap 80 persen akibat kenaikan harga cabai saja",
+      "Dianggap tidak ada inflasi sebab kenaikan cabai cuma satu komoditas",
+      "Inflasi umum sekitar 5,51% dari perubahan IHK tahunan",
+      "Inflasi dihitung langsung dari angka IHK 113,59% tanpa pengolahan",
+      "Dianggap deflasi karena nilai IHK yang terus meningkat",
     ],
     answer: 2,
     explain: "Inflasi dari IHK: ((113,59−107,66)/107,66)×100% ≈ 5,51%. Kenaikan cabai saja bukan inflasi umum.",
-    version: 2
+    version: 3
   },
   {
     id: 28,
     cluster: "ekonomi",
     level: "panjang",
-    stem: "Permintaan Qd = 60 − 10P dan penawaran Qs = 5P + 15 (harga dalam ribuan rupiah). Harga dan kuantitas keseimbangan pasar adalah …",
+    stem: "Permintaan Qd = 60 − 10P dan penawaran Qs = 5P + 15 (harga dalam ribuan rupiah). Berapa harga dan kuantitas keseimbangan pasar yang terjadi?",
     options: [
       "P = 2, Q = 40",
       "P = 3, Q = 30",
@@ -445,61 +445,61 @@ const BANK = [
     ],
     answer: 1,
     explain: "60−10P = 5P+15 → 45 = 15P → P=3; Q = 5(3)+15 = 30.",
-    version: 2
+    version: 3
   },
   {
     id: 29,
     cluster: "ekonomi",
     level: "panjang",
-    stem: "Kecuali yang berikut, semuanya dapat menjadi penyebab perdagangan internasional menurut teori ekonomi klasik/modern …",
+    stem: "Manakah yang BUKAN penyebab perdagangan internasional menurut teori ekonomi klasik/modern?",
     options: [
-      "Perbedaan teknologi produksi",
-      "Perbedaan kelimpahan sumber daya alam",
-      "Efisiensi skala ekonomi",
-      "Ketersediaan sumber daya alam yang sama persis antarnegara",
-      "Perbedaan preferensi konsumen",
+      "Adanya perbedaan teknologi produksi antarnegara",
+      "Perbedaan kelimpahan sumber daya alam antarnegara",
+      "Efisiensi skala ekonomi dalam proses produksi massal",
+      "Ketersediaan SDA yang identik di semua negara",
+      "Perbedaan preferensi konsumen di tiap negara",
     ],
     answer: 3,
     explain: "SDA sama persis mengurangi motif perdagangan; perbedaan SDA/teknologi mendorong perdagangan.",
-    version: 2
+    version: 3
   },
   {
     id: 30,
     cluster: "ekonomi",
     level: "panjang",
-    stem: "Pemerintah menetapkan harga maksimum (ceiling) di bawah harga keseimbangan pasar beras. Dampak jangka pendek yang paling mungkin dan kebijakan pendamping yang lazim adalah …",
+    stem: "Pemerintah menetapkan harga maksimum (ceiling) di bawah harga keseimbangan pasar beras. Apa dampak jangka pendek yang paling mungkin terjadi, beserta kebijakan pendamping yang lazim diterapkan?",
     options: [
-      "Surplus besar; pemerintah membeli surplus",
-      "Kekurangan pasar; operasi pasar/penambahan supply untuk melindungi konsumen",
-      "Harga naik bebas; tidak perlu intervensi",
-      "Penawaran melebihi permintaan tanpa batas",
-      "Keseimbangan pasar tetap tanpa perubahan",
+      "Surplus besar hingga pemerintah wajib membeli kelebihan stok",
+      "Kekurangan pasokan sehingga perlu operasi pasar",
+      "Harga dibiarkan naik tanpa ada intervensi apa pun",
+      "Penawaran jauh melebihi permintaan pasar tanpa batas",
+      "Keseimbangan pasar tidak mengalami perubahan sama sekali",
     ],
     answer: 1,
     explain: "Ceiling < equilibrium → shortage; operasi pasar menambah supply. Floor price kebalikannya (surplus).",
-    version: 2
+    version: 3
   },
   {
     id: 31,
     cluster: "sosial",
     level: "singkat",
-    stem: "Social Overhead Capital (SOC) pada dasarnya mencakup …",
+    stem: "Menurut Hirschman, apa yang pada dasarnya tercakup dalam Social Overhead Capital (SOC)?",
     options: [
-      "Infrastruktur fisik jalan dan jembatan semata",
-      "Norma, kepercayaan, dan jaringan yang mendukung produktivitas sosial",
-      "Kekuatan hukum tanpa norma dan kepercayaan sosial",
-      "Modal finansial perusahaan besar saja",
-      "Partisipasi masyarakat hanya pada tahap evaluasi akhir",
+      "Aset keuangan perusahaan dan portofolio investasi swasta semata",
+      "Infrastruktur pendukung produksi seperti jalan, energi, air, dan komunikasi",
+      "Norma, kepercayaan, dan jaringan warga sebagai sinonim modal sosial",
+      "Modal finansial perusahaan besar tanpa aset infrastruktur publik",
+      "Partisipasi masyarakat yang terbatas pada tahap evaluasi akhir program",
     ],
     answer: 1,
-    explain: "SOC = jalan, listrik, pendidikan, norma, kepercayaan, jaringan sosial produktif.",
-    version: 2
+    explain: "SOC Hirschman = infrastruktur pendukung (overhead) bagi kegiatan produktif langsung (DPA). Norma/kepercayaan adalah modal sosial—konsep berbeda.",
+    version: 5
   },
   {
     id: 32,
     cluster: "sosial",
     level: "singkat",
-    stem: "Indeks Pembangunan Manusia (IPM) secara umum memiliki tiga dimensi …",
+    stem: "Indeks Pembangunan Manusia (IPM) secara umum terdiri atas tiga dimensi apa?",
     options: [
       "Ekspor, impor, investasi",
       "Umur hidup, pendidikan, pendapatan",
@@ -509,13 +509,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "IPM = health (umur hidup), education, income (pendapatan per kapita).",
-    version: 2
+    version: 3
   },
   {
     id: 33,
     cluster: "sosial",
     level: "singkat",
-    stem: "PRA (Participatory Rural Appraisal) pada prinsipnya menempatkan …",
+    stem: "Pada prinsipnya, PRA (Participatory Rural Appraisal) menempatkan siapa sebagai pusat proses?",
     options: [
       "Tim eksternal sebagai satu-satunya ahli",
       "Masyarakat sebagai pusat proses",
@@ -525,13 +525,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "PRA partisipatif, santai, triangulasi; bukan RRA formal cepat atau tertutup.",
-    version: 2
+    version: 3
   },
   {
     id: 34,
     cluster: "sosial",
     level: "sedang",
-    stem: "Modal sosial tipe bridging menurut Woolcock berfungsi untuk …",
+    stem: "Menurut Woolcock, modal sosial tipe bridging berfungsi untuk apa?",
     options: [
       "Memperkuat ikatan dalam kelompok homogen saja",
       "Menjembatani hubungan antarkelompok berbeda",
@@ -541,13 +541,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "Bonding = dalam kelompok; bridging = antarkelompok; linking = lintas level kekuasaan.",
-    version: 2
+    version: 3
   },
   {
     id: 35,
     cluster: "sosial",
     level: "sedang",
-    stem: "Mobilisasi sosial dalam pembangunan berarti perubahan posisi masyarakat dari …",
+    stem: "Mobilisasi sosial dalam pembangunan pada dasarnya berarti perubahan posisi masyarakat dari kondisi apa menjadi kondisi apa?",
     options: [
       "Subyek menjadi obyek",
       "Obyek menjadi subyek aktif",
@@ -557,13 +557,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "Mobilisasi = pemberdayaan: masyarakat dari penerima pasif menjadi pelaku aktif.",
-    version: 2
+    version: 3
   },
   {
     id: 36,
     cluster: "sosial",
     level: "sedang",
-    stem: "Tiga unsur partisipasi masyarakat dalam perencanaan meliputi kesadaran, kemampuan, dan …",
+    stem: "Selain kesadaran dan kemampuan, unsur ketiga dalam partisipasi masyarakat pada tahap perencanaan adalah apa?",
     options: [
       "Kemauan ditambah kesempatan dan akses sumber daya",
       "Kepatuhan pajak sebagai satu-satunya faktor kemiskinan",
@@ -573,13 +573,13 @@ const BANK = [
     ],
     answer: 0,
     explain: "Partisipasi efektif butuh kesadaran, kemampuan, kemauan, dan kesempatan (ALLIR melibatkan masyarakat).",
-    version: 2
+    version: 3
   },
   {
     id: 37,
     cluster: "sosial",
     level: "sedang",
-    stem: "Tahapan ALLIR yang benar urutannya adalah …",
+    stem: "Manakah urutan tahapan ALLIR yang benar?",
     options: [
       "Evaluasi → Penjajakan → Pelaksanaan",
       "Penjajakan kebutuhan → Kajian potensi → Pelaksanaan → Pemantauan → Evaluasi",
@@ -589,13 +589,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "ALLIR: penjajagan → kajian potensi → pelaksanaan → pemantauan → evaluasi.",
-    version: 2
+    version: 3
   },
   {
     id: 38,
     cluster: "sosial",
     level: "sedang",
-    stem: "Faktor alami yang dapat memperlebar ketimpangan antardaerah adalah …",
+    stem: "Faktor alami manakah yang dapat memperlebar ketimpangan antardaerah?",
     options: [
       "Kepatuhan pajak yang seragam di semua wilayah",
       "Perbedaan ketersediaan dan pola pemanfaatan sumber daya alam",
@@ -605,7 +605,7 @@ const BANK = [
     ],
     answer: 1,
     explain: "Perbedaan SDA geografis/klimat memengaruhi potensi ekonomi antardaerah.",
-    version: 2
+    version: 3
   },
   {
     id: 39,
@@ -613,69 +613,69 @@ const BANK = [
     level: "panjang",
     stem: "Empat pilar penanggulangan kemiskinan sering disebut: pendidikan, kesehatan, perlindungan sosial, dan ekonomi/produktif. Manakah yang BUKAN pilar tersebut (jebakan kecuali/bukan)?",
     options: [
-      "Peningkatan akses pendidikan",
-      "Jaminan kesehatan",
+      "Peningkatan akses pendidikan bagi warga miskin",
+      "Jaminan kesehatan bagi keluarga tidak mampu",
       "Kepatuhan pajak sebagai pilar utama kemiskinan",
-      "Pemberdayaan ekonomi produktif",
-      "Perlindungan sosial",
+      "Pemberdayaan ekonomi produktif masyarakat",
+      "Perlindungan sosial bagi kelompok rentan",
     ],
     answer: 2,
     explain: "Kepatuhan pajak bukan pilar kemiskinan dalam materi pre-test; jebakan kategori salah.",
-    version: 2
+    version: 3
   },
   {
     id: 40,
     cluster: "sosial",
     level: "panjang",
-    stem: "Kecuali yang berikut, semuanya mencerminkan karakteristik PRA yang benar …",
+    stem: "Manakah yang BUKAN karakteristik PRA yang benar?",
     options: [
-      "Partisipatif dan terbuka",
-      "Triangulasi informasi",
-      "Santai dan iteratif",
-      "Tertutup dan sangat formal seperti audit",
-      "Masyarakat sebagai pusat",
+      "Bersifat partisipatif dan terbuka bagi warga",
+      "Menggunakan triangulasi berbagai sumber informasi",
+      "Berlangsung santai dan bersifat iteratif",
+      "Tertutup, sangat formal, mirip audit eksternal",
+      "Menempatkan masyarakat sebagai pusat proses",
     ],
     answer: 3,
     explain: "PRA bukan tertutup & formal; itu kebalikan PRA (lebih ke RRA/audit).",
-    version: 2
+    version: 3
   },
   {
     id: 41,
     cluster: "sosial",
     level: "panjang",
-    stem: "Desa X: gotong royong rutin antarwarga RT (bonding kuat), tetapi kurang jaringan dengan UMKM kota tetangga. Program pembangunan menghubungkan koperasi desa dengan asosiasi pengusaha kabupaten dan forum pemerintah-daerah-swasta. Kombinasi modal sosial yang dibangun adalah …",
+    stem: "Desa X: gotong royong rutin antarwarga RT (bonding kuat), tetapi kurang jaringan dengan UMKM kota tetangga. Program pembangunan menghubungkan koperasi desa dengan asosiasi pengusaha kabupaten dan forum pemerintah-daerah-swasta. Kombinasi modal sosial apa yang dibangun dalam program tersebut?",
     options: [
-      "Hanya bonding",
-      "Bonding + bridging + linking",
-      "Hanya linking tanpa bonding",
-      "SOC = hanya jalan tol",
-      "PRA tertutup formal",
+      "Bonding saja tanpa bridging maupun linking",
+      "Kombinasi bonding, bridging, dan linking secara bersamaan",
+      "Linking dengan pemerintah tanpa modal bonding di tingkat warga",
+      "Hanya bonding diperkuat tanpa membuka jaringan bridging maupun linking",
+      "Praktik PRA yang tertutup dan sangat formal",
     ],
     answer: 1,
     explain: "Gotong royong = bonding; asosiasi lintas kelompok = bridging; forum multi-level = linking.",
-    version: 2
+    version: 3
   },
   {
     id: 42,
     cluster: "sosial",
     level: "panjang",
-    stem: "Data kemiskinan turun 2%, tetapi IPM stagnan karena angka melek huruf dan harapan hidup tidak membaik. Kesimpulan untuk perencana ahli muda yang paling tepat adalah …",
+    stem: "Data kemiskinan turun 2%, tetapi IPM stagnan karena angka melek huruf dan harapan hidup tidak membaik. Apa kesimpulan yang paling tepat bagi perencana ahli muda?",
     options: [
-      "Cukup lihat satu indikator kemiskinan",
-      "Perlu analisis multidimensi (pendapatan + IPM + akses layanan)",
-      "Ganti RPJPN saja",
-      "Hanya hitung LQ",
-      "Tingkatkan kepadatan 10–40 rumah/ha",
+      "Cukup memantau satu indikator kemiskinan moneter saja",
+      "Perlu analisis multidimensi: pendapatan, IPM, dan akses layanan dasar",
+      "Mengganti dokumen RPJPN tanpa meninjau capaian program",
+      "Menghitung ulang nilai LQ sektor unggulan daerah",
+      "Menaikkan kepadatan rumah menjadi 10–40 unit per hektare tanpa mengevaluasi IPM",
     ],
     answer: 1,
     explain: "Kemiskinan moneter ≠ kesejahteraan manusiawi lengkap; IPM menangkap dimensi non-pendapatan.",
-    version: 2
+    version: 3
   },
   {
     id: 43,
     cluster: "spasial",
     level: "singkat",
-    stem: "Menurut UU 26/2007, fungsi utama kawasan adalah …",
+    stem: "Menurut UU No. 26 Tahun 2007, kawasan dibagi berdasarkan dua fungsi utama apa?",
     options: [
       "Industri dan perdagangan saja",
       "Lindung dan budi daya",
@@ -685,13 +685,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "UU 26: dua fungsi utama kawasan = lindung + budi daya.",
-    version: 2
+    version: 3
   },
   {
     id: 44,
     cluster: "spasial",
     level: "singkat",
-    stem: "Skala peta RDTR (Rencana Detail Tata Ruang) menurut pedoman umum adalah …",
+    stem: "Berapa skala peta RDTR (Rencana Detail Tata Ruang) yang lazim digunakan menurut pedoman umum?",
     options: [
       "1 : 250.000",
       "1 : 100.000",
@@ -701,13 +701,13 @@ const BANK = [
     ],
     answer: 2,
     explain: "RDTR untuk zonasi/block plan: skala 1:2.000 hingga 1:5.000.",
-    version: 2
+    version: 3
   },
   {
     id: 45,
     cluster: "spasial",
     level: "singkat",
-    stem: "Maksimal waktu penyusunan RTRW menurut PP 21/2021 adalah …",
+    stem: "Menurut PP 21/2021, berapa lama waktu maksimal penyusunan RTRW?",
     options: [
       "6 bulan",
       "12 bulan",
@@ -717,13 +717,13 @@ const BANK = [
     ],
     answer: 2,
     explain: "PP 21/2021: penyusunan RTRW paling lama 18 bulan.",
-    version: 2
+    version: 3
   },
   {
     id: 46,
     cluster: "spasial",
     level: "singkat",
-    stem: "KKPR adalah singkatan dari …",
+    stem: "Dalam peraturan penataan ruang, apa kepanjangan dari singkatan KKPR?",
     options: [
       "Kawasan Konservasi Pesisir Rakyat",
       "Kesesuaian Kegiatan Pemanfaatan Ruang",
@@ -733,13 +733,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "KKPR = Kesesuaian Kegiatan Pemanfaatan Ruang (PP 21/2021).",
-    version: 2
+    version: 3
   },
   {
     id: 47,
     cluster: "spasial",
     level: "singkat",
-    stem: "Sempadan pantai minimal menurut Perpres 51/2016 diukur …",
+    stem: "Berapa jarak minimal sempadan pantai yang ditetapkan dalam Perpres 51/2016?",
     options: [
       "50 m dari bibir pantai",
       "100 m dari garis pasang tertinggi",
@@ -749,13 +749,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "Sempadan pantai = 100 m dari garis pasang tertinggi (bukan 50 m atau ROW jalan).",
-    version: 2
+    version: 3
   },
   {
     id: 48,
     cluster: "spasial",
     level: "singkat",
-    stem: "Persentase minimum Ruang Terbuka Hijau (RTH) publik di kota menurut pedoman umum adalah …",
+    stem: "Menurut pedoman umum, berapa persentase minimum Ruang Terbuka Hijau (RTH) publik di suatu kota?",
     options: [
       "10%",
       "20%",
@@ -765,13 +765,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "RTH total kota 30% (20% publik + 10% privat). Jangan tertukar total vs publik.",
-    version: 2
+    version: 3
   },
   {
     id: 49,
     cluster: "spasial",
     level: "singkat",
-    stem: "Kepadatan perumahan kategori sedang menurut materi pre-test adalah …",
+    stem: "Menurut materi pre-test, kepadatan perumahan kategori sedang berada pada rentang berapa rumah per hektare?",
     options: [
       "1–5 rumah/ha",
       "10–40 rumah/ha",
@@ -781,13 +781,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "Kepadatan sedang = 10–40 rumah/ha (jebakan: 30% RTH atau 30 m ROW).",
-    version: 2
+    version: 3
   },
   {
     id: 50,
     cluster: "spasial",
     level: "sedang",
-    stem: "UU No. 26 Tahun 2007 tentang Penataan Ruang …",
+    stem: "Manakah pernyataan yang paling tepat mengenai UU No. 26 Tahun 2007 tentang Penataan Ruang?",
     options: [
       "Menetapkan 30% kawasan lindung nasional tunggal untuk seluruh NKRI",
       "Mengatur tata ruang; kawasan lindung ditetapkan per karakter wilayah",
@@ -797,13 +797,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "UU 26 tidak menetapkan satu angka % lindung nasional tunggal; ditetapkan per wilayah.",
-    version: 2
+    version: 3
   },
   {
     id: 51,
     cluster: "spasial",
     level: "sedang",
-    stem: "Jika belum terdapat RDTR, persetujuan kegiatan pemanfaatan ruang dilakukan melalui …",
+    stem: "Jika suatu kawasan belum memiliki RDTR, persetujuan kegiatan pemanfaatan ruang dilakukan melalui mekanisme apa?",
     options: [
       "Izin Mendirikan Bangunan (IMB) tanpa penilaian kesesuaian ruang",
       "Kesesuaian Kegiatan Pemanfaatan Ruang (KKPR)",
@@ -813,13 +813,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "PP 21: belum ada RDTR → persetujuan melalui KKPR.",
-    version: 2
+    version: 3
   },
   {
     id: 52,
     cluster: "spasial",
     level: "sedang",
-    stem: "Sempadan sungai kecil menurut pedoman UNSRI umumnya …",
+    stem: "Menurut pedoman umum, berapa jarak sempadan sungai kecil yang berlaku?",
     options: [
       "25 m satu sisi",
       "50 m kiri dan kanan",
@@ -829,29 +829,29 @@ const BANK = [
     ],
     answer: 1,
     explain: "Sungai kecil ≈ 50 m (kiri+kanan); sungai besar ≈ 100 m. Jangan tertukar dengan pantai 100 m.",
-    version: 2
+    version: 3
   },
   {
     id: 53,
     cluster: "spasial",
     level: "sedang",
-    stem: "Daya dukung lingkungan hidup berbed dari daya tampung karena daya dukung menekankan …",
+    stem: "Daya dukung lingkungan hidup berbeda dari daya tampung. Apa yang ditekankan oleh konsep daya dukung?",
     options: [
-      "Kemampuan menyerap limbah tanpa batas",
+      "Kemampuan menyerap limbah dan pencemaran tanpa ada batas",
       "Kemampuan lingkungan menopang kehidupan secara lestari",
-      "Hanya luas lahan industri",
-      "Skala peta RTR 1:1.000",
-      "Trade-off Phillips",
+      "Hanya berkaitan dengan luas lahan kawasan industri",
+      "Kesesuaian dengan skala peta RTR 1:1.000",
+      "Konsep trade-off pada Kurva Phillips",
     ],
     answer: 1,
     explain: "Daya dukung = sustain life; daya tampung = absorb beban/pencemaran.",
-    version: 2
+    version: 3
   },
   {
     id: 54,
     cluster: "spasial",
     level: "sedang",
-    stem: "Evaluasi Rancangan Peraturan Daerah tentang RTRW kabupaten/kota dilakukan oleh …",
+    stem: "Evaluasi terhadap Rancangan Peraturan Daerah tentang RTRW kabupaten/kota dilakukan oleh siapa?",
     options: [
       "Bupati/Walikota saja",
       "Gubernur",
@@ -861,13 +861,13 @@ const BANK = [
     ],
     answer: 1,
     explain: "PP 21/2021: evaluasi rancangan perda RTRW kab/kota oleh Gubernur.",
-    version: 2
+    version: 3
   },
   {
     id: 55,
     cluster: "spasial",
     level: "sedang",
-    stem: "Luas minimal satu unit Ruang Terbuka Hijau (RTH) menurut pedoman umum adalah …",
+    stem: "Menurut pedoman umum, berapa luas minimal untuk satu unit Ruang Terbuka Hijau (RTH)?",
     options: [
       "500 m²",
       "1.000 m²",
@@ -877,13 +877,13 @@ const BANK = [
     ],
     answer: 2,
     explain: "Satu unit RTH minimal ≥ 2.500 m². Jebakan angka: 2.000 (skala RDTR) atau 2.000 km² pulau.",
-    version: 2
+    version: 3
   },
   {
     id: 56,
     cluster: "spasial",
     level: "sedang",
-    stem: "Pulau kecil menurut Perpres 51/2016 didefinisikan memiliki luas …",
+    stem: "Menurut Perpres 51/2016, pulau kecil didefinisikan memiliki luas maksimal berapa?",
     options: [
       "≤ 500 km²",
       "≤ 2.000 km²",
@@ -893,7 +893,7 @@ const BANK = [
     ],
     answer: 1,
     explain: "Pulau kecil ≤ 2.000 km². Jangan tertukar dengan 2.500 m² RTH.",
-    version: 2
+    version: 3
   },
   {
     id: 57,
@@ -901,21 +901,21 @@ const BANK = [
     level: "panjang",
     stem: "Perencana A menyarankan setiap kabupaten wajib 30% kawasan lindung nasional seragam karena UU 26/2007. Perencana B menegaskan 30% adalah target RTH kota (20 publik + 10 privat). Perencana C meminta KKPR untuk usaha di zona yang belum ada RDTR. Manakah kombinasi pernyataan yang benar?",
     options: [
-      "A benar; B dan C salah",
-      "B dan C benar; A salah tentang % lindung nasional tunggal",
-      "Semua benar",
-      "Hanya A benar",
-      "B salah karena RTH 30% adalah lindung hutan nasional",
+      "A benar sepenuhnya, sedangkan B dan C keduanya salah",
+      "B dan C benar; A keliru soal persentase lindung nasional yang seragam",
+      "Ketiga perencana, A, B, dan C, benar dalam pernyataannya",
+      "Pernyataan A saja yang benar di antara ketiganya",
+      "B keliru karena RTH 30% dianggap sebagai lindung hutan nasional",
     ],
     answer: 1,
     explain: "UU 26 tidak % lindung tunggal NKRI; 30% = RTH kota. Belum RDTR → KKPR.",
-    version: 2
+    version: 3
   },
   {
     id: 58,
     cluster: "spasial",
     level: "panjang",
-    stem: "Data rencana: RTRWP skala 1:250.000; RTRWK 1:100.000; RDTR 1:3.000; Rencana Teknik tapak 1:1.000. Pemilik lahan ingin detail tapak bangunan per blok. Dokumen dan skala yang tepat adalah …",
+    stem: "Data rencana: RTRWP skala 1:250.000; RTRWK 1:100.000; RDTR 1:3.000; Rencana Teknik tapak 1:1.000. Pemilik lahan ingin detail tapak bangunan per blok. Dokumen dan skala peta apa yang tepat digunakan untuk kebutuhan tersebut?",
     options: [
       "RDTR 1:250.000",
       "RTRWP untuk tapak bangunan",
@@ -925,13 +925,13 @@ const BANK = [
     ],
     answer: 2,
     explain: "RDTR = zonasi (1:2.000–5.000); RTR/Rencana Teknik = tapak per blok (1:1.000).",
-    version: 2
+    version: 3
   },
   {
     id: 59,
     cluster: "spasial",
     level: "panjang",
-    stem: "Kecuali pasangan angka–ketentuan yang benar, manakah yang SALAH (jebakan angka)?",
+    stem: "Manakah pasangan angka dan ketentuan tata ruang berikut yang SALAH?",
     options: [
       "Sempadan pantai — 100 m",
       "RTH total kota — 30%",
@@ -941,22 +941,22 @@ const BANK = [
     ],
     answer: 3,
     explain: "Sungai kecil = 50 m (bukan 100 m). 100 m untuk sungai besar atau sempadan pantai.",
-    version: 2
+    version: 3
   },
   {
     id: 60,
     cluster: "spasial",
     level: "panjang",
-    stem: "Kota Y berencana menambah mal besar di tepi sungai kecil dengan jarak bangunan 30 m dari bibir sungai, tanpa RDTR, hanya izin bangunan. Kepadatan rencana 55 rumah/ha di zona perumahan sedang, dan RTH baru 15% total. Pelanggaran/ketidaksesuaian utama adalah …",
+    stem: "Kota Y berencana membangun mal besar di tepi sungai kecil dengan jarak bangunan hanya 30 m dari bibir sungai, tanpa RDTR (hanya mengandalkan izin bangunan). Kepadatan rencana 55 rumah/ha di zona perumahan sedang, dan RTH baru mencapai 15% dari total wilayah. Apa pelanggaran atau ketidaksesuaian utama dari rencana tersebut?",
     options: [
-      "Semua sudah sesuai",
-      "Sempadan sungai kecil kurang (min 50 m), KKPR diperlukan tanpa RDTR, kepadatan melebihi sedang (10–40), RTH di bawah 30%",
-      "Hanya KKPR yang salah",
-      "Hanya Phillips curve",
-      "UU 26 mengharuskan 30% lindung nasional tunggal",
+      "Rencana sudah sesuai karena izin bangunan menggantikan kebutuhan RDTR dan sempadan",
+      "Sempadan sungai, KKPR (belum ada RDTR), kepadatan, dan proporsi RTH belum memenuhi ketentuan",
+      "Hanya kepadatan yang bermasalah; sempadan 30 m dan RTH 15% masih dapat diterima",
+      "Cukup menambah RTH privat di dalam mal agar kewajiban RTH kota terpenuhi",
+      "KKPR tidak diperlukan selama ada izin bangunan, meski RDTR belum ditetapkan",
     ],
     answer: 1,
-    explain: "Multi-pelanggaran: sempadan 50 m, KKPR wajib, kepadatan sedang max 40, RTH kota 30%.",
-    version: 2
+    explain: "Multi-pelanggaran: sempadan sungai kecil min. 50 m, KKPR wajib jika belum ada RDTR, kepadatan zona sedang 10–40 rumah/ha, RTH kota min. 30%.",
+    version: 4
   }
 ];
