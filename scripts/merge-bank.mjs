@@ -46,6 +46,7 @@ function serializeArray(name, bank) {
     o += "    ],\n";
     o += `    answer: ${q.answer},\n`;
     o += `    explain: ${esc(q.explain)},\n`;
+    if (q.fixedOptions) o += `    fixedOptions: true,\n`;
     if (q.version != null) o += `    version: ${q.version}\n`;
     else o += `    version: 1\n`;
     o += "  }" + (idx < bank.length - 1 ? "," : "") + "\n";

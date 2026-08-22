@@ -758,6 +758,17 @@
         return a;
       }
 
+      // Opsi komposit (mis. "Hanya (a) dan (c) benar") tidak boleh diacak
+      function shouldFixOptions(q) {
+        if (q.fixedOptions) return true;
+        if (q.source !== "pembahasan2026") return false;
+        return q.options.some(function (o) {
+          return /hanya\s+.*?(?:butir|pernyataan|pertanyaan|jawaban)?\s*\(?[a-e]\)?/i.test(o) ||
+            /\([a-e]\)\s*(?:dan|atau|&|,)/i.test(o) ||
+            /butir\s*\(?[a-e]\)?\s+dan\s*\(?[a-e]\)?/i.test(o);
+        });
+      }
+
       // Acak posisi opsi sambil menjaga kunci jawaban tetap benar
       function withShuffledOptions(q) {
         var order = shuffle([0, 1, 2, 3, 4]);
@@ -854,7 +865,9 @@
         var questions = $("opt-shuffle").checked ? shuffle(pool) : pool.slice();
         questions = questions.slice(0, count);
         if ($("opt-shuffle-opts").checked) {
-          questions = questions.map(withShuffledOptions);
+          questions = questions.map(function (q) {
+            return shouldFixOptions(q) ? q : withShuffledOptions(q);
+          });
         }
 
         state.session = {

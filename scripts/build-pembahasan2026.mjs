@@ -108,6 +108,18 @@ function parseQuestionBlock(qtext) {
   return { no, stem, options };
 }
 
+function hasCompoundOptionRefs(options) {
+  const patterns = [
+    /hanya\s+.*?(?:butir|pernyataan|pertanyaan|jawaban)?\s*\(?[a-e]\)?/i,
+    /\([a-e]\)\s*(?:dan|atau|&|,)/i,
+    /butir\s*\(?[a-e]\)?\s+dan\s*\(?[a-e]\)?/i,
+    /butir\s+[a-e]\s+dan\s+[a-e]/i,
+    /hanya\s+\([a-e]\)/i,
+    /,\s*\([a-e]\)\s+dan/i,
+  ];
+  return options.some((o) => patterns.some((p) => p.test(o)));
+}
+
 function parseAll(text) {
   text = text.replace(/---PAGE\d+---/g, "\n");
   const chunks = text.split(/\nPembahasan:\s*\n?/);
@@ -171,6 +183,7 @@ function parseAll(text) {
       options: optArr,
       answer,
       explain,
+      fixedOptions: hasCompoundOptionRefs(optArr),
       version: 1,
     });
   }
@@ -193,6 +206,7 @@ function serialize(bank) {
     o += "    ],\n";
     o += `    answer: ${q.answer},\n`;
     o += `    explain: ${JSON.stringify(q.explain)},\n`;
+    if (q.fixedOptions) o += `    fixedOptions: true,\n`;
     o += `    version: ${q.version}\n`;
     o += "  }" + (idx < bank.length - 1 ? "," : "") + "\n";
   });

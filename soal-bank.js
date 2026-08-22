@@ -8007,6 +8007,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "● Metode: Penentuan cara pendekatan (misal: kuantitatif/kualitatif) agar analisis sesuai dengan tujuan program. ● Desain: Penyusunan kerangka kerja (cetak biru) yang mengatur indikator, jadwal, target, dan alur pemantauan. ● Instrumen: Pembuatan alat ukur/pengumpul data di lapangan (seperti kuesioner atau checklist) untuk mengeksekusi desain. Tanpa salah satu dari ketiga elemen ini, data yang diperoleh tidak akan valid sehingga rumusan tindakan korektif menjadi tidak akurat (E) 6. Perencanaan merupakan sebuah proses yang melibatkan serangkaian tahapan tertentu. Dalam konteks pembangunan sosial, bagaimana tahapan perencanaan sosial ini dibandingkan dengan perencanaan lainnya? A. Tahapan perencanaan pembangunan sosial berbeda dengan tahapan perencanaan ekonomi B. Tahapan perencanaan pembangunan sosial sama dengan tahapan perencanaan spasial C. Dalam perencanaan sosial, pemilihan alternatif tidak diperlukan D. Tahapan perencanaan pembangunan sosial berbeda dengan tahapan perencanaan pembangunan bangsa E. Perencanaan sosial memiliki jumlah tahapan yang lebih sedikit dibandingkan dengan perencanaan spasial",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8064,6 +8065,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "Penjaringan aspirasi = proses: ● menghimpun pendapat masyarakat ● melibatkan partisipasi publik ● menjadi bagian dari perencanaan partisipatif Dalam praktik perencanaan Penjaringan aspirasi tidak hanya lewat Musrenbang, bisa melalui berbagai forum komunikasi publik/ A. Rapat teknis - Digunakan untuk menyerap masukan teknis & kebutuhan lapangan. Termasuk, meskipun sifatnya lebih teknokratis B. Forum konsultasi publik - Secara eksplisit memang untuk menyerap aspirasi masyarakat C. Seminar dan lokakarya - digunakan untuk menggali ide, masukan, kritik masyarakat. Termasuk metode partisipatif (E) 9. Dalam satu siklus proses perencanaan, terdapat satu tahap yang ditujukan agar apa yang direncanakan dapat dilaksanakan dengan baik dan hasilnya bisa memenuhi tujuan yang ingin dicapai, serta apabila terjadi penyimpangan dapat dipelajari kekurangannya untuk diambil langkah-langkah perbaikan ke depan. Tahapan ini dikenal dengan proses: A. Proses Perencanaan B. Proses Pelaksanaan C. Proses Pemantauan D. Proses Pelaporan E. Proses Evaluasi",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8197,6 +8199,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 1,
     explain: "Pelayanan dasar (urusan wajib) sesuai UU No. 23 Tahun 2014 meliputi: Urusan pemerintahan absolut (Kewenangan Pemerintah Pusat) meliputi: a) Pendidikan b) Kesehatan c) Pekerjaan umum d) Perumahan e) Ketenteraman, ketertiban umum, dan perlindungan masyarakat f) Sosial a) politik luar negeri; b) pertahanan; c) keamanan; d) yustisi; e) moneter dan fiskal nasional f) agama. (B) 16.Evaluasi yang dilakukan setelah suatu kegiatan atau program pembangunan selesai dilaksanakan disebut evaluasi: A. Ex-ante B. On-going C. Ex-post D. Mid-term E. Final",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8273,6 +8276,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 3,
     explain: "[Dikoreksi] SDA tersedia = potensi, bukan tantangan. Dalam teori perencanaan pembangunan (Todaro), faktor penentu utama keberhasilan pembangunan (input pembangunan) meliputi: ● Sumber Daya Alam (SDA) – Natural Resources → ketersediaan lahan, air, energi, dll menentukan potensi wilayah. Jika jika terbatas menjadi kendala ● Sumber Daya Manusia (SDM) – Human Resources → kualitas tenaga kerja menentukan keberhasilan pelaksanaan ● Modal / pendanaan – Capital/Investment (E) → tanpa dana (Modal / pendanaan) → program tidak berjalan 20.Agar seorang perencana muda mampu melakukan evaluasi atas hasil pelaksanaan suatu rencana pembangunan yang sesuai dengan tujuan program perlu memiliki kompetensi dalam A. memilih metode yang tepat sesuai dengan tujuan evaluasi B. menyusun instrumen pengumpulan data C. membandingkan hasil pelaksanaan dengan indikator pencapaian tujuan D. hanya pertanyaan butir A dan C yang benar E. semua jawaban benar",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8292,6 +8296,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "Berdasarkan Pasal 7 ayat (3) permenpanrb no 20/2024, Ruang lingkup kegiatan untuk setiap jenjang jabatan, meliputi: a. Perencana Ahli Pertama Menyiapkan data dan dokumen pendukung lain untuk: ● penyusunan dokumen perencanaan ● evaluasi pelaksanaan rencana pembangunan tahunan b. Perencana Ahli Muda Menyusun: ● rencana pelaksanaan kebijakan ● rencana dan program ● kegiatan sektoral, lintas sektor, dan regional ● anggaran pembangunan strategis jangka pendek Pilihan Waktu Fokus Monitoring Saat berjalan Progres Evaluasi Perencanaan Sebelum Kelayakan rencana Evaluasi Ex-post Setelah Hasil & dampak Evaluasi Ex-ante Sebelum Prediksi Pengendalian Saat berjalan Perbaikan c. Perencana Ahli Madya Menyusun, mengendalikan, dan memantau: ● rencana pelaksanaan kebijakan, rencana, dan program ● serta menyusun desain instrumen dan arahan pelaksanaan evaluasi rencana pembangunan jangka menengah d. Perencana Ahli Utama Menyusun: ● perencanaan kebijakan strategis/program jangka panjang ● perencanaan kebijakan/program strategis makro ● rencana pembangunan regional Serta: ● mendesain program kawasan ● melakukan telaahan makro/lintas sektoral/kawasan dalam berbagai forum musyawarah Berdasarkan Permenpan RB no 4/2020, Tugas Perencana Ahli Muda : UNSUR SUB UNSUR URAIAN KEGIATAN/TUGAS HASIL KERJA/OUTPUT Perenca naan A Identifikasi Masalah/Isu Strategis 9 Memformulasikan sajian untuk analisis Laporan Formulasi Sajian Analisis 10 Melakukan Riset Kebijakan Untuk Menghasilkan Dokumen Bahan Perencanaan Pemb",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8406,6 +8411,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "● Dalam materi pembekalan UKOM yang mengutip Permen PPN No. 3 Tahun 2011 disebutkan bahwa kompetensi teknis Perencana Ahli Muda meliputi: ○ Menyusun kriteria pemilihan alternatif kebijakan dan perumusan alternatif kebijakan. ○ Menghasilkan perencanaan tahunan (jangka pendek), regional, sektor tunggal. ○ Menentukan metode dan desain pemantauan. ○ Menentukan metode evaluasi rencana tahunan. ● Lihat juga Pembahasan soal no 20 A → sesuai B → sesuai C → sesuai jadi jawaban semua benar (E) 27.Menurut pendapat saudara,pernyataan manakah yang paling tepat untuk menggambarkan pernyataan mengenai definisi dari perencanaan : A. Perencanaan adalah proses pendefinisian tujuan dan membuat strategi untuk pencapaian tujuan tersebut B. Perencanaan merupakan salah satu proses dalam fungsi manajemen C. Perencanaan adalah suatu proses tindakan masa depan dengan mempertimbang kan sumber daya yang tepat D. Hanya pernyataan butir (a) dan (c) yang benar E. Semua pernyataan benar",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8425,6 +8431,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "A → Perencanaan = menetapkan tujuan + strategi mencapainya ✅ B → Perencanaan = bagian dari fungsi manajemen (POAC), P = Planning ✅ C → Perencanaan = proses untuk masa depan dengan mempertimbangkan sumber daya ✅ Jawaban benar semua (E) 28.Perencanaan Pembangunan dirumuskan dengan memenuhi beberapa asas. Maksud dari Keterlibatan Wakil Rakyat dalam setiap tahapan proses perencanaan di sini termasuk dalam pemenuhan asas: A. Asas Transparansi B. Asas Responsif C. Asas Partisipatif D. Asas Akuntabel E. Asas Efektif",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8501,6 +8508,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 0,
     explain: "● Asas partisipatif dalam perencanaan pembangunan = dilaksanakan dengan melibatkan semua pihak yang berkepentingan (stakeholders) terhadap pembangunan. Pelibatan mereka adalah untuk mendapatkan aspirasi dan menciptakan rasa memiliki. ● Ini sejalan dengan konsep dalam sistem perencanaan pembangunan yang melibatkan masyarakat sebagai stakeholder, bukan hanya objek A. → menunjukkan keterlibatan langsung (direct participation), bukan perwakilan ✅ B. → Partisipasi yang baik memang seharusnya: ● tidak elitis, ● tidak hanya melibatkan kelompok dominan, ● dan membuka ruang bagi kelompok rentan atau termarginalkan. tapi ini hanya sifat bukan definisi utamanya❌ C. → ada kalimat “cukup diwakili”, artinya masyarakat tidak perlu terlibat langsung, ini lebih cocok ke representatif, bukan partisipatif ❌ ❖ partisipasi tidak hanya bersifat formal atau diwakilkan, tetapi harus memungkinkan masyarakat menyampaikan aspirasi secara langsung dalam proses perencanaan. Oleh karena itu, keterlibatan yang hanya diwakili oleh anggota dewan tidak sepenuhnya mencerminkan asas partisipatif. ❖ Meskipun partisipasi yang baik seharusnya bersifat inklusif terhadap kelompok yang termarginalkan, hal tersebut merupakan sifat atau kualitas dari partisipasi, bukan definisi utamanya. Definisi utama asas partisipatif tetap terletak pada keterlibatan langsung masyarakat dalam proses perencanaan. (A) 32.Instrumen utama dalam proses evaluasi pembangunan adalah: A. Anggaran B. Data dan indikator kinerja C. Tenaga ahli D",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8539,6 +8547,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 3,
     explain: "A. → Pendidikan politik untuk menilai rasionalitas janji, ini inti dari pemilih rasional, memilih sesuai dengan visi–misi ✔️ B. → faktor emosional, psikologis, keuntungan pribadi, ini justru kebalikan dari rasional, bukan dasar ideal pemilihan ❌ C. → menentukan arah pembangunan 5 tahun, visi–misi memang jadi arah kebijakan pemerintah ✔️ D. → ini sesuai analisis ✔️ E. → B salah ❌ Kalimat penting: pemilih seyogianya didasarkan pada visi dan misi. → pemilih harus rasional, berbasis program, bukan emosi (D) 34.Proses pelaksanaan yang baik adalah kondisi dimana dalam prosesnya bisa menggunakan sumber daya yang dibutuhkan sesuai kebutuhan atau bisa lebih hemat Dibawah ini, pilih terminology atau istilah yang menunjukkan derajat penggunaan sumber daya yang dibutuhkan : A. Akuntabel B. Sistemik C. Efektif D. Akurat E. Efisien",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8653,6 +8662,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 2,
     explain: "lihat pembahasan soal no 20 Perencana Kompetensi Perencana Ahli Muda sesuai Permen PPN No. 12 Tahun 2020 → Untuk Ahli Muda (KKNI level 7) 🔷 A. Kompetensi Inti ● Menganalisis data pembangunan ● Menganalisis potensi dan permasalahan pembangunan ● Mengkaji model untuk menetapkan alternatif kebijakan pembangunan (ekonomi, sosial, atau spasial) ● Memadukan tujuan-tujuan realistis ke dalam model perencanaan pembangunan ● Mengaplikasikan model ekonomi, sosial, atau spasial untuk pembangunan ● Merumuskan rencana kegiatan pembangunan ● Menyusun rencana anggaran ● Melakukan pemantauan pelaksanaan pembangunan bidang ekonomi, sosial, atau spasial ● Menyusun desain evaluasi/penilaian hasil pelaksanaan kegiatan pembangunan bidang ekonomi, sosial, atau spasial 🔶 B. Kompetensi Pilihan ● Menyusun pedoman pelaksanaan analisis data geospasial kewilayahan ● Melakukan analisis sistem informasi geografis tingkat dasar ● Mengintegrasikan data spasial dengan data non spasial ● Melakukan pemrosesan awal data geospasial kewilayahan ● Menyusun desain kajian dan analisis kebijakan ● Membuat instrumen kajian dan analisis kebijakan ● Menyusun laporan kajian dan analisis kebijakan ● Mempublikasikan naskah kebijakan A. → Mengaplikasikan model ekonomi, sosial, atau spasial → tugas Ahli Muda ✅ B. → Rekomendasi tindakan korektif adalah → Ahli Madya ❌ C. → Menyusun desain evaluasi/penilaian hasil pelaksanaan kegiatan → tugas Ahli Muda ✅ Jawaban yang Tepat A dan C (D) 40.Sebagai seorang Pejabat Fungsional Pere",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8672,6 +8682,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "● Berpikir sistemik = pendekatan analitis yang memahami fenomena sebagai sistem kompleks yang terdiri dari elemen yang saling berinteraksi melalui hubungan sebab-akibat dan menghasilkan pola dinamis dalam jangka panjang. A. → melihat hubungan kondisi ↔ tujuan; interrelationship ✔ B. → sistem terdiri dari banyak perspektif; holistic view ✔ C. → dari sistem → implementasi; system structure → action ✔ Teori berpikir sistemik (Senge) menekankan bahwa permasalahan harus dipahami sebagai bagian dari sistem yang saling terkait, memiliki pola, dan dipengaruhi oleh hubungan sebab-akibat—yang menjadi dasar kompetensi perencana dalam memahami dan merumuskan kebijakan.(E) 41.Walaupun sebagai kegiatan yang berorientasi ke depan, proses perencanaan tidak mungkin melepaskan diri dari kondisi masa lalu dan saat ini, karena kondisi tersebut merupakan situasi yang akan diubah. Untuk memudahkan memahami kondisi masa lalu, maka data masa lalu perlu disusun dalam bentuk: A. Deret ukur B. Deret hitung C. Data series D. Data parallel E. Data sequential",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8729,6 +8740,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 3,
     explain: "Lihat Pembahasan soal no 39 Perpres no 8 tahun 2012 (KKNI level 7) ~ untuk ahli muda ● Mampu merencanakan dan mengelola sumber daya di bawah tanggung jawabnya, dan mengevaluasi secara komprehensif kinerjanya dengan memanfaatkan ilmu pengetahuan, teknologi, dan/atau seni untuk menghasilkan langkah-langkah pengembangan strategis organisasi. ● Mampu memecahkan permasalahan ilmu pengetahuan, teknologi, dan/atau seni di dalam bidang keilmuannya melalui pendekatan monodisipliner. ● Mampu melakukan riset dan mengambil keputusan strategis dengan akuntabilitas dan tanggung jawab penuh atas semua aspek yang berada di bawah tanggung jawab bidang keahliannya. Pembahasan opsi jawaban : A. → Kalimat ini identik dengan deskripsi KKNI level 7✔️ B. → Dalam KKNI level 7 ditegaskan pendekatan yang digunakan adalah monodisipliner ❌ C. →Pernyataan ini sesuai dengan deskripsi KKNI level 7 ✔️ yang benar hanya A dan C (D) 44.Dalam penilaian kinerja, suatu indikator harus memenuhi kriteria SMART untuk memastikan bahwa indikator tersebut memberikan informasi yang akurat dan berguna. Salah satu kriteria dalam SMART mengharuskan indikator kinerja sejalan dengan program atau kegiatan yang hendak diukur. Istilah yang tepat untuk menggambarkan kriteria ini adalah: A. Spesifik B. Terukur C. Relevan D. Dapat dicapai E. Efektif",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8900,6 +8912,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 1,
     explain: "● Tujuan pembangunan nasional sebagaimana tercantum dalam Pembukaan UUD 1945 menjadi dasar arah pembangunan Indonesia. Pada hakikatnya, pembangunan merupakan proses yang: ○ berkelanjutan, ○ saling berkaitan antar sektor dan wilayah, ○ meningkatkan kesejahteraan masyarakat, ○ serta mendukung pertumbuhan ekonomi dan pembangunan manusia. ● Dalam sistem pembangunan Indonesia, pembangunan nasional dan pembangunan daerah merupakan satu kesatuan yang tidak dapat dipisahkan. ● Opsi B kurang tepat karena pembangunan daerah merupakan bagian dari pembangunan nasional. Pembangunan nasional membutuhkan: sinkronisasi pusat dan daerah, integrasi program, dan keselarasan kebijakan pembangunan. ○ Contoh: RPJMD provinsi/kabupaten harus mendukung RPJMN nasional. (B) 53.Menurut saudara, aspek atau sektor penting yang bagi terlaksananya konsep Pembangunan yang berkelanjutan adalah : A. Penguatan kapabilitas organisasi sektor layanan publik B. Pengendalian penggunaan energy fosil C. Hilirisasi produk/komoditas ekonomi D. Percepatan makan siang gratis bergizi E. Optimalisasi anggaran",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8957,6 +8970,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 2,
     explain: "● pada pasal 2 ayat 4 UU 25/2014 tentang SPPN : ● Sistem Perencanaan Pembangunan Nasional bertujuan untuk: 1) Mendukung koordinasi antarpelaku pembangunan; 2) Menjamin terciptanya integrasi, sinkronisasi, dan sinergi baik antardaerah, antarruang, antarwaktu, antarfungsi pemerintah maupun antara Pusat dan Daerah; 3) Menjamin keterkaitan dan konsistensi antara perencanaan, penganggaran, pelaksanaan, dan pengawasan; 4) Mengoptimalkan partisipasi masyarakat; dan 5) Menjamin tercapainya penggunaan sumber daya secara efisien, efektif, berkeadilan, dan berkelanjutan. ● dari pilihan diatas : A. → Pasal 2 ayat (4) huruf c, “menjamin keterkaitan dan konsistensi antara perencanaan, penganggaran, pelaksanaan, dan pengawasan.” , masih tepat.✅ B. → Dalam UU tertulis: “menjamin tercapainya penggunaan sumber daya secara efisien, efektif, berkeadilan, dan berkelanjutan.”. Artinya yang diatur bukan hanya anggaran, tetapi seluruh sumber daya pembangunan. kalimat “mengatur” lebih bersifat teknis, lebih tepat kalau di UU Keuangan negara / Pengalolaan APBN⚠️ C. → sesuai langsung dengan Pasal 2 ayat (4) huruf a✅ ● Jawaban (D) 56.Arti pembangunan adalah suatu proses perubahan yang direncanakan untuk memperbaiki berbagai aspek kehidupan masyarakat, yang ditujukan untuk meningkatkan kesejahteraan dan taraf hidup masyarakat. Menurut pendapat saudara, tolak ukur keberhasilan dari suatu pembangunan dapat ditunjukkan dalam: A. Terpenuhinya kebutuhan pokok sandang dan pangan, walaupun harus dipenuhi melalu",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8976,6 +8990,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 2,
     explain: "● Dalam materi perencanaan pembangunan juga dijelaskan bahwa tujuan pembangunan meliputi: ○ peningkatan standar hidup, ○ tumbuhnya rasa percaya diri (self esteem), ○ dan peningkatan kebebasan (freedom). ● Teori pembangunan modern dipengaruhi oleh Amartya Sen. Menurut Amartya Sen: ○ pembangunan adalah proses memperluas kebebasan manusia (expansion of human freedom). ● Artinya pembangunan berhasil bila masyarakat: ○ memiliki kesempatan, ○ memiliki akses, ○ dan bebas menentukan pilihan hidupnya. ● Analisis Opsi : A. → Kebutuhan dasar memang penting, tetapi ketergantungan impor menunjukkan lemahnya kemandirian pembangunan.⚠️ B. → berkaitan dengan freedom, sesuai dengan teori pembangunan manusia ✅ C. → Data merupakan alat pendukung pembangunan, bukan ukuran keberhasilan pembangunan itu sendiri.❌ Jawaban: (B) 57.Berdasarkan pasal 37 ayat (1), bahwa UU No 42 tahun 2008 tentang pemilihan Presiden/Wakil Presiden Dimana materi kampanye meliputi visi, misi, program, serta janji-janjinya pada masa kampanye, dan selanjutnya dijabarkan kedalam Rencana Pembangunan Jangka Menengah, tahapan ini dikenal sebagai proses : A. Proses penjabaran rencana B. Proses teknokratik C. Proses politik D. Hanya penyataan butir (a) dan (c) yang benar E. Semua pernyataan benar",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -8995,6 +9010,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 3,
     explain: "● Dalam Undang-Undang Nomor 25 Tahun 2004, proses perencanaan pembangunan dilakukan melalui beberapa pendekatan, yaitu: ○ politik, ○ teknokratik, ○ partisipatif, ○ serta top-down dan bottom-up. ● Visi, misi, program, dan janji kampanye Presiden/Wakil Presiden yang kemudian dijabarkan ke dalam RPJM merupakan bagian dari proses politik. Karena rencana pembangunan lahir dari: ● proses pemilihan umum, mandat rakyat, dan agenda politik kepala negara/kepala daerah terpilih. Jawaban (C) 58.Seperti diketahui dalam Undang-Undang Nomor 25 Tahun 2004, sistem perencanaan pembangunan di Indonesia berdasarkan rentang waktunya diklasifikasikan menjadi RPJP(D), RPJM(D), dan RKP(D). Di bawah ini, hasil yang terkait dengan capaian RKP(D) disebut: A. Output B. Outcome C. Benefit D. Impact E. Semua benar",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -9223,6 +9239,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "Jawaban : Semua Benar (E) 70.Jika indikator kinerja dirumuskan terlalu umum dan sulit diukur, maka indikator tersebut tidak memenuhi prinsip: A. Spesifik B. Terukur C. Dapat dicapai D. Relevan E. Memiliki batas waktu",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -9280,6 +9297,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 1,
     explain: "● Penjelasan Pilihan A. → Ini adalah ciri: sentralisasi, bukan desentralisasi. Dalam sistem sentralistik: kewenangan dominan di pusat, daerah hanya melaksanakan. ❌ B. → Ini ciri utama:desentralisasi.Desentralisasi berarti: a. pelimpahan kewenangan dari pusat ke daerah, b. daerah memiliki otonomi, c. daerah dapat mengatur urusan pemerintahan tertentu sendiri. ✅ ● Menurut konsep otonomi daerah: desentralisasi adalah: penyerahan urusan pemerintahan dari pemerintah pusat kepada daerah otonom. Tujuannya: ■ meningkatkan efektivitas pelayanan, ■ mendekatkan pelayanan kepada masyarakat, ■ mempercepat pembangunan daerah. Jawaban (B) 73.Informasi yang digunakan untuk mendukung penyusunan perencanaan pembangunan dapat berasal dari: A. Data statistik B. Hasil survei lapangan C. Hasil kajian akademik D. Hanya (a) dan (b) yang benar E. Semua benar",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -9299,6 +9317,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "A. → Data statistik merupakan sumber utama dalam perencanaan pembangunan. Ex: data BPS ✅ B. → Survei lapangan termasuk: data primer. Digunakan untuk: memperoleh kondisi aktual, validasi data, mengetahui kebutuhan masyarakat. Ex: survei kepuasan masyarakat ✅ C. → Kajian akademik juga menjadi sumber penting. Contoh: policy paper. Digunakan untuk: memperkuat dasar kebijakan, memberikan rekomendasi ilmiah, analisis strategis. ✅ ● Jawaban : Semua Benar (E) 74.Jika perencanaan pembangunan daerah tidak memperhatikan arah kebijakan pembangunan nasional, maka berpotensi terjadi: A. Kesenjangan kebijakan B. Duplikasi kegiatan C. Inefisiensi anggaran D. Semua benar E. Tidak ada yang benar",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -9584,6 +9603,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 2,
     explain: "3 Permasalahan Utama dalam Ekonomi Makro 1. Kesejahteraan - dilihat dari : pertumbuhan, distribusi kemiskinan, IPM 2. Pengangguran 3. Fluktuasi Ekonomi: Inflasi dan deflasi, harga ● IPM (Indeks Pembangunan Manusia): Mengukur kualitas hidup masyarakat dari dimensi dasar yaitu kesehatan (umur panjang), pendidikan (pengetahuan), dan standar hidup layak (pengeluaran). ● Rasio Gini: Mengukur tingkat ketimpangan distribusi pendapatan atau pengeluaran. Kesejahteraan yang baik tidak hanya dilihat dari angka rata-rata, tetapi juga dari seberapa merata kesejahteraan tersebut dinikmati oleh seluruh lapisan masyarakat. ● Pertumbuhan Ekonomi: Mengukur peningkatan kapasitas produksi barang dan jasa (nilai tambah ekonomi) suatu wilayah. Pertumbuhan ekonomi yang positif merupakan syarat perlu (necessary condition) untuk menciptakan lapangan kerja dan meningkatkan pendapatan masyarakat. Dalam konteks perencanaan dan evaluasi pembangunan, ketiga indikator tersebut digunakan secara bersamaan untuk mengukur tingkat kesejahteraan masyarakat dari berbagai dimensi: (E) 9. Instrumen penilaian proyek sosial dan publik, kecuali: A. ECBA B. Comparative Analysis C. EIRR D. Hanya (a) dan (c) benar E. Semua benar Indikator Negara Maju Negara Berkembang IPM Tinggi (umumnya ≥ 0,85) Rendah (umumnya < 0,85) Angka Harapan Hidup Tinggi (umumnya ≥ 80 tahun) Rendah (umumnya < 80 tahun) Rata-Rata Lama Sekolah Tinggi (umumnya ≥ 10 tahun) Rendah (umumnya < 10 tahun) Kemampuan Belanja Tinggi (umumnya ≥ US$ 30.000/tah",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -9603,6 +9623,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 1,
     explain: "● ECBA (Economic Cost Benefit Analysis) → Metode analisis untuk menilai kelayakan proyek dengan membandingkan seluruh biaya dan manfaat dari sudut pandang ekonomi (masyarakat luas). Tidak hanya keuntungan finansial, tapi juga: manfaat sosial; dampak lingkungan; eksternalitas Contoh : Proyek pembangunan jalan: biaya: Rp 100 miliar; manfaat: penghematan waktu; penurunan biaya transportasi; peningkatan ekonomi daerah. Jika manfaat > biaya → proyek layak ● Comparative Analysis → Metode membandingkan beberapa alternatif berdasarkan kriteria tertentu. Fokus memilih alternatif terbaik, bukan menilai kelayakan secara ekonomi mendalam Contoh: Memilih lokasi pembangunan pasar: Lokasi A vs B vs C, dibandingkan dari akses, biaya, jumlah penduduk. Hanya alat bantu keputusan, bukan instrumen kelayakan ● EIRR (Economic Internal Rate of Return) → Tingkat pengembalian ekonomi suatu proyek yang menunjukkan seberapa besar manfaat ekonomi dibandingkan biaya dalam bentuk persentase. Digunakan untuk mengukur kelayakan proyek publik Contoh: Proyek bendungan: EIRR = 12%; Jika lebih tinggi dari standar (misal 10%) → proyek layak Instrumen penilaian proyek publik biasanya: berbasis ekonomi & sosial dan digunakan untuk menilai kelayakan proyek (B) 10.Berikut ini yang termasuk sebagai Barang Publik adalah A. Pemandangan dan Ikan di laut B. Jalan Raya dan Alarm Tsunami C. Jalan Raya dan Ikan di Laut D. Lingkungan dan Alarm Tsunami E. Ikan di laut dan Alarm Tsunami",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -9698,6 +9719,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "[Dikoreksi] Opsi A keliru; kelemahan PDB meliputi B, C, D. Beberapa Kelemahan PDB: 1) PDB tidak mencerminkan distribusi pendapatan, karena hanya mengukur total output tanpa menunjukkan bagaimana pendapatan tersebut terbagi dalam masyarakat. 2) PDB tidak memasukkan aktivitas non-pasar, seperti pekerjaan rumah tangga, karena tidak memiliki nilai pasar yang dapat dihitung . 3) PDB tidak menghitung ekonomi informal dan ilegal, sehingga sebagian aktivitas ekonomi riil tidak tercermin dalam perhitungan. 4) PDB tidak mencerminkan tingkat kesejahteraan masyarakat, karena tidak memasukkan aspek seperti kesehatan, kebahagiaan, dan kualitas hidup. 5) PDB tidak memperhitungkan kerusakan lingkungan, sehingga peningkatan produksi tetap dianggap positif meskipun menimbulkan dampak negatif terhadap alam . 6) PDB tidak memasukkan nilai waktu luang (leisure), padahal hal tersebut merupakan bagian penting dari kesejahteraan individu. 7) PDB dapat terdistorsi oleh inflasi pada PDB nominal, sehingga kenaikan nilai tidak selalu mencerminkan peningkatan produksi riil. 8) PDB hanya menghitung produksi dalam wilayah domestik, sehingga tidak mencakup aktivitas ekonomi warga negara di luar negeri. 9) PDB riil hanya mengukur output ekonomi, bukan aspek sosial dan politik. dari soal: ● (A) ⚠️ Kurang tepat → PDB Nominal (mengandung Inflasi);PDB Riil (menghilangkan Pengaruh Inflasi) ● (B) ✅ Benar → PDB hanya domestik ● (C) ✅ Benar → non-pasar tidak dihitung ● (D) ✅ Benar → PDB dapat dihitung melalui 3 pendekatan (Produksi, Pengeluaran, Pendapatan). dalam praktikny",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -9926,6 +9948,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 1,
     explain: "Lihat Pembahasan soal ekonomi no 14. kecuali (B) ❖ Bedah Opsi pilihan A. → PDB memang tidak sempurna dalam menangkap kesejahteraan konsumsi, Fokusnya produksi, bukan seluruh aspek konsumsi. PDB = C + I + G + (X – M) ; C = konsumsi ⚠️ B. → PDB tidak menghitung produksi luar negeri❌ C. → aktivitas non-pasar tidak dihitung ✅ D. → PDB bisa naik walau lingkungan rusak ✅ E. → kesejahteraan tidak hanya soal produksi, waktu luang luput dalam perhitungan ✅ Opsi b salah secara konsep PDB, sehingga bukan termasuk kelemahan (B) 27.Untuk menginternalisasi eksternalitas negatif, pemerintah perlu melakukan tindakan kebijakan yang tepat. Tindakan yang diperlukan adalah A. Pemberian insentif kepada pihak yang menghasilkan eksternalitas negatif B. Pemberian kompensasi kepada pihak yang menghasilkan eksternalitas negatif C. Pemberian insentif kepada pihak lain yang terdampak oleh eksternalitas negatif D. Pemberian kompensasi kepada pihak lain yang terdampak oleh eksternalitas negatif E. Pemberlakuan batas pencemaran kepada pihak lain yang terdampak oleh eksternalitas negatif",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -10135,6 +10158,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "● Dalam teori pembangunan wilayah, pertumbuhan ekonomi tidak terjadi merata. ● Wilayah tertentu berkembang lebih cepat karena: ○ sumber daya lebih besar, ○ investasi terkonsentrasi, ○ infrastruktur lebih baik, ○ akses pasar lebih kuat. ● Teori yang Relevan : ○ Growth Pole Theory (Perroux) Pembangunan cenderung terkonsentrasi pada pusat pertumbuhan tertentu. Akibatnya muncul daerah maju, daerah tertinggal. ○ Myrdal – Backwash Effect Wilayah maju menarik modal, SDM, investasi, dari wilayah tertinggal. Akibatnya ketimpangan meningkat. Jawaban : semua benar (E) 39.Kebijakan moneter yang dilakukan oleh Bank Indonesia untuk menekan inflasi adalah: A. Menurunkan suku bunga acuan B. Meningkatkan jumlah uang beredar C. Menaikkan suku bunga acuan D. Membatasi impor E. Menaikkan upah minimum",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -10249,6 +10273,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "Ketiga metode tersebut merupakan instrumen yang digunakan oleh perencana untuk memperoleh data pergerakan atau perpindahan penduduk dengan karakteristik sebagai berikut: ● Sensus: Mengumpulkan data perpindahan penduduk (migrasi) secara menyeluruh setiap 10 tahun (data makro/stok). ● Susenas: Mengumpulkan data perpindahan penduduk setiap tahun untuk memotret perubahan sosial ekonomi (data sampel/tahunan). ● Origin-Destination: Survei spesifik (sering digunakan dalam perencanaan transportasi/wilayah) untuk memetakan pola pergerakan penduduk dari titik asal ke titik tujuan. (E) 3. Upaya yang bukan merupakan peningkatan produktivitas masyarakat adalah: A. Peningkatan gizi balita B. Pembangunan pabrik baru C. Modernisasi alat pertanian D. Renovasi kantor investor E. Peningkatan pendidikan kejuruan",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -10382,6 +10407,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 2,
     explain: "❖ Kebijakan “jangka pendek” Artinya: cepat dilaksanakan; efek langsung terasa; tidak butuh waktu lama ❖ Penyaluran bantuan dana, bahan makanan → bisa dilakukan segera, dampak langsung ❖ Pembangunan fasilitas lingkungan, sanitasi, air bersih → butuh perencanaan & konstruksi; waktu relatif lebih lama ❖ Pembangunan infrastruktur → proyek besar, butuh waktu lama (A) 10.Kebijakan yang mendukung Pembangunan Rendah Karbon (PRK) antara lain: A. Restorasi gambut dan mangrove B. Penerapan pajak karbon dan penghapusan subsidi energi fosil C. Pengembangan energi baru terbarukan D. Hanya (a) dan (c) benar E. Semua benar",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -10401,6 +10427,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "❖ Pembangunan Rendah Karbon (PRK): semua kebijakan yang menurunkan emisi gas rumah kaca atau meningkatkan penyerapan karbon termasuk di dalamnya. ➢ Restorasi gambut dan mangrove → menyerap karbon, mencegah emisi dari lahan rusak ➢ Penerapan pajak karbon dan penghapusan subsidi energi fosil → mengurangi emisi, Mengurangi ketergantungan energi kotor ➢ Pengembangan energi baru terbarukan → mengganti energi fosil, menurunkan emisi (E) 11.Unsur utama dalam modal sosial masyarakat adalah: A. Loyalty B. Fairness C. Influence D. Respect E. Trust",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -10648,6 +10675,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "● Kenapa intervensi sosial sulit? ○ Karena masalah sosial tidak selalu terlihat, tidak selalu bisa diukur angka, dipengaruhi budaya dan perilaku, bersifat multidimensional. ○ Contoh: Kemiskinan, Tidak hanya soal pendapatan, tetapi juga pendidikan, kesehatan, akses layanan, budaya,struktur sosial. ● Perencanaan sosial bersifat lintas sektor, multistakeholder, fokus pada human development. ● Karena itu tantangan utamanya adalah memahami masalah sosial secara tepat sebelum melakukan intervensi. Kalau diagnosis salah ➡️ program pembangunan juga gagal. ● Tantangan utama dalam intervensi sosial adalah kesulitan mengidentifikasi dan mengatasi masalah sosial yang spesifik karena setiap masyarakat memiliki karakteristik, kebutuhan, dan akar permasalahan yang berbeda-beda sehingga pendekatan pembangunan tidak dapat dilakukan secara seragam. Jawaban (E) 25. SPASIAL",
+    fixedOptions: true,
     version: 1
   },
   {
