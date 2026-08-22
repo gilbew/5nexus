@@ -2,7 +2,7 @@
 
 Aplikasi latihan soal pilihan ganda (statis: `index.html` + `soal-bank.js`).
 
-## Bank soal (633)
+## Bank soal (634)
 
 | Sumber | Jumlah |
 |--------|--------|
