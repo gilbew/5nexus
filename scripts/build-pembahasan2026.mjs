@@ -20,25 +20,35 @@ const CLUSTER_MAP = {
 const CORRECTIONS = {
   "PERENCANAAN|1": {
     answer: 2,
-    explainNote:
-      "[Dikoreksi] Bukan dasar hukum perencanaan adalah UU Pilpres (UU 42/2008), selaras soal 46.",
+    explainOverride:
+      "[Dikoreksi] UU Pilpres (UU 42/2008) mengatur pemilihan presiden, bukan perencanaan pembangunan. Dasar hukum perencanaan meliputi UU SPPN, UU Keuangan Negara, UU Pemda, dan Perpres RPJMN.",
   },
   "PERENCANAAN|19": {
     answer: 3,
     optionFix: { D: "Hanya pernyataan butir (b) dan (c) yang benar" },
-    explainNote: "[Dikoreksi] SDA tersedia = potensi, bukan tantangan.",
+    explainOverride:
+      "[Dikoreksi] SDA yang tersedia adalah potensi, bukan tantangan. Tantangan pembangunan meliputi sumber pendanaan (b) dan SDM (c). Jawaban: D.",
   },
   "PERENCANAAN|22": {
     answer: 4,
-    explainNote: "[Dikoreksi] Keterlibatan masyarakat → Pembangunan Berbasis Masyarakat.",
+    explainOverride:
+      "[Dikoreksi] Paradigma yang menekankan keterlibatan/partisipasi masyarakat adalah Pembangunan Berbasis Masyarakat (E).",
   },
   "EKONOMI|14": {
     answer: 4,
     optionFix: { E: "Hanya (b), (c), dan (d) benar" },
     explainNote: "[Dikoreksi] Opsi A keliru; kelemahan PDB meliputi B, C, D.",
   },
-  "EKONOMI|15": { answer: 0, explainNote: "[Dikoreksi] Kualitas SDM → Endogenous growth model." },
-  "EKONOMI|32": { answer: 3, explainNote: "[Dikoreksi] Pernyataan D yang salah (nasional < perkotaan)." },
+  "EKONOMI|15": {
+    answer: 0,
+    explainOverride:
+      "[Dikoreksi] Kualitas SDM dan inovasi menjadi motor pertumbuhan dalam Endogenous Growth Model (Romer/Lucas), bukan Solow.",
+  },
+  "EKONOMI|32": {
+    answer: 3,
+    explainOverride:
+      "[Dikoreksi] Pernyataan D salah: koefisien Gini nasional tidak selalu lebih kecil dari Gini perkotaan. Indeks ketimpangan yang benar dirujuk pada pernyataan D.",
+  },
   "EKONOMI|27": {
     answer: 4,
     optionFix: {
@@ -83,32 +93,73 @@ function trimPembahasan(pemb, qNo) {
   return pemb.trim();
 }
 
+/** Pecah pembahasan menjadi blok per opsi A–E (hanya marker A. / A →) */
+function optionBlocks(flat) {
+  const re = /(?:^|[\s●])?([A-Ea-e])(?:\.\s*→|\.| →)\s*/g;
+  const matches = [];
+  let m;
+  while ((m = re.exec(flat)) !== null) {
+    matches.push({ letter: m[1].toUpperCase(), contentStart: m.index + m[0].length, index: m.index });
+  }
+  const blocks = [];
+  for (let i = 0; i < matches.length; i++) {
+    const end = i + 1 < matches.length ? matches[i + 1].index : flat.length;
+    blocks.push({ letter: matches[i].letter, text: flat.slice(matches[i].contentStart, end) });
+  }
+  return blocks;
+}
+
+function isWrongMark(text) {
+  return text.includes("❌");
+}
+
+function isRightMark(text) {
+  return text.includes("✅") || /✔/.test(text);
+}
+
 function extractAnswer(pemb, stem = "") {
   const flat = pemb.replace(/\s+/g, " ");
 
-  // Soal "kecuali" → jawaban = opsi yang ditandai ❌ (bukan ✅)
-  if (/kecuali/i.test(stem)) {
-    const wrong = [...flat.matchAll(/([A-Ea-e])\.[^✅❌]*❌/g)];
-    for (let i = wrong.length - 1; i >= 0; i--) {
-      const snippet = flat.slice(wrong[i].index, wrong[i].index + 300);
-      if (!snippet.includes("✅")) return letterToIndex(wrong[i][1]);
-    }
+  // Kesimpulan eksplisit (paling andal) — pola di akhir teks diprioritaskan
+  const conclusionPats = [
+    /\(([A-Ea-e])\)\s*$/,
+    /kecuali\s*(?:adalah\s*)?(?:opsi\s*)?\(([A-Ea-e])\)/i,
+    /bukan termasuk kelemahan\s*\(([A-Ea-e])\)/i,
+    /Jawaban\s*benar\s*semua\s*\(([A-Ea-e])\)/i,
+    /Jawaban\s*:\s*Semua\s*Benar\s*\(([A-Ea-e])\)/i,
+    /Pilihan yang benar adalah\s+.*?\(([A-Ea-e])\)/i,
+    /Jawaban\s*:\s*\(([A-Ea-e])\)/i,
+    /Jawaban\s*\(([A-Ea-e])\)/i,
+    /jawaban(?:nya)?\s*(?:adalah|yang salah adalah)\s*\(([A-Ea-e])\)/i,
+    /Ringkasan Cepat\s*:\s*\(([A-Ea-e])\)/i,
+  ];
+  for (const pat of conclusionPats) {
+    const m = pemb.match(pat);
+    if (m) return letterToIndex(m[1]);
   }
 
-  // Prioritas: opsi yang ditandai ✅ (gabung baris karena PDF multi-line)
-  const checks = [...flat.matchAll(/([A-Ea-e])\.[^✅❌]*✅/g)];
-  if (checks.length) return letterToIndex(checks[checks.length - 1][1]);
+  const blocks = optionBlocks(flat);
 
-  const pats = [
-    /jawaban(?:nya)?\s*(?:adalah|yang salah adalah)\s*\(([A-Ea-e])\)/i,
-    /Jawaban benar semua\s*\(([A-Ea-e])\)/i,
-    /jawaban semua benar\s*\(([A-Ea-e])\)/i,
-    /benar\s*\(([A-Ea-e])\)/i,
-    /adalah\s*\(([A-Ea-e])\)/i,
-    /→\s*\(([A-Ea-e])\)/i,
-    /Ringkasan Cepat\s*:\s*\(([A-Ea-e])\)/i,
-    /\(([A-Ea-e])\)\s*$/,
-  ];
+  // Soal "kecuali" → satu-satunya opsi ❌ tanpa ✅
+  if (/kecuali/i.test(stem)) {
+    const wrongOnly = blocks.filter((b) => isWrongMark(b.text) && !isRightMark(b.text));
+    if (wrongOnly.length >= 1) return letterToIndex(wrongOnly[wrongOnly.length - 1].letter);
+  }
+
+  const checked = blocks.filter((b) => isRightMark(b.text) && !isWrongMark(b.text));
+  if (checked.length === 1) return letterToIndex(checked[0].letter);
+
+  // Banyak opsi benar → cari opsi gabungan (hanya a dan c, a dan d, semua benar)
+  if (checked.length > 1) {
+    const compound = blocks.find(
+      (b) => /hanya|semua|dan.*benar/i.test(b.text) && (isRightMark(b.text) || /benar/i.test(b.text))
+    );
+    if (compound) return letterToIndex(compound.letter);
+  }
+
+  if (checked.length) return letterToIndex(checked[checked.length - 1].letter);
+
+  const pats = [/benar\s*\(([A-Ea-e])\)/i, /adalah\s*\(([A-Ea-e])\)/i, /\(([A-Ea-e])\)\s*$/];
   for (const pat of pats) {
     const m = pemb.match(pat);
     if (m) return letterToIndex(m[1]);
@@ -118,6 +169,7 @@ function extractAnswer(pemb, stem = "") {
 }
 
 function buildExplain(pemb, corr) {
+  if (corr?.explainOverride) return corr.explainOverride;
   let explain = clean(pemb);
   if (explain.length > 1200) {
     explain = explain.slice(0, 1200).replace(/\s+\S*$/, "") + "…";

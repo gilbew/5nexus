@@ -7930,7 +7930,7 @@ const BANK_PEMBAHASAN2026 = [
       "UU No. 23 Tahun 2014",
     ],
     answer: 2,
-    explain: "[Dikoreksi] Bukan dasar hukum perencanaan adalah UU Pilpres (UU 42/2008), selaras soal 46. UU perencanaan mengatur bagaimana negara menyusun arah, tahapan, dokumen, proses, dan pengendalian pembangunan, sedangkan UU Pilpres mengatur bagaimana Presiden dan Wakil Presiden dipilih. Jadi, sama-sama penting dalam tata negara, tetapi fungsinya tidak sama. namun pada soal diatas, tidak ada UU yang spesifik membahas RPJMN. RPJMN 2025-2029 sebagaimana tertuang pada perpres no 12 tahun 2025. sehingga jawaban yang salah adalah (D)",
+    explain: "[Dikoreksi] UU Pilpres (UU 42/2008) mengatur pemilihan presiden, bukan perencanaan pembangunan. Dasar hukum perencanaan meliputi UU SPPN, UU Keuangan Negara, UU Pemda, dan Perpres RPJMN.",
     version: 2
   },
   {
@@ -8275,7 +8275,7 @@ const BANK_PEMBAHASAN2026 = [
       "Semua pernyataan benar",
     ],
     answer: 3,
-    explain: "[Dikoreksi] SDA tersedia = potensi, bukan tantangan. Dalam teori perencanaan pembangunan (Todaro), faktor penentu utama keberhasilan pembangunan (input pembangunan) meliputi: ● Sumber Daya Alam (SDA) – Natural Resources → ketersediaan lahan, air, energi, dll menentukan potensi wilayah. Jika jika terbatas menjadi kendala ● Sumber Daya Manusia (SDM) – Human Resources → kualitas tenaga kerja menentukan keberhasilan pelaksanaan ● Modal / pendanaan – Capital/Investment (E) → tanpa dana (Modal / pendanaan) → program tidak berjalan",
+    explain: "[Dikoreksi] SDA yang tersedia adalah potensi, bukan tantangan. Tantangan pembangunan meliputi sumber pendanaan (b) dan SDM (c). Jawaban: D.",
     fixedOptions: true,
     version: 2
   },
@@ -8334,7 +8334,7 @@ const BANK_PEMBAHASAN2026 = [
       "Paradigma Pembangunan Berbasis Masyarakat",
     ],
     answer: 4,
-    explain: "[Dikoreksi] Keterlibatan masyarakat → Pembangunan Berbasis Masyarakat. ● Paradigma Pembangunan Manusia → Manusia sebagai subjek pembangunan, bukan objek ❖ Fokus pada: peningkatan kapasitas (pendidikan, kesehatan); kebebasan memilih (freedom); pemberdayaan (empowerment) ● Paradigma Pembangunan Keberlanjutan → Menyeimbangkan: ekonomi; sosial; lingkungan ● Paradigma Pertumbuhan Ekonomi → Fokus pada: peningkatan output (GDP); investasi; industrialisasi ● Paradigma Kebutuhan Dasar → Memenuhi kebutuhan dasar: pangan; sandang; papan; kesehatan; pendidikan ● Paradigma Pembangunan Berbasis Masyarakat → Menekankan peran komunitas lokal dan partisipasi langsung masyarakat 2 pilihan yang paling mendekati adalah : ➔ Pembangunan Manusia → paradigma (grand theory) ➔ Community-Based Development → pendekatan/metode Karena Soal bertanya: “paradigma pembangunan”, Maka yang dicari adalah kerangka teoritis besar, bukan metode teknis. E tidak dipilih karena bukan paradigma utama, melainkan pendekatan operasional yang merupakan turunan dari paradigma pembangunan manusia. (A)",
+    explain: "[Dikoreksi] Paradigma yang menekankan keterlibatan/partisipasi masyarakat adalah Pembangunan Berbasis Masyarakat (E).",
     version: 2
   },
   {
@@ -8660,7 +8660,7 @@ const BANK_PEMBAHASAN2026 = [
       "Hanya pernyataan butir (a) dan (c) yang benar",
       "Semua pernyataan benar",
     ],
-    answer: 2,
+    answer: 3,
     explain: "lihat pembahasan soal no 20 Perencana Kompetensi Perencana Ahli Muda sesuai Permen PPN No. 12 Tahun 2020 → Untuk Ahli Muda (KKNI level 7) 🔷 A. Kompetensi Inti ● Menganalisis data pembangunan ● Menganalisis potensi dan permasalahan pembangunan ● Mengkaji model untuk menetapkan alternatif kebijakan pembangunan (ekonomi, sosial, atau spasial) ● Memadukan tujuan-tujuan realistis ke dalam model perencanaan pembangunan ● Mengaplikasikan model ekonomi, sosial, atau spasial untuk pembangunan ● Merumuskan rencana kegiatan pembangunan ● Menyusun rencana anggaran ● Melakukan pemantauan pelaksanaan pembangunan bidang ekonomi, sosial, atau spasial ● Menyusun desain evaluasi/penilaian hasil pelaksanaan kegiatan pembangunan bidang ekonomi, sosial, atau spasial 🔶 B. Kompetensi Pilihan ● Menyusun pedoman pelaksanaan analisis data geospasial kewilayahan ● Melakukan analisis sistem informasi geografis tingkat dasar ● Mengintegrasikan data spasial dengan data non spasial ● Melakukan pemrosesan awal data geospasial kewilayahan ● Menyusun desain kajian dan analisis kebijakan ● Membuat instrumen kajian dan analisis kebijakan ● Menyusun laporan kajian dan analisis kebijakan ● Mempublikasikan naskah…",
     fixedOptions: true,
     version: 1
@@ -8777,7 +8777,7 @@ const BANK_PEMBAHASAN2026 = [
       "Mewujudkan keadilan sosial bagi seluruh rakyat Indonesia",
       "a dan d benar",
     ],
-    answer: 0,
+    answer: 1,
     explain: "A. → bagian eksplisit tujuan negara, sesuai Pembukaan UUD 1945 ✔️ B. → Bagian awal “perencanaan adalah proses...” → ini bukan isi UUD 1945. Meskipun bagian akhir benar, tapi opsi ini terkontaminasi konsep lain ❌ C. → nilai dasar negara yang terkandung dalam Pembukaan D. → nilai dasar negara yang terkandung dalam Pembukaan✔️ E. → a dan d benar ✔️ Jawaban kecuali adalah opsi (B)",
     version: 1
   },
@@ -8968,7 +8968,7 @@ const BANK_PEMBAHASAN2026 = [
       "Hanya penyataan butir (a) dan (c) yang benar",
       "Semua pernyataan benar",
     ],
-    answer: 1,
+    answer: 3,
     explain: "● pada pasal 2 ayat 4 UU 25/2014 tentang SPPN : ● Sistem Perencanaan Pembangunan Nasional bertujuan untuk: 1) Mendukung koordinasi antarpelaku pembangunan; 2) Menjamin terciptanya integrasi, sinkronisasi, dan sinergi baik antardaerah, antarruang, antarwaktu, antarfungsi pemerintah maupun antara Pusat dan Daerah; 3) Menjamin keterkaitan dan konsistensi antara perencanaan, penganggaran, pelaksanaan, dan pengawasan; 4) Mengoptimalkan partisipasi masyarakat; dan 5) Menjamin tercapainya penggunaan sumber daya secara efisien, efektif, berkeadilan, dan berkelanjutan. ● dari pilihan diatas : A. → Pasal 2 ayat (4) huruf c, “menjamin keterkaitan dan konsistensi antara perencanaan, penganggaran, pelaksanaan, dan pengawasan.” , masih tepat.✅ B. → Dalam UU tertulis: “menjamin tercapainya penggunaan sumber daya secara efisien, efektif, berkeadilan, dan berkelanjutan.”. Artinya yang diatur bukan hanya anggaran, tetapi seluruh sumber daya pembangunan. kalimat “mengatur” lebih bersifat teknis, lebih tepat kalau di UU Keuangan negara / Pengalolaan APBN⚠️ C. → sesuai langsung dengan Pasal 2 ayat (4) huruf a✅ ● Jawaban (D)",
     fixedOptions: true,
     version: 1
@@ -8988,7 +8988,7 @@ const BANK_PEMBAHASAN2026 = [
       "Hanya pernyataan butir (a) dan (c) yang benar",
       "Semua pernyataan benar",
     ],
-    answer: 0,
+    answer: 1,
     explain: "● Dalam materi perencanaan pembangunan juga dijelaskan bahwa tujuan pembangunan meliputi: ○ peningkatan standar hidup, ○ tumbuhnya rasa percaya diri (self esteem), ○ dan peningkatan kebebasan (freedom). ● Teori pembangunan modern dipengaruhi oleh Amartya Sen. Menurut Amartya Sen: ○ pembangunan adalah proses memperluas kebebasan manusia (expansion of human freedom). ● Artinya pembangunan berhasil bila masyarakat: ○ memiliki kesempatan, ○ memiliki akses, ○ dan bebas menentukan pilihan hidupnya. ● Analisis Opsi : A. → Kebutuhan dasar memang penting, tetapi ketergantungan impor menunjukkan lemahnya kemandirian pembangunan.⚠️ B. → berkaitan dengan freedom, sesuai dengan teori pembangunan manusia ✅ C. → Data merupakan alat pendukung pembangunan, bukan ukuran keberhasilan pembangunan itu sendiri.❌ Jawaban: (B)",
     fixedOptions: true,
     version: 1
@@ -9315,7 +9315,7 @@ const BANK_PEMBAHASAN2026 = [
       "Hanya (a) dan (b) yang benar",
       "Semua benar",
     ],
-    answer: 2,
+    answer: 4,
     explain: "A. → Data statistik merupakan sumber utama dalam perencanaan pembangunan. Ex: data BPS ✅ B. → Survei lapangan termasuk: data primer. Digunakan untuk: memperoleh kondisi aktual, validasi data, mengetahui kebutuhan masyarakat. Ex: survei kepuasan masyarakat ✅ C. → Kajian akademik juga menjadi sumber penting. Contoh: policy paper. Digunakan untuk: memperkuat dasar kebijakan, memberikan rekomendasi ilmiah, analisis strategis. ✅ ● Jawaban : Semua Benar (E)",
     fixedOptions: true,
     version: 1
@@ -9335,7 +9335,7 @@ const BANK_PEMBAHASAN2026 = [
       "Semua benar",
       "Tidak ada yang benar",
     ],
-    answer: 2,
+    answer: 3,
     explain: "● Dalam Sistem Perencanaan Pembangunan Nasional (SPPN): dokumen pusat dan daerah harus: selaras,terintegrasi, berjenjang. ● Tujuannya untuk menghindari tumpang tindih,meningkatkan efektivitas pembangunan dan menjaga prioritas nasional tetap tercapai. ● Pembahasan Pilihan : A. → Jika daerah tidak mengikuti arah pembangunan nasional, maka bisa terjadi: target berbeda, prioritas tidak sinkron, kebijakan pusat dan daerah bertabrakan. ✅ ex: pusat fokus ketahanan pangan, daerah justru fokus sektor lain tanpa dukungan nasional. akibatnya terjadi policy gap/kesenjangan kebijakan. B. → Tanpa sinkronisasi: pusat dan daerah bisa membuat program serupa, kegiatan tumpang tindih, sasaran program sama. ✅ ex: kementerian membangun program pelatihan, daerah membuat program identik, output menjadi tidak efisien. C. → Karena: program tumpang tindih, prioritas tidak terintegrasi,penggunaan anggaran tidak optimal. Akibatnya: belanja pembangunan tidak efektif ✅ ● Jawaban : Semua Benar (D)",
     version: 1
   },
@@ -9738,7 +9738,7 @@ const BANK_PEMBAHASAN2026 = [
       "Path grow model",
     ],
     answer: 0,
-    explain: "[Dikoreksi] Kualitas SDM → Endogenous growth model. ● Endogenous growth model → Model pertumbuhan yang menjelaskan bahwa pertumbuhan ekonomi ditentukan oleh faktor internal sistem ekonomi, terutama inovasi, pendidikan (human capital), dan riset (R&D). ○ Negara meningkatkan anggaran pendidikan dan riset → muncul inovasi teknologi → produktivitas naik ● Exogenous growth model → Model pertumbuhan yang menganggap teknologi sebagai faktor eksternal (given) yang tidak dijelaskan dalam model. ○ Negara tumbuh karena ada kemajuan teknologi global (misalnya AI, internet) yang “datang dari luar” model ● Solow model → Model pertumbuhan ekonomi yang menyatakan bahwa output/produktivitas ditentukan oleh: Modal (capital/K); Tenaga kerja (labor/L); Teknologi (A) ○ Negara meningkatkan investasi (mesin, infrastruktur) → produktivitas naik ● General model → Istilah umum yang tidak merujuk pada teori pertumbuhan ekonomi tertentu. ● Path grow model → Bukan istilah baku dalam teori pertumbuhan ekonomi utama. (C)",
+    explain: "[Dikoreksi] Kualitas SDM dan inovasi menjadi motor pertumbuhan dalam Endogenous Growth Model (Romer/Lucas), bukan Solow.",
     version: 2
   },
   {
@@ -9927,7 +9927,7 @@ const BANK_PEMBAHASAN2026 = [
       "Pelatihan gratis untuk guru dan dosen oleh donor yang bekerja di Indonesia",
       "a dan d benar",
     ],
-    answer: 3,
+    answer: 4,
     explain: "Lihat Pembahasan soal Ekonomi no 16 ❖ Bedah Opsi pilihan A. → warga sekitar ikut sehat tanpa bayar taman; Manfaat lingkungan & sosial ✅ B. → Ini mekanisme pasar normal; Ada transaksi langsung (penjual–pembeli)❌ C. → Ini efek ekonomi langsung (demand meningkat) ❌ D. → Penerima manfaat tidak membayar; Dampak lanjut: kualitas pendidikan naik. efek menyebar ke masyarakat ✅ ● Sering tertukar antara: eksternalitas vs multiplier effect / efek ekonomi biasa ● Cara bedakan: ○ Kalau ada transaksi langsung → bukan eksternalitas ○ Kalau pihak lain dapat manfaat tanpa bayar → eksternalitas Pilihan yang benar adalah A dan D (E)",
     version: 1
   },
@@ -9946,7 +9946,7 @@ const BANK_PEMBAHASAN2026 = [
       "Belum menginternalisasi dampak negatif penurunan kualitas Iingkungan",
       "Belum memperhitungkan manfaat dari waktu luang (leisure)",
     ],
-    answer: 4,
+    answer: 1,
     explain: "Lihat Pembahasan soal ekonomi no 14. kecuali (B) ❖ Bedah Opsi pilihan A. → PDB memang tidak sempurna dalam menangkap kesejahteraan konsumsi, Fokusnya produksi, bukan seluruh aspek konsumsi. PDB = C + I + G + (X – M) ; C = konsumsi ⚠️ B. → PDB tidak menghitung produksi luar negeri❌ C. → aktivitas non-pasar tidak dihitung ✅ D. → PDB bisa naik walau lingkungan rusak ✅ E. → kesejahteraan tidak hanya soal produksi, waktu luang luput dalam perhitungan ✅ Opsi b salah secara konsep PDB, sehingga bukan termasuk kelemahan (B)",
     fixedOptions: true,
     version: 1
@@ -10023,7 +10023,7 @@ const BANK_PEMBAHASAN2026 = [
       "Tidak menggambarkan dampak perubahan teknologi terhadap jumlah produksi barang dan jasa",
       "Tidak menggambarkan substitusi efek dari kenaikan harga sebuah barang terhadap permintaan parang lain",
     ],
-    answer: 4,
+    answer: 2,
     explain: "A. → PDB hanya angka agregat → tidak menunjukkan pergeseran sektor (ex: pertanian → industri) ✅ B. → PDB tidak menangkap kerusakan lingkungan atau dampak iklim secara langsung ✅ C. → PDB mengukur produksi berdasarkan wilayah (domestik), tidak peduli kewarganegaraan produsen.. ini bukan kelemahan ❌ D. → PDB sering tidak menangkap peningkatan kualitas akibat teknologi (quality bias). ✅ E. → Dalam PDB riil (tahun dasar), dianggap orang tidak berubah pola belanjanya, seolah-olah masih beli barang yang sama seperti dulu ✅ Jawaban (C)",
     version: 1
   },
@@ -10062,7 +10062,7 @@ const BANK_PEMBAHASAN2026 = [
       "Ketimpangan di perdesaan lebih kecil dari ketimpangan di perkotaan",
     ],
     answer: 3,
-    explain: "[Dikoreksi] Pernyataan D yang salah (nasional < perkotaan). A. → perkotaan = 0,392 > perdesaan = 0,324 ✅ B. → perdesaan = 0,324 < Nasional = 0,382 ✅ C. → perkotaan = 0,392 > Nasional = 0,382 ✅ D. → Nasional = 0,382 < perkotaan = 0,392 ❌ E. → perdesaan = 0,324 < perkotaan = 0,392 ✅ (C)",
+    explain: "[Dikoreksi] Pernyataan D salah: koefisien Gini nasional tidak selalu lebih kecil dari Gini perkotaan. Indeks ketimpangan yang benar dirujuk pada pernyataan D.",
     version: 2
   },
   {
@@ -10845,7 +10845,7 @@ const BANK_PEMBAHASAN2026 = [
       "Perizinan yang kompleks dan lama",
       "Perencanaan wilayah dengan memisahkan wilayah permukiman dan industri",
     ],
-    answer: 0,
+    answer: 3,
     explain: "Konsep kota hijau + industri bersih sejalan dengan prinsip pembangunan berkelanjutan, yaitu: ● efisiensi sumber daya ● kualitas lingkungan ● kesejahteraan sosial ● kemudahan investasi ramah lingkungan Bedah Opsi Jawaban : A. → ruang terbuka hijau, kualitas udara, sosial ✔ B. → transportasi rendah emisi ✔ C. → percepatan industri hijau ✔ D. → Menghambat investasi,Tidak efisien Bertentangan dengan prinsip (good governance)❌ E. → mengurangi polusi ke area hunian (zoning) ✔ (D)",
     version: 1
   },
@@ -10902,7 +10902,7 @@ const BANK_PEMBAHASAN2026 = [
       "Mengurangi kebutuhan infrastruktur",
       "Memperluas pasar internasional",
     ],
-    answer: 0,
+    answer: 1,
     explain: "A. Menurunkan biaya transportasi → Ini memang salah satu manfaat nyata dari kedekatan industri hulu–hilir. tapi jika dilihat teori : aglomerasi industri, linkage industri, complementarity → tujuan utamanya bukan hanya transportasi, tetapi keseluruhan efisiensi rantai produksi.⚠️ B. Meningkatkan efisiensi distribusi input dan output → mencakup seluruh proses seperti ● bahan baku lebih mudah diperoleh, ● distribusi produk lebih cepat, ● koordinasi produksi lebih efisien, ● biaya logistik lebih rendah, ● rantai pasok lebih kuat. ✅ C. Mengurangi persaingan industri → Kedekatan lokasi tidak otomatis mengurangi persaingan.❌ D. Mengurangi kebutuhan infrastruktur → penggunaan infrastruktur menjadi lebih efisien, bukan kebutuhannya berkurang.❌ E. Memperluas pasar internasional → Bukan perdagangan internasional. bisa jadi dampak tidak langsung❌ Jawaban : (B)",
     version: 1
   },
