@@ -39,6 +39,14 @@ const CORRECTIONS = {
   },
   "EKONOMI|15": { answer: 0, explainNote: "[Dikoreksi] Kualitas SDM → Endogenous growth model." },
   "EKONOMI|32": { answer: 3, explainNote: "[Dikoreksi] Pernyataan D yang salah (nasional < perkotaan)." },
+  "EKONOMI|27": {
+    answer: 4,
+    optionFix: {
+      E: "Pemberlakuan batas pencemaran kepada pihak yang menghasilkan eksternalitas negatif",
+    },
+    explainNote:
+      "[Dikoreksi] Internalisasi eksternalitas negatif = regulasi/batas emisi kepada pelaku pencemar, bukan kompensasi ke pelaku.",
+  },
   "SPASIAL|14": { answer: 2, explainNote: "[Ditambahkan] Kesesuaian lahan (suitability)." },
 };
 
@@ -47,9 +55,7 @@ const SKIP = new Set(["SOSIAL|25", "SPASIAL|21", "SPASIAL|8", "PERENCANAAN|81", 
 const MANUAL_ANSWERS = {
   "PERENCANAAN|70": 1,
   "EKONOMI|2": 1,
-  "EKONOMI|19": 2,
   "EKONOMI|24": 1,
-  "EKONOMI|27": 1,
 };
 
 function clean(s) {
@@ -60,9 +66,43 @@ function letterToIndex(l) {
   return l.toUpperCase().charCodeAt(0) - 65;
 }
 
-function extractAnswer(pemb) {
+/** Potong pembahasan sebelum teks soal berikutnya bocor */
+function trimPembahasan(pemb, qNo) {
+  let cut = -1;
+  for (let n = qNo + 1; n <= qNo + 5; n++) {
+    const patterns = [
+      new RegExp(`\\n\\s*${n}\\.\\s*[\\u200b]?`, "m"),
+      new RegExp(`\\s${n}\\.\\s*[\\u200b]?[A-Za-z]`, "m"),
+    ];
+    for (const re of patterns) {
+      const idx = pemb.search(re);
+      if (idx !== -1 && (cut === -1 || idx < cut)) cut = idx;
+    }
+  }
+  if (cut !== -1) pemb = pemb.slice(0, cut);
+  return pemb.trim();
+}
+
+function extractAnswer(pemb, stem = "") {
+  const flat = pemb.replace(/\s+/g, " ");
+
+  // Soal "kecuali" → jawaban = opsi yang ditandai ❌ (bukan ✅)
+  if (/kecuali/i.test(stem)) {
+    const wrong = [...flat.matchAll(/([A-Ea-e])\.[^✅❌]*❌/g)];
+    for (let i = wrong.length - 1; i >= 0; i--) {
+      const snippet = flat.slice(wrong[i].index, wrong[i].index + 300);
+      if (!snippet.includes("✅")) return letterToIndex(wrong[i][1]);
+    }
+  }
+
+  // Prioritas: opsi yang ditandai ✅ (gabung baris karena PDF multi-line)
+  const checks = [...flat.matchAll(/([A-Ea-e])\.[^✅❌]*✅/g)];
+  if (checks.length) return letterToIndex(checks[checks.length - 1][1]);
+
   const pats = [
     /jawaban(?:nya)?\s*(?:adalah|yang salah adalah)\s*\(([A-Ea-e])\)/i,
+    /Jawaban benar semua\s*\(([A-Ea-e])\)/i,
+    /jawaban semua benar\s*\(([A-Ea-e])\)/i,
     /benar\s*\(([A-Ea-e])\)/i,
     /adalah\s*\(([A-Ea-e])\)/i,
     /→\s*\(([A-Ea-e])\)/i,
@@ -75,6 +115,15 @@ function extractAnswer(pemb) {
   }
   const all = [...pemb.matchAll(/\(([A-Ea-e])\)/g)];
   return all.length ? letterToIndex(all[all.length - 1][1]) : -1;
+}
+
+function buildExplain(pemb, corr) {
+  let explain = clean(pemb);
+  if (explain.length > 1200) {
+    explain = explain.slice(0, 1200).replace(/\s+\S*$/, "") + "…";
+  }
+  if (corr?.explainNote) explain = corr.explainNote + " " + explain;
+  return explain;
 }
 
 function parseQuestionBlock(qtext) {
@@ -137,28 +186,25 @@ function parseAll(text) {
   for (let i = 1; i < chunks.length; i++) {
     updateSectionFromText(chunks[i - 1]);
 
-    let pemb = chunks[i];
     const before = chunks[i - 1];
-
-    const cut = pemb.search(/\n\d+\.\s/);
-    if (cut !== -1) pemb = pemb.slice(0, cut);
-
     const q = parseQuestionBlock(before);
     if (!q) continue;
+
+    let pemb = trimPembahasan(chunks[i], q.no);
 
     const key = `${section}|${q.no}`;
     if (SKIP.has(key)) continue;
 
-    let answer = MANUAL_ANSWERS[key] ?? extractAnswer(pemb);
+    const corr = CORRECTIONS[key];
+    let answer = MANUAL_ANSWERS[key] ?? extractAnswer(pemb, q.stem);
     if (answer < 0) {
       if (key === "SPASIAL|14") answer = 2;
       else continue;
     }
 
-    let explain = clean(pemb).slice(0, 1500);
+    let explain = buildExplain(pemb, null);
     const optArr = [...q.options];
 
-    const corr = CORRECTIONS[key];
     if (corr) {
       if (corr.answer != null) answer = corr.answer;
       if (corr.optionFix) {
@@ -167,7 +213,7 @@ function parseAll(text) {
           if (idx < optArr.length) optArr[idx] = v;
         }
       }
-      if (corr.explainNote) explain = corr.explainNote + " " + explain;
+      explain = buildExplain(pemb, corr);
     }
 
     if (answer >= optArr.length) continue;
@@ -184,7 +230,7 @@ function parseAll(text) {
       answer,
       explain,
       fixedOptions: hasCompoundOptionRefs(optArr),
-      version: 1,
+      version: corr ? 2 : 1,
     });
   }
   return results;
