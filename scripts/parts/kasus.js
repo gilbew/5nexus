@@ -119,15 +119,16 @@ const BANK_KASUS = [
     level: "kasus",
     stem: "Kota E merencanakan RTH publik 15% menurut UU 26/2007, tetapi realisasi di peta hanya 9%. Sebagian lahan RTH direncanakan alih fungsi menjadi pasar modern. Komunitas menuntut penegakan RTH minimal 20% menurut Perda kota. Perencana diminta harmonisasi norma. Dalam rapat, juga dibahas insentif developer untuk menyediakan RTH di dalam kavling. Manakah penafsiran yang benar terkait besaran RTH?",
     options: [
-      "Ketentuan nasional mensyaratkan ruang terbuka hijau minimal 20% luas kota, dijabarkan lokasinya secara bertahap",
-      "Angka lima belas persen sudah cukup karena batas dua puluh persen bersifat rekomendasi semata",
-      "Ketentuan daerah dua puluh persen menggantikan aturan nasional sehingga capaian sembilan persen dapat diterima",
+      "Ketentuan nasional mensyaratkan RTH publik minimal 20% luas kota (dari total RTH minimal 30%), dijabarkan lokasinya secara bertahap",
+      "Angka RTH publik lima belas persen sudah cukup karena batas dua puluh persen bersifat rekomendasi semata",
+      "Target RTH publik daerah dua puluh persen menggantikan aturan nasional sehingga capaian sembilan persen dapat diterima",
       "Kewajiban penyediaan ruang terbuka hijau dapat diganti dengan sumbangan dana kepada pemerintah kota",
       "Ruang terbuka hijau diwajibkan di kawasan permukiman baru, sedangkan pusat kota lama dikecualikan"
     ],
     answer: 0,
-    explain: "UU 26/2007: minimal 20% RTH dari luas kota. Perda tidak boleh mengurangi standar minimum; rencana alih fungsi RTH harus melalui perubahan tata ruang.",
-    version: 3
+    // UU 26/2007: RTH kota min. 30% = publik 20% + privat 10%
+    explain: "UU 26/2007: RTH kota minimal 30% (publik 20% + privat 10%). Target RTH publik 15% di bawah standar; Perda tidak boleh mengurangi minimum nasional, dan alih fungsi RTH melalui perubahan tata ruang.",
+    version: 4
   },
   {
     id: "K-T09",
@@ -453,7 +454,7 @@ const BANK_KASUS = [
     id: "K-P01",
     cluster: "spasial",
     level: "kasus",
-    stem: "Kabupaten Z meninjau ruang terbuka hijau: peta menunjukkan 17% RTH, tetapi lapangan hanya 11% yang benar-benar terawat. Sebagian area yang ditandai RTH pada peta zonasi justru berstatus sengketa lahan. Ketentuan nasional mensyaratkan minimal 20% luas kota untuk RTH. Perda daerah menetapkan insentif bagi pengembang untuk menyediakan 10% area kavling sebagai ruang terbuka. Perencana diminta merumuskan strategi pencapaian RTH yang substantif. Strategi manakah yang paling tepat diterapkan?",
+    stem: "Kabupaten Z meninjau ruang terbuka hijau: peta menunjukkan 17% RTH, tetapi lapangan hanya 11% yang benar-benar terawat. Sebagian area yang ditandai RTH pada peta zonasi justru berstatus sengketa lahan. Ketentuan nasional mensyaratkan RTH publik minimal 20% (dari total RTH kota minimal 30%). Perda daerah menetapkan insentif bagi pengembang untuk menyediakan 10% area kavling sebagai ruang terbuka. Perencana diminta merumuskan strategi pencapaian RTH yang substantif. Strategi manakah yang paling tepat diterapkan?",
     options: [
       "Melakukan inventarisasi RTH riil, penegasan status lahan, penertiban area sengketa, serta penambahan RTH melalui rencana detail dan kavling pengembang",
       "Cukup memperbarui peta zonasi tanpa disertai penataan kondisi sebenarnya di lapangan",
@@ -462,8 +463,8 @@ const BANK_KASUS = [
       "Menunda seluruh upaya pencapaian target RTH hingga akhir periode rencana pembangunan daerah"
     ],
     answer: 0,
-    explain: "RTH substantif ≠ zoning semata; UU 26 minimal 20% luas kota; kombinasi penataan, penegakan, dan penambahan RTH fisik.",
-    version: 2
+    explain: "RTH substantif ≠ zoning semata; UU 26: total RTH kota min. 30% (publik 20% + privat 10%); kombinasi penataan, penegakan, dan penambahan RTH fisik.",
+    version: 3
   },
   {
     id: "K-P02",

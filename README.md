@@ -24,6 +24,8 @@ Sumber per bagian: `scripts/parts/*.js`. Audit kualitas: `node scripts/audit-qua
 
 Lihat `docs/DEPLOY.md` (Vercel / Netlify / GitHub Pages).
 
+Audit kunci jawaban: `docs/ANSWER-REVIEW.md`.
+
 ## Struktur
 
 ```

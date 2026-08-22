@@ -915,9 +915,10 @@ const BANK_GAP = [
       "Harga pasar digambarkan sama dengan nol setelah harga dasar diterapkan.",
       "Tidak ada dampak pada insentif produksi meskipun harga dasar di atas keseimbangan.",
     ],
-    answer: 2,
+    // Price floor di atas keseimbangan → surplus (bukan lonjakan permintaan tanpa batas)
+    answer: 0,
     explain: "Price floor di atas keseimbangan dapat menciptakan surplus karena produsen ingin menjual lebih banyak daripada yang diminta pasar.",
-    version: 1
+    version: 2
   },
   {
     id: "G-E29",

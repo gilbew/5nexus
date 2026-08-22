@@ -47,9 +47,10 @@ const BANK_PRETEST = [
       "Kegiatan analisis wilayah secara umum",
       "Pemahaman karakteristik wilayah tanpa rencana",
     ],
-    answer: 0,
-    explain: "Tahapan perencanaan tata ruang: perumusan rencana (bukan hanya pemetaan sosial).",
-    version: 2
+    // Statistik, peta, citra, SIG = tahap analisis wilayah; perumusan rencana menyusul setelahnya
+    answer: 3,
+    explain: "Prosedur statistik, interpretasi data, analisis peta/citra, dan SIG termasuk kegiatan analisis wilayah; perumusan rencana menyusun struktur/pola setelah analisis.",
+    version: 3
   },
   {
     id: "PT-04",
@@ -655,13 +656,14 @@ const BANK_PRETEST = [
     options: [
       "Mengarah ke perubahan",
       "Memilih alternatif",
-      "Pernyataan pilihan tindakan",
+      "Hanya dokumentasi tanpa pilihan tindakan",
       "Mengarah ke pencapaian tujuan",
       "Bertumpu pada rasionalitas",
     ],
+    // Opsi C lama ("pernyataan pilihan tindakan") justru ciri perencanaan; diganti pengecualian yang jelas
     answer: 2,
-    explain: "Karakteristik perencanaan: memilih alternatif (bukan sekadar 'mengarah perubahan' sebagai pengecualian).",
-    version: 1
+    explain: "Perencanaan memilih alternatif dan menyatakan tindakan yang mengarah pada tujuan; sekadar dokumentasi tanpa pilihan tindakan bukan karakteristik perencanaan.",
+    version: 2
   },
   {
     id: "PT-40",
@@ -1343,8 +1345,8 @@ const BANK_PRETEST_VARIAN = [
       "Mengarah pada pencapaian tujuan",
     ],
     answer: 3,
-    explain: "Karakteristik perencanaan: memilih alternatif (bukan sekadar 'mengarah perubahan' sebagai pengecualian).",
-    version: 2
+    explain: "Perencanaan memilih alternatif dan menyatakan tindakan yang mengarah pada tujuan; sekadar dokumentasi tanpa pilihan tindakan bukan karakteristik perencanaan.",
+    version: 3
   },
   {
     id: "PT-V40",
