@@ -2,7 +2,7 @@
 
 Aplikasi latihan soal pilihan ganda (statis: `index.html` + `soal-bank.js`).
 
-## Bank soal (470)
+## Bank soal (633)
 
 | Sumber | Jumlah |
 |--------|--------|
@@ -11,10 +11,12 @@ Aplikasi latihan soal pilihan ganda (statis: `index.html` + `soal-bank.js`).
 | Pre Test + Varian | 40 + 40 |
 | Simulasi | 40 |
 | Gap 1 / 2 / 3 | 100 + 100 + 50 |
+| Pembahasan 2026 | 163 |
 
 ## Regenerasi bank
 
 ```bash
+node scripts/build-pembahasan2026.mjs   # dari PDF Pembahasan 2026
 node scripts/merge-bank.mjs
 ```
 

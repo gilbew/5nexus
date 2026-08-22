@@ -560,9 +560,13 @@
           <div class="stat"><span class="stat-num" id="stat-gap3">—</span><span class="stat-label">Gap 3</span></div>
           <div class="stat"><span class="stat-num" id="stat-total">—</span><span class="stat-label">Total</span></div>
         </div>
+        <p class="stats-group-label" style="margin-top:0.875rem">Pembahasan 2026 (dikoreksi)</p>
+        <div class="stats">
+          <div class="stat"><span class="stat-num" id="stat-pembahasan2026">—</span><span class="stat-label">Pembahasan</span></div>
+        </div>
       </div>
 
-      <p class="note">470 soal · filter cluster/level/sumber · mode Latihan (bahas setelah jawab) atau Ujian (timer + navigasi).</p>
+      <p class="note">633 soal · filter cluster/level/sumber · mode Latihan (bahas setelah jawab) atau Ujian (timer + navigasi).</p>
 
       <div class="card form-grid">
         <div>
@@ -610,12 +614,13 @@
             <option value="gap">Gap 1 (pembekalan)</option>
             <option value="gap2">Gap 2 (pembekalan)</option>
             <option value="gap3">Gap 3 (pembekalan)</option>
+            <option value="pembahasan2026">Pembahasan 2026</option>
           </select>
         </label>
 
         <label class="field">
           Jumlah soal per sesi
-          <input type="number" id="session-count" min="1" max="470" value="25">
+          <input type="number" id="session-count" min="1" max="633" value="25">
         </label>
 
         <label class="check-row">
@@ -717,7 +722,8 @@
         typeof BANK_SIMULASI !== "undefined" &&
         typeof BANK_GAP !== "undefined" &&
         typeof BANK_GAP2 !== "undefined" &&
-        typeof BANK_GAP3 !== "undefined";
+        typeof BANK_GAP3 !== "undefined" &&
+        typeof BANK_PEMBAHASAN2026 !== "undefined";
 
       if (!bankOk) {
         var errEl = document.getElementById("bank-error");
@@ -737,7 +743,8 @@
         BANK_SIMULASI.map(function (q) { return Object.assign({}, q, { source: "simulasi" }); }),
         BANK_GAP.map(function (q) { return Object.assign({}, q, { source: q.source || "gap" }); }),
         BANK_GAP2.map(function (q) { return Object.assign({}, q, { source: q.source || "gap2" }); }),
-        BANK_GAP3.map(function (q) { return Object.assign({}, q, { source: q.source || "gap3" }); })
+        BANK_GAP3.map(function (q) { return Object.assign({}, q, { source: q.source || "gap3" }); }),
+        BANK_PEMBAHASAN2026.map(function (q) { return Object.assign({}, q, { source: q.source || "pembahasan2026" }); })
       );
 
       var $ = function (id) { return document.getElementById(id); };
@@ -772,7 +779,7 @@
       }
 
       function sourceLabel(src) {
-        var map = { v1: "v1", kasus: "Kasus", pretest: "Pre Test", "pretest-varian": "Pre Test Varian", simulasi: "Simulasi", gap: "Gap 1", gap2: "Gap 2", gap3: "Gap 3" };
+        var map = { v1: "v1", kasus: "Kasus", pretest: "Pre Test", "pretest-varian": "Pre Test Varian", simulasi: "Simulasi", gap: "Gap 1", gap2: "Gap 2", gap3: "Gap 3", pembahasan2026: "Pembahasan 2026" };
         return map[src] || src;
       }
 
@@ -809,6 +816,7 @@
         $("stat-gap").textContent = typeof BANK_GAP !== "undefined" ? BANK_GAP.length : 0;
         $("stat-gap2").textContent = typeof BANK_GAP2 !== "undefined" ? BANK_GAP2.length : 0;
         $("stat-gap3").textContent = typeof BANK_GAP3 !== "undefined" ? BANK_GAP3.length : 0;
+        $("stat-pembahasan2026").textContent = typeof BANK_PEMBAHASAN2026 !== "undefined" ? BANK_PEMBAHASAN2026.length : 0;
         $("stat-total").textContent = BANK_ALL.length;
       }
 

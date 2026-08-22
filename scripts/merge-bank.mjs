@@ -38,6 +38,8 @@ function serializeArray(name, bank) {
     o += `    cluster: ${esc(q.cluster)},\n`;
     o += `    level: ${esc(q.level)},\n`;
     if (q.source) o += `    source: ${esc(q.source)},\n`;
+    if (q.section) o += `    section: ${esc(q.section)},\n`;
+    if (q.sectionNo != null) o += `    sectionNo: ${q.sectionNo},\n`;
     o += `    stem: ${esc(q.stem)},\n`;
     o += "    options: [\n";
     q.options.forEach((opt) => (o += `      ${esc(opt)},\n`));
@@ -59,6 +61,7 @@ const sim = loadPart("simulasi.js", ["BANK_SIMULASI"]);
 const gap = loadPart("gap100.js", ["BANK_GAP"]);
 const gap2 = loadPart("gap200.js", ["BANK_GAP2"]);
 const gap3 = loadPart("gap300.js", ["BANK_GAP3"]);
+const pb26 = loadPart("pembahasan2026.js", ["BANK_PEMBAHASAN2026"]);
 
 const total =
   v1.BANK.length +
@@ -68,7 +71,8 @@ const total =
   sim.BANK_SIMULASI.length +
   gap.BANK_GAP.length +
   gap2.BANK_GAP2.length +
-  gap3.BANK_GAP3.length;
+  gap3.BANK_GAP3.length +
+  pb26.BANK_PEMBAHASAN2026.length;
 
 let file =
   "/** Bank soal UKOM — " + total + " butir. Regenerate parts lalu: node scripts/merge-bank.mjs */\n";
@@ -87,6 +91,8 @@ file += "\n";
 file += serializeArray("BANK_GAP2", gap2.BANK_GAP2);
 file += "\n";
 file += serializeArray("BANK_GAP3", gap3.BANK_GAP3);
+file += "\n";
+file += serializeArray("BANK_PEMBAHASAN2026", pb26.BANK_PEMBAHASAN2026);
 
 const outPath = path.join(ROOT, "soal-bank.js");
 fs.writeFileSync(outPath, file, "utf8");
@@ -100,5 +106,6 @@ console.log(
   "| gap:", gap.BANK_GAP.length,
   "| gap2:", gap2.BANK_GAP2.length,
   "| gap3:", gap3.BANK_GAP3.length,
+  "| pembahasan2026:", pb26.BANK_PEMBAHASAN2026.length,
   "| total:", total
 );
