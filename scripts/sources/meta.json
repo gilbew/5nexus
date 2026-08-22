@@ -1,0 +1,27 @@
+{
+  "materi-teknis-dida": {
+    "pages": 59,
+    "chars": 34048,
+    "path": "/workspace/scripts/sources/materi-teknis-dida.txt"
+  },
+  "materi-sosial-nunuk": {
+    "pages": 40,
+    "chars": 14405,
+    "path": "/workspace/scripts/sources/materi-sosial-nunuk.txt"
+  },
+  "materi-fpp-hera": {
+    "pages": 44,
+    "chars": 25151,
+    "path": "/workspace/scripts/sources/materi-fpp-hera.txt"
+  },
+  "materi-kisi-suryanto": {
+    "pages": 179,
+    "chars": 57705,
+    "path": "/workspace/scripts/sources/materi-kisi-suryanto.txt"
+  },
+  "pembahasan-2026": {
+    "pages": 61,
+    "chars": 186110,
+    "path": "/workspace/scripts/sources/pembahasan-2026.txt"
+  }
+}

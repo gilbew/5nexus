@@ -58,6 +58,11 @@ const CORRECTIONS = {
       "[Dikoreksi] Internalisasi eksternalitas negatif = regulasi/batas emisi kepada pelaku pencemar, bukan kompensasi ke pelaku.",
   },
   "SPASIAL|14": { answer: 2, explainNote: "[Ditambahkan] Kesesuaian lahan (suitability)." },
+  "PERENCANAAN|69": {
+    answer: 1,
+    explainOverride:
+      "[Dikoreksi] Menurut UU 23/2014 Pasal 12, urusan konkuren mencakup pekerjaan umum (≈infrastruktur) dan komunikasi & informatika. 'Pengelolaan pelayanan publik' bukan nama urusan resmi. Jawaban terkuat: B.",
+  },
 };
 
 const SKIP = new Set(["SOSIAL|25", "SPASIAL|21", "SPASIAL|8", "PERENCANAAN|81", "PERENCANAAN|82"]);
@@ -129,6 +134,7 @@ function extractAnswer(pemb, stem = "") {
     /Jawaban\s*:\s*Semua\s*Benar\s*\(([A-Ea-e])\)/i,
     /Pilihan yang benar adalah\s+.*?\(([A-Ea-e])\)/i,
     /Jawaban\s*:\s*\(([A-Ea-e])\)/i,
+    /Jawaban\s*:\s*([A-Ea-e])(?:\s*$|\s*\n)/im,
     /Jawaban\s*\(([A-Ea-e])\)/i,
     /jawaban(?:nya)?\s*(?:adalah|yang salah adalah)\s*\(([A-Ea-e])\)/i,
     /Ringkasan Cepat\s*:\s*\(([A-Ea-e])\)/i,

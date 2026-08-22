@@ -1322,10 +1322,10 @@ const BANK_PEMBAHASAN2026 = [
       "Hanya butir (a) dan (c) yang benar",
       "Semua pernyataan benar",
     ],
-    answer: 4,
-    explain: "Jawaban : Semua Benar (E)",
+    answer: 1,
+    explain: "[Dikoreksi] Menurut UU 23/2014 Pasal 12, urusan konkuren mencakup pekerjaan umum (≈infrastruktur) dan komunikasi & informatika. 'Pengelolaan pelayanan publik' bukan nama urusan resmi. Jawaban terkuat: B.",
     fixedOptions: true,
-    version: 1
+    version: 2
   },
   {
     id: "pb26-per-70",
@@ -2186,6 +2186,26 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 2,
     explain: "● DAK adalah: dana dari APBN kepada daerah tertentu untuk mendanai kegiatan khusus sesuai prioritas nasional. ● DAK digunakan untuk: pelayanan dasar, infrastruktur, ekonomi, konektivitas, sarana publik.. Karena itu bidang DAK biasanya terkait: Pelayanan Dasar + Infrastruktur + Ekonomi + Lingkungan ● Dasar hukumnya terdapat dalam: UU Nomor 1 Tahun 2022 tentang Hubungan Keuangan antara Pemerintah Pusat dan Pemerintahan Daerah ● Bidang hukum bukan merupakan bidang utama dalam skema pendanaan DAK. (C)",
+    version: 1
+  },
+  {
+    id: "pb26-eko-35",
+    cluster: "ekonomi",
+    level: "singkat",
+    source: "pembahasan2026",
+    section: "EKONOMI",
+    sectionNo: 35,
+    stem: "Instrumen untuk menilai kelayakan proyek publik dibanding proyek swasta adalah:",
+    options: [
+      "ECBA",
+      "FCBA",
+      "EIRR",
+      "Hanya (a) dan (c) yang benar",
+      "Semua benar",
+    ],
+    answer: 3,
+    explain: "Aspek Proyek Publik Proyek Swasta Tujuan manfaat sosial keuntungan finansial Ukuran utama manfaat ekonomi masyarakat laba Analisis utama ECBA, EIRR FCBA, FIRR Instrumen yang digunakan untuk menilai kelayakan proyek publik adalah ECBA dan EIRR karena keduanya menilai manfaat ekonomi dan sosial bagi masyarakat. Sementara FCBA lebih menitikberatkan pada keuntungan finansial proyek seperti pada proyek swasta. Jawaban : D",
+    fixedOptions: true,
     version: 1
   },
   {
