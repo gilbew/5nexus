@@ -156,9 +156,24 @@
 
     .mode-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 0.5rem;
     }
+
+    @media (max-width: 480px) {
+      .mode-row { grid-template-columns: 1fr; }
+    }
+
+    .belajar-progress {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin: 0.5rem 0 0;
+      line-height: 1.45;
+    }
+
+    .belajar-progress strong { color: var(--accent-dark); }
+
+    .form-disabled { opacity: 0.45; pointer-events: none; }
 
     .mode-btn {
       padding: 0.75rem;
@@ -554,7 +569,7 @@
         </div>
       </div>
 
-      <p class="note">255 soal · filter cluster/level/sumber · mode Latihan (bahas setelah jawab) atau Ujian (timer + navigasi).</p>
+      <p class="note">255 soal · Latihan, Ujian, atau Belajar (10 soal/blok, mastery).</p>
 
       <div class="card form-grid">
         <div>
@@ -562,12 +577,15 @@
           <div class="mode-row">
             <button type="button" class="mode-btn active" data-mode="latihan">Latihan</button>
             <button type="button" class="mode-btn" data-mode="ujian">Ujian</button>
+            <button type="button" class="mode-btn" data-mode="belajar">Belajar</button>
           </div>
           <p style="font-size:0.8125rem;color:var(--muted);margin:0.5rem 0 0">
             <span id="mode-hint">Latihan: penjelasan setelah jawab.</span>
           </p>
+          <p class="belajar-progress hidden" id="belajar-progress"></p>
         </div>
 
+        <div id="filter-fields">
         <label class="field">
           Cluster
           <select id="filter-cluster">
@@ -614,6 +632,8 @@
           <input type="checkbox" id="opt-shuffle-opts" checked>
           Acak urutan opsi A–E
         </label>
+
+        </div>
 
         <p id="pool-info" style="font-size:0.875rem;color:var(--muted);margin:0"></p>
 
@@ -687,6 +707,9 @@
 
       var KEYS = ["A", "B", "C", "D", "E"];
       var STORAGE_KEY = "ukom_last_score";
+      var BELAJAR_KEY = "ukom_belajar_progress";
+      var BELAJAR_BLOCK = 10;
+      var BELAJAR_MIN_ATTEMPTS = 3;
       var SEC_PER_Q = 90;
 
       var state = {
@@ -726,6 +749,88 @@
           var t = a[i]; a[i] = a[j]; a[j] = t;
         }
         return a;
+      }
+
+      // --- Mode Belajar: urutan global 1..N, 10 soal/blok, mastery 100% setelah min. 3 percobaan ---
+      function defaultBelajarOrder() {
+        var order = [];
+        for (var i = 0; i < BANK_ALL.length; i++) order.push(i);
+        return order;
+      }
+
+      function normalizeBelajarProgress(prog) {
+        if (!prog || !prog.order) {
+          return { cycle: 1, order: defaultBelajarOrder(), blockIndex: 0, blocks: {} };
+        }
+        var order = prog.order.filter(function (i) {
+          return i >= 0 && i < BANK_ALL.length;
+        });
+        for (var j = 0; j < BANK_ALL.length; j++) {
+          if (order.indexOf(j) < 0) order.push(j);
+        }
+        prog.order = order;
+        prog.blocks = prog.blocks || {};
+        prog.blockIndex = prog.blockIndex || 0;
+        prog.cycle = prog.cycle || 1;
+        var maxBlock = Math.ceil(BANK_ALL.length / BELAJAR_BLOCK);
+        if (prog.blockIndex >= maxBlock) prog.blockIndex = maxBlock - 1;
+        return prog;
+      }
+
+      function loadBelajarProgress() {
+        try {
+          var raw = localStorage.getItem(BELAJAR_KEY);
+          if (raw) return normalizeBelajarProgress(JSON.parse(raw));
+        } catch (e) { /* abaikan */ }
+        return normalizeBelajarProgress(null);
+      }
+
+      function saveBelajarProgress(prog) {
+        localStorage.setItem(BELAJAR_KEY, JSON.stringify(prog));
+        updateBelajarProgressUI();
+      }
+
+      function belajarBlockRange(blockIndex) {
+        var start = blockIndex * BELAJAR_BLOCK;
+        var end = Math.min(start + BELAJAR_BLOCK, BANK_ALL.length);
+        return { start: start, end: end, from: start + 1, to: end };
+      }
+
+      function reshuffleBelajarCycle(prog) {
+        prog.order = shuffle(defaultBelajarOrder());
+        prog.blockIndex = 0;
+        prog.blocks = {};
+        prog.cycle = (prog.cycle || 1) + 1;
+      }
+
+      function updateBelajarProgressUI() {
+        var el = $("belajar-progress");
+        if (!el) return;
+        if (state.mode !== "belajar") {
+          el.classList.add("hidden");
+          return;
+        }
+        el.classList.remove("hidden");
+        var prog = loadBelajarProgress();
+        var range = belajarBlockRange(prog.blockIndex);
+        var key = String(prog.blockIndex);
+        var blk = prog.blocks[key] || { attempts: 0 };
+        var attempts = blk.attempts || 0;
+        var totalBlocks = Math.ceil(BANK_ALL.length / BELAJAR_BLOCK);
+        el.innerHTML =
+          "Siklus <strong>" + prog.cycle + "</strong> · Blok <strong>" + range.from + "–" + range.to +
+          "</strong> (dari " + BANK_ALL.length + " soal) · Percobaan <strong>" + attempts +
+          "</strong> · Syarat lanjut: <strong>100%</strong> setelah min. <strong>" +
+          BELAJAR_MIN_ATTEMPTS + "×</strong> · Blok " + (prog.blockIndex + 1) + "/" + totalBlocks;
+      }
+
+      function updateModeUI() {
+        var belajar = state.mode === "belajar";
+        var fields = $("filter-fields");
+        if (fields) fields.classList.toggle("form-disabled", belajar);
+        $("btn-start").textContent = belajar ? "Mulai Blok Belajar" : "Mulai Sesi";
+        updateBelajarProgressUI();
+        updatePoolInfo();
       }
 
       // Opsi komposit (mis. "Hanya (a) dan (c) benar") tidak boleh diacak
@@ -781,6 +886,14 @@
       }
 
       function updatePoolInfo() {
+        if (state.mode === "belajar") {
+          var prog = loadBelajarProgress();
+          var range = belajarBlockRange(prog.blockIndex);
+          $("pool-info").textContent =
+            "Mode Belajar: 10 soal berurutan (#" + range.from + "–#" + range.to +
+            "). Ulangi blok hingga skor 100% minimal " + BELAJAR_MIN_ATTEMPTS + " percobaan.";
+          return;
+        }
         var pool = filterPool();
         var count = parseInt($("session-count").value, 10) || 25;
         var max = Math.min(count, pool.length);
@@ -808,18 +921,60 @@
 
       function saveScore(correct, total, mode) {
         var pct = total ? Math.round((correct / total) * 100) : 0;
+        var modeLabel = mode === "ujian" ? "Ujian" : mode === "belajar" ? "Belajar" : "Latihan";
         var entry = {
           correct: correct,
           total: total,
           pct: pct,
-          mode: mode === "ujian" ? "Ujian" : "Latihan",
+          mode: modeLabel,
           date: new Date().toLocaleString("id-ID")
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(entry));
         loadLastScore();
       }
 
+      function prepareQuestion(q) {
+        if ($("opt-shuffle-opts").checked && !shouldFixOptions(q)) {
+          return withShuffledOptions(q);
+        }
+        return q;
+      }
+
+      function startBelajarSession() {
+        var prog = loadBelajarProgress();
+        var range = belajarBlockRange(prog.blockIndex);
+        var indices = prog.order.slice(range.start, range.end);
+        var questions = indices.map(function (bankIdx, i) {
+          var q = Object.assign({}, BANK_ALL[bankIdx], {
+            learnNo: range.start + i + 1
+          });
+          return prepareQuestion(q);
+        });
+
+        state.session = {
+          mode: "belajar",
+          blockIndex: prog.blockIndex,
+          learnFrom: range.from,
+          learnTo: range.to,
+          questions: questions,
+          index: 0,
+          answers: [],
+          locked: [],
+          picked: null,
+          answered: false
+        };
+
+        stopTimer();
+        $("quiz-timer").classList.add("hidden");
+        showScreen("quiz");
+        renderQuestion();
+      }
+
       function startSession() {
+        if (state.mode === "belajar") {
+          startBelajarSession();
+          return;
+        }
         var pool = filterPool();
         var count = parseInt($("session-count").value, 10) || 25;
         if (!pool.length) {
@@ -893,10 +1048,10 @@
         var total = s.questions.length;
         var n = s.index + 1;
         var idx = s.index;
-        var isLatihan = s.mode === "latihan";
+        var isLatihan = s.mode === "latihan" || s.mode === "belajar";
         var isUjian = s.mode === "ujian";
         var picked = s.answers[idx];
-        var locked = isLatihan && !!s.locked[idx];
+        var locked = (s.mode === "latihan" || s.mode === "belajar") && !!s.locked[idx];
 
         $("exam-sidebar").classList.toggle("hidden", !isUjian);
         $("latihan-hint").classList.toggle("hidden", !isLatihan);
@@ -906,8 +1061,12 @@
 
         $("quiz-progress").textContent = "Soal " + n + " / " + total;
         $("progress-fill").style.width = ((n - 1) / total * 100) + "%";
-        $("q-meta").textContent = sourceLabel(q.source) + " \u00B7 " + clusterLabel(q.cluster) +
+        var meta = sourceLabel(q.source) + " \u00B7 " + clusterLabel(q.cluster) +
           " \u00B7 " + q.level + (q.id ? " \u00B7 #" + q.id : "");
+        if (s.mode === "belajar" && q.learnNo) {
+          meta = "Belajar #" + q.learnNo + " \u00B7 " + meta;
+        }
+        $("q-meta").textContent = meta;
         $("q-stem").textContent = q.stem;
 
         var optsEl = $("q-options");
@@ -1003,7 +1162,7 @@
 
       function lockAnswer() {
         var s = state.session;
-        if (!s || s.mode !== "latihan") return;
+        if (!s || (s.mode !== "latihan" && s.mode !== "belajar")) return;
         var idx = s.index;
         if (s.locked[idx]) return;
         var picked = s.answers[idx];
@@ -1017,6 +1176,10 @@
         if (!s) return;
 
         if (s.mode === "latihan" && !s.locked[s.index]) {
+          alert("Kunci jawaban terlebih dahulu sebelum lanjut.");
+          return;
+        }
+        if (s.mode === "belajar" && !s.locked[s.index]) {
           alert("Kunci jawaban terlebih dahulu sebelum lanjut.");
           return;
         }
@@ -1037,6 +1200,40 @@
         renderQuestion();
       }
 
+      function finishBelajarSession(correct, total, pct) {
+        var prog = loadBelajarProgress();
+        var key = String(prog.blockIndex);
+        if (!prog.blocks[key]) prog.blocks[key] = { attempts: 0, mastered: false };
+        prog.blocks[key].attempts++;
+        prog.blocks[key].lastPct = pct;
+
+        var detail = "Mode Belajar \u00B7 Blok #" + (state.session.learnFrom || 1) +
+          "–#" + (state.session.learnTo || total) + " \u00B7 " + correct + "/" + total + " benar";
+
+        if (pct === 100 && prog.blocks[key].attempts >= BELAJAR_MIN_ATTEMPTS) {
+          prog.blocks[key].mastered = true;
+          prog.blockIndex++;
+          var maxBlock = Math.ceil(BANK_ALL.length / BELAJAR_BLOCK);
+          if (prog.blockIndex >= maxBlock) {
+            reshuffleBelajarCycle(prog);
+            detail += ". Semua blok selesai — urutan soal diacak ulang. Mulai lagi dari #1–#" +
+              Math.min(BELAJAR_BLOCK, BANK_ALL.length) + " (siklus " + prog.cycle + ").";
+          } else {
+            var next = belajarBlockRange(prog.blockIndex);
+            detail += ". Blok dikuasai! Lanjut ke soal #" + next.from + "–#" + next.to + ".";
+          }
+        } else if (pct === 100) {
+          var sisa = BELAJAR_MIN_ATTEMPTS - prog.blocks[key].attempts;
+          detail += ". Skor 100%! Ulangi blok ini " + sisa + " kali lagi untuk unlock berikutnya.";
+        } else {
+          detail += ". Ulangi blok hingga skor 100% (min. " + BELAJAR_MIN_ATTEMPTS +
+            " percobaan, percobaan ke-" + prog.blocks[key].attempts + ").";
+        }
+
+        saveBelajarProgress(prog);
+        return detail;
+      }
+
       function finishSession(timedOut) {
         stopTimer();
         var s = state.session;
@@ -1052,8 +1249,14 @@
 
         $("result-pct").textContent = pct + "%";
         $("result-score").textContent = correct + " / " + total + " benar";
-        $("result-detail").textContent = (timedOut ? "Waktu habis. " : "") +
-          "Mode " + (s.mode === "ujian" ? "Ujian" : "Latihan") + " \u00B7 " + total + " soal";
+
+        var detail = (timedOut ? "Waktu habis. " : "") +
+          "Mode " + (s.mode === "ujian" ? "Ujian" : s.mode === "belajar" ? "Belajar" : "Latihan") +
+          " \u00B7 " + total + " soal";
+        if (s.mode === "belajar") {
+          detail = finishBelajarSession(correct, total, pct);
+        }
+        $("result-detail").textContent = detail;
 
         saveScore(correct, total, s.mode);
         state.lastReview = {
@@ -1127,9 +1330,15 @@
           document.querySelectorAll(".mode-btn").forEach(function (b) { b.classList.remove("active"); });
           btn.classList.add("active");
           state.mode = btn.dataset.mode;
-          $("mode-hint").textContent = state.mode === "ujian"
-            ? "Ujian: timer aktif, skor di akhir sesi."
-            : "Latihan: penjelasan setelah jawab.";
+          if (state.mode === "ujian") {
+            $("mode-hint").textContent = "Ujian: timer aktif, skor di akhir sesi.";
+          } else if (state.mode === "belajar") {
+            $("mode-hint").textContent =
+              "Belajar: 10 soal berurutan per blok, ulang hingga 100% (min. 3×), lalu lanjut blok berikutnya.";
+          } else {
+            $("mode-hint").textContent = "Latihan: penjelasan setelah jawab.";
+          }
+          updateModeUI();
         });
       });
 
@@ -1163,14 +1372,14 @@
         var idx = KEYS.indexOf(key);
         if (idx < 0) return;
         var s = state.session;
-        var locked = s.mode === "latihan" && !!s.locked[s.index];
+        var locked = (s.mode === "latihan" || s.mode === "belajar") && !!s.locked[s.index];
         if (locked) return;
         e.preventDefault();
         pickAnswer(idx);
       });
 
       initStats();
-      updatePoolInfo();
+      updateModeUI();
       loadLastScore();
     })();
   </script>
