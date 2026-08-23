@@ -2,16 +2,14 @@
 
 Aplikasi latihan soal pilihan ganda (statis: `index.html` + `soal-bank.js`).
 
-## Bank soal (634)
+## Bank soal (244)
 
 | Sumber | Jumlah |
 |--------|--------|
-| V1 | 60 |
-| Kasus | 40 |
 | Pre Test + Varian | 40 + 40 |
-| Simulasi | 40 |
-| Gap 1 / 2 / 3 | 100 + 100 + 50 |
-| Pembahasan 2026 | 163 |
+| Pembahasan 2026 | 164 |
+
+Sumber lama (v1, kasus, simulasi, gap) diarsipkan di `scripts/parts/archive/`.
 
 ## Regenerasi bank
 
@@ -20,7 +18,7 @@ node scripts/build-pembahasan2026.mjs   # dari PDF Pembahasan 2026
 node scripts/merge-bank.mjs
 ```
 
-Sumber per bagian: `scripts/parts/*.js`. Audit kualitas: `node scripts/audit-quality.mjs`.
+Sumber aktif: `scripts/parts/pretest.js`, `scripts/parts/pembahasan2026.js`. Audit kualitas: `node scripts/audit-quality.mjs`.
 
 ## Deploy
 
@@ -31,7 +29,8 @@ Lihat `docs/DEPLOY.md` (Vercel / Netlify / GitHub Pages).
 ```
 index.html          UI latihan/ujian
 soal-bank.js        bank gabungan (hasil merge)
-scripts/parts/      sumber soal per bank
+scripts/parts/      sumber soal aktif
+scripts/parts/archive/  bank lama (tidak digabung)
 scripts/merge-bank.mjs
 scripts/audit-quality.mjs
 docs/               panduan deploy & screening

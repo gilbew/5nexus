@@ -546,27 +546,14 @@
       <div id="bank-error" class="note hidden" style="background:#ffebee;border-color:#ef9a9a;color:#b71c1c"></div>
 
       <div class="card">
-        <p class="stats-group-label">Bank inti</p>
         <div class="stats" id="stats-grid">
-          <div class="stat"><span class="stat-num" id="stat-v1">—</span><span class="stat-label">Soal v1</span></div>
-          <div class="stat"><span class="stat-num" id="stat-kasus">—</span><span class="stat-label">Kasus</span></div>
           <div class="stat"><span class="stat-num" id="stat-pretest">—</span><span class="stat-label">Pre Test</span></div>
-          <div class="stat"><span class="stat-num" id="stat-simulasi">—</span><span class="stat-label">Simulasi</span></div>
-        </div>
-        <p class="stats-group-label" style="margin-top:0.875rem">Gap pembekalan</p>
-        <div class="stats">
-          <div class="stat"><span class="stat-num" id="stat-gap">—</span><span class="stat-label">Gap 1</span></div>
-          <div class="stat"><span class="stat-num" id="stat-gap2">—</span><span class="stat-label">Gap 2</span></div>
-          <div class="stat"><span class="stat-num" id="stat-gap3">—</span><span class="stat-label">Gap 3</span></div>
+          <div class="stat"><span class="stat-num" id="stat-pembahasan2026">—</span><span class="stat-label">Pembahasan 2026</span></div>
           <div class="stat"><span class="stat-num" id="stat-total">—</span><span class="stat-label">Total</span></div>
-        </div>
-        <p class="stats-group-label" style="margin-top:0.875rem">Pembahasan 2026 (dikoreksi)</p>
-        <div class="stats">
-          <div class="stat"><span class="stat-num" id="stat-pembahasan2026">—</span><span class="stat-label">Pembahasan</span></div>
         </div>
       </div>
 
-      <p class="note">634 soal · filter cluster/level/sumber · mode Latihan (bahas setelah jawab) atau Ujian (timer + navigasi).</p>
+      <p class="note">244 soal · filter cluster/level/sumber · mode Latihan (bahas setelah jawab) atau Ujian (timer + navigasi).</p>
 
       <div class="card form-grid">
         <div>
@@ -606,21 +593,15 @@
           Sumber
           <select id="filter-source">
             <option value="all">Semua</option>
-            <option value="v1">v1</option>
-            <option value="kasus">Kasus</option>
             <option value="pretest">Pre Test</option>
             <option value="pretest-varian">Pre Test Varian</option>
-            <option value="simulasi">Simulasi</option>
-            <option value="gap">Gap 1 (pembekalan)</option>
-            <option value="gap2">Gap 2 (pembekalan)</option>
-            <option value="gap3">Gap 3 (pembekalan)</option>
             <option value="pembahasan2026">Pembahasan 2026</option>
           </select>
         </label>
 
         <label class="field">
           Jumlah soal per sesi
-          <input type="number" id="session-count" min="1" max="634" value="25">
+          <input type="number" id="session-count" min="1" max="244" value="25">
         </label>
 
         <label class="check-row">
@@ -714,15 +695,9 @@
         timeLeft: 0
       };
 
-      // Guard: pastikan semua bank termuat sebelum membangun pool
-      var bankOk = typeof BANK !== "undefined" &&
-        typeof BANK_KASUS !== "undefined" &&
-        typeof BANK_PRETEST !== "undefined" &&
+      // Guard: pastikan bank aktif termuat sebelum membangun pool
+      var bankOk = typeof BANK_PRETEST !== "undefined" &&
         typeof BANK_PRETEST_VARIAN !== "undefined" &&
-        typeof BANK_SIMULASI !== "undefined" &&
-        typeof BANK_GAP !== "undefined" &&
-        typeof BANK_GAP2 !== "undefined" &&
-        typeof BANK_GAP3 !== "undefined" &&
         typeof BANK_PEMBAHASAN2026 !== "undefined";
 
       if (!bankOk) {
@@ -734,17 +709,11 @@
         return;
       }
 
-      var BANK_ALL = BANK.map(function (q) {
-        return Object.assign({}, q, { source: "v1" });
+      var BANK_ALL = BANK_PRETEST.map(function (q) {
+        return Object.assign({}, q, { source: q.source || "pretest" });
       }).concat(
-        BANK_KASUS.map(function (q) { return Object.assign({}, q, { source: "kasus" }); }),
-        BANK_PRETEST.map(function (q) { return Object.assign({}, q, { source: q.source || "pretest" }); }),
-        BANK_PRETEST_VARIAN.map(function (q) { return Object.assign({}, q, { source: q.source || "pretest-varian" }); }),
-        BANK_SIMULASI.map(function (q) { return Object.assign({}, q, { source: "simulasi" }); }),
-        BANK_GAP.map(function (q) { return Object.assign({}, q, { source: q.source || "gap" }); }),
-        BANK_GAP2.map(function (q) { return Object.assign({}, q, { source: q.source || "gap2" }); }),
-        BANK_GAP3.map(function (q) { return Object.assign({}, q, { source: q.source || "gap3" }); }),
-        BANK_PEMBAHASAN2026.map(function (q) { return Object.assign({}, q, { source: q.source || "pembahasan2026" }); })
+        BANK_PRETEST_VARIAN.map(function (q) { return Object.assign({}, q, { source: q.source || "pretest-varian" }; }),
+        BANK_PEMBAHASAN2026.map(function (q) { return Object.assign({}, q, { source: q.source || "pembahasan2026" }; })
       );
 
       var $ = function (id) { return document.getElementById(id); };
@@ -790,7 +759,7 @@
       }
 
       function sourceLabel(src) {
-        var map = { v1: "v1", kasus: "Kasus", pretest: "Pre Test", "pretest-varian": "Pre Test Varian", simulasi: "Simulasi", gap: "Gap 1", gap2: "Gap 2", gap3: "Gap 3", pembahasan2026: "Pembahasan 2026" };
+        var map = { pretest: "Pre Test", "pretest-varian": "Pre Test Varian", pembahasan2026: "Pembahasan 2026" };
         return map[src] || src;
       }
 
@@ -820,14 +789,8 @@
       }
 
       function initStats() {
-        $("stat-v1").textContent = BANK.length;
-        $("stat-kasus").textContent = BANK_KASUS.length;
         $("stat-pretest").textContent = BANK_PRETEST.length + "+" + BANK_PRETEST_VARIAN.length;
-        $("stat-simulasi").textContent = BANK_SIMULASI.length;
-        $("stat-gap").textContent = typeof BANK_GAP !== "undefined" ? BANK_GAP.length : 0;
-        $("stat-gap2").textContent = typeof BANK_GAP2 !== "undefined" ? BANK_GAP2.length : 0;
-        $("stat-gap3").textContent = typeof BANK_GAP3 !== "undefined" ? BANK_GAP3.length : 0;
-        $("stat-pembahasan2026").textContent = typeof BANK_PEMBAHASAN2026 !== "undefined" ? BANK_PEMBAHASAN2026.length : 0;
+        $("stat-pembahasan2026").textContent = BANK_PEMBAHASAN2026.length;
         $("stat-total").textContent = BANK_ALL.length;
       }
 

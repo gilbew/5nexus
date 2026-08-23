@@ -14,16 +14,14 @@ function load(file, names) {
 }
 
 const sources = [
-  ...load("v1.js", ["BANK"]).map((x) => ({ source: "v1", ...x })),
-  ...load("kasus.js", ["BANK_KASUS"]).map((x) => ({ source: "kasus", ...x })),
   ...load("pretest.js", ["BANK_PRETEST", "BANK_PRETEST_VARIAN"]).map((x) => ({
     source: x.name === "BANK_PRETEST" ? "pretest" : "pretest-varian",
     ...x,
   })),
-  ...load("simulasi.js", ["BANK_SIMULASI"]).map((x) => ({ source: "simulasi", ...x })),
-  ...load("gap100.js", ["BANK_GAP"]).map((x) => ({ source: "gap", ...x })),
-  ...load("gap200.js", ["BANK_GAP2"]).map((x) => ({ source: "gap2", ...x })),
-  ...load("gap300.js", ["BANK_GAP3"]).map((x) => ({ source: "gap3", ...x })),
+  ...load("pembahasan2026.js", ["BANK_PEMBAHASAN2026"]).map((x) => ({
+    source: "pembahasan2026",
+    ...x,
+  })),
 ];
 
 // Distinctive tokens worth flagging as theory/name echo
