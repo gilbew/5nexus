@@ -712,8 +712,8 @@
       var BANK_ALL = BANK_PRETEST.map(function (q) {
         return Object.assign({}, q, { source: q.source || "pretest" });
       }).concat(
-        BANK_PRETEST_VARIAN.map(function (q) { return Object.assign({}, q, { source: q.source || "pretest-varian" }; }),
-        BANK_PEMBAHASAN2026.map(function (q) { return Object.assign({}, q, { source: q.source || "pembahasan2026" }; })
+        BANK_PRETEST_VARIAN.map(function (q) { return Object.assign({}, q, { source: q.source || "pretest-varian" }); }),
+        BANK_PEMBAHASAN2026.map(function (q) { return Object.assign({}, q, { source: q.source || "pembahasan2026" }); })
       );
 
       var $ = function (id) { return document.getElementById(id); };
