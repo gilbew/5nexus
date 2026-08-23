@@ -1141,8 +1141,8 @@
       function pickAnswer(idx) {
         var s = state.session;
         if (!s) return;
-        var isLatihan = s.mode === "latihan";
-        if (isLatihan && s.locked[s.index]) return;
+        var isPractice = s.mode === "latihan" || s.mode === "belajar";
+        if (isPractice && s.locked[s.index]) return;
 
         s.picked = idx;
         s.answers[s.index] = idx;
@@ -1153,7 +1153,7 @@
           if (i === idx) btn.classList.add("selected");
         });
 
-        if (isLatihan) {
+        if (isPractice) {
           $("btn-lock").disabled = false;
         } else {
           renderNavGrid();
