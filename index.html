@@ -753,9 +753,10 @@
 
       // --- Mode Belajar: urutan global 1..N (by id), 10 soal/blok, acak tiap sesi dalam blok ---
       function belajarDefaultProgress() {
+        // Device/baruer baru: acak urutan global (sama seperti setelah selesai semua blok)
         return {
           cycle: 1,
-          orderIds: BANK_ALL.map(function (q) { return q.id; }),
+          orderIds: shuffle(BANK_ALL.map(function (q) { return q.id; })),
           blockIndex: 0,
           blocks: {},
           bankTotal: BANK_ALL.length
