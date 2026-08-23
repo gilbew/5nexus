@@ -751,29 +751,53 @@
         return a;
       }
 
-      // --- Mode Belajar: urutan global 1..N, 10 soal/blok, mastery 100% setelah min. 3 percobaan ---
-      function defaultBelajarOrder() {
-        var order = [];
-        for (var i = 0; i < BANK_ALL.length; i++) order.push(i);
-        return order;
+      // --- Mode Belajar: urutan global 1..N (by id), 10 soal/blok, acak tiap sesi dalam blok ---
+      function belajarDefaultProgress() {
+        return {
+          cycle: 1,
+          orderIds: BANK_ALL.map(function (q) { return q.id; }),
+          blockIndex: 0,
+          blocks: {},
+          bankTotal: BANK_ALL.length
+        };
+      }
+
+      function belajarIdToIndex() {
+        var map = {};
+        BANK_ALL.forEach(function (q, i) { map[q.id] = i; });
+        return map;
       }
 
       function normalizeBelajarProgress(prog) {
-        if (!prog || !prog.order) {
-          return { cycle: 1, order: defaultBelajarOrder(), blockIndex: 0, blocks: {} };
+        if (!prog) return belajarDefaultProgress();
+
+        // Migrasi format lama (indeks array) → id stabil (tahan penambahan bank)
+        if (!prog.orderIds && prog.order && prog.order.length) {
+          prog.orderIds = prog.order.map(function (i) {
+            return BANK_ALL[i] ? BANK_ALL[i].id : null;
+          }).filter(Boolean);
         }
-        var order = prog.order.filter(function (i) {
-          return i >= 0 && i < BANK_ALL.length;
+
+        if (!prog.orderIds || !prog.orderIds.length) return belajarDefaultProgress();
+
+        var valid = {};
+        BANK_ALL.forEach(function (q) { valid[q.id] = true; });
+
+        // Pertahankan urutan lama; soal baru hanya ditambahkan di akhir
+        var orderIds = prog.orderIds.filter(function (id) { return valid[id]; });
+        BANK_ALL.forEach(function (q) {
+          if (orderIds.indexOf(q.id) < 0) orderIds.push(q.id);
         });
-        for (var j = 0; j < BANK_ALL.length; j++) {
-          if (order.indexOf(j) < 0) order.push(j);
-        }
-        prog.order = order;
+
+        prog.orderIds = orderIds;
         prog.blocks = prog.blocks || {};
         prog.blockIndex = prog.blockIndex || 0;
         prog.cycle = prog.cycle || 1;
+        prog.bankTotal = BANK_ALL.length;
+
         var maxBlock = Math.ceil(BANK_ALL.length / BELAJAR_BLOCK);
         if (prog.blockIndex >= maxBlock) prog.blockIndex = maxBlock - 1;
+
         return prog;
       }
 
@@ -797,10 +821,11 @@
       }
 
       function reshuffleBelajarCycle(prog) {
-        prog.order = shuffle(defaultBelajarOrder());
+        prog.orderIds = shuffle(BANK_ALL.map(function (q) { return q.id; }));
         prog.blockIndex = 0;
         prog.blocks = {};
         prog.cycle = (prog.cycle || 1) + 1;
+        prog.bankTotal = BANK_ALL.length;
       }
 
       function updateBelajarProgressUI() {
@@ -890,8 +915,8 @@
           var prog = loadBelajarProgress();
           var range = belajarBlockRange(prog.blockIndex);
           $("pool-info").textContent =
-            "Mode Belajar: 10 soal berurutan (#" + range.from + "–#" + range.to +
-            "). Ulangi blok hingga skor 100% minimal " + BELAJAR_MIN_ATTEMPTS + " percobaan.";
+            "Mode Belajar: 10 soal blok #" + range.from + "–#" + range.to +
+            " (urutan diacak tiap sesi). Ulangi hingga 100% min. " + BELAJAR_MIN_ATTEMPTS + "×.";
           return;
         }
         var pool = filterPool();
@@ -943,10 +968,13 @@
       function startBelajarSession() {
         var prog = loadBelajarProgress();
         var range = belajarBlockRange(prog.blockIndex);
-        var indices = prog.order.slice(range.start, range.end);
-        var questions = indices.map(function (bankIdx, i) {
+        var idMap = belajarIdToIndex();
+        // Acak urutan tampil per sesi; nomor Belajar # tetap mengikuti urutan global
+        var blockIds = shuffle(prog.orderIds.slice(range.start, range.end));
+        var questions = blockIds.map(function (qid) {
+          var bankIdx = idMap[qid];
           var q = Object.assign({}, BANK_ALL[bankIdx], {
-            learnNo: range.start + i + 1
+            learnNo: prog.orderIds.indexOf(qid) + 1
           });
           return prepareQuestion(q);
         });
@@ -1334,7 +1362,7 @@
             $("mode-hint").textContent = "Ujian: timer aktif, skor di akhir sesi.";
           } else if (state.mode === "belajar") {
             $("mode-hint").textContent =
-              "Belajar: 10 soal berurutan per blok, ulang hingga 100% (min. 3×), lalu lanjut blok berikutnya.";
+              "Belajar: 10 soal/blok (diacak tiap sesi), ulang hingga 100% (min. 3×), lalu lanjut blok berikutnya.";
           } else {
             $("mode-hint").textContent = "Latihan: penjelasan setelah jawab.";
           }
