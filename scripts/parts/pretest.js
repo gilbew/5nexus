@@ -464,7 +464,7 @@ const BANK_PRETEST = [
     cluster: "sosial",
     level: "sedang",
     source: "pretest",
-    stem: "Proses pembangunan bisa dilakukan dengan pendekatan berikut, kecuali:",
+    stem: "Berikut pendekatan pembangunan yang menekankan partisipasi dan pemberdayaan masyarakat, kecuali:",
     options: [
       "Pendekatan Trickle down effect",
       "Pendekatan proses top-down dan bottom-up",
@@ -473,8 +473,8 @@ const BANK_PRETEST = [
       "Pendekatan proses teknorat",
     ],
     answer: 0,
-    explain: "Trickle-down bukan pendekatan partisipatif/pemberdayaan.",
-    version: 1
+    explain: "Trickle-down mengandalkan manfaat turun dari elite/pusat ke masyarakat; tidak menekankan partisipasi aktif seperti bottom-up atau partisipatif.",
+    version: 2
   },
   {
     id: "PT-29",
@@ -651,17 +651,17 @@ const BANK_PRETEST = [
     cluster: "teknis",
     level: "singkat",
     source: "pretest",
-    stem: "Dalam perencanaan terdapat karakteristik perencanaan, berikut merupakan karakteristik perencanaan kecuali ….",
+    stem: "Dalam perencanaan terdapat karakteristik perencanaan. Manakah yang bukan karakteristik proses perencanaan?",
     options: [
       "Mengarah ke perubahan",
       "Memilih alternatif",
-      "Pernyataan pilihan tindakan",
+      "Hanya mendokumentasikan kondisi eksisting tanpa memilih alternatif tindakan",
       "Mengarah ke pencapaian tujuan",
       "Bertumpu pada rasionalitas",
     ],
     answer: 2,
-    explain: "Karakteristik perencanaan: memilih alternatif (bukan sekadar 'mengarah perubahan' sebagai pengecualian).",
-    version: 1
+    explain: "Perencanaan bukan sekadar dokumentasi kondisi saat ini; intinya memilih alternatif tindakan menuju perubahan secara rasional.",
+    version: 2
   },
   {
     id: "PT-40",
