@@ -548,12 +548,13 @@
       <div class="card">
         <div class="stats" id="stats-grid">
           <div class="stat"><span class="stat-num" id="stat-pretest">—</span><span class="stat-label">Pre Test</span></div>
+          <div class="stat"><span class="stat-num" id="stat-jfp2025">—</span><span class="stat-label">JFP 2025</span></div>
           <div class="stat"><span class="stat-num" id="stat-pembahasan2026">—</span><span class="stat-label">Pembahasan 2026</span></div>
           <div class="stat"><span class="stat-num" id="stat-total">—</span><span class="stat-label">Total</span></div>
         </div>
       </div>
 
-      <p class="note">244 soal · filter cluster/level/sumber · mode Latihan (bahas setelah jawab) atau Ujian (timer + navigasi).</p>
+      <p class="note">255 soal · filter cluster/level/sumber · mode Latihan (bahas setelah jawab) atau Ujian (timer + navigasi).</p>
 
       <div class="card form-grid">
         <div>
@@ -594,14 +595,14 @@
           <select id="filter-source">
             <option value="all">Semua</option>
             <option value="pretest">Pre Test</option>
-            <option value="pretest-varian">Pre Test Varian</option>
+            <option value="jfp2025">JFP 2025 (Google Form)</option>
             <option value="pembahasan2026">Pembahasan 2026</option>
           </select>
         </label>
 
         <label class="field">
           Jumlah soal per sesi
-          <input type="number" id="session-count" min="1" max="244" value="25">
+          <input type="number" id="session-count" min="1" max="255" value="25">
         </label>
 
         <label class="check-row">
@@ -697,7 +698,7 @@
 
       // Guard: pastikan bank aktif termuat sebelum membangun pool
       var bankOk = typeof BANK_PRETEST !== "undefined" &&
-        typeof BANK_PRETEST_VARIAN !== "undefined" &&
+        typeof BANK_JFP2025 !== "undefined" &&
         typeof BANK_PEMBAHASAN2026 !== "undefined";
 
       if (!bankOk) {
@@ -712,7 +713,7 @@
       var BANK_ALL = BANK_PRETEST.map(function (q) {
         return Object.assign({}, q, { source: q.source || "pretest" });
       }).concat(
-        BANK_PRETEST_VARIAN.map(function (q) { return Object.assign({}, q, { source: q.source || "pretest-varian" }); }),
+        BANK_JFP2025.map(function (q) { return Object.assign({}, q, { source: q.source || "jfp2025" }); }),
         BANK_PEMBAHASAN2026.map(function (q) { return Object.assign({}, q, { source: q.source || "pembahasan2026" }); })
       );
 
@@ -759,7 +760,7 @@
       }
 
       function sourceLabel(src) {
-        var map = { pretest: "Pre Test", "pretest-varian": "Pre Test Varian", pembahasan2026: "Pembahasan 2026" };
+        var map = { pretest: "Pre Test", jfp2025: "JFP 2025", pembahasan2026: "Pembahasan 2026" };
         return map[src] || src;
       }
 
@@ -789,7 +790,8 @@
       }
 
       function initStats() {
-        $("stat-pretest").textContent = BANK_PRETEST.length + "+" + BANK_PRETEST_VARIAN.length;
+        $("stat-pretest").textContent = BANK_PRETEST.length;
+        $("stat-jfp2025").textContent = BANK_JFP2025.length;
         $("stat-pembahasan2026").textContent = BANK_PEMBAHASAN2026.length;
         $("stat-total").textContent = BANK_ALL.length;
       }

@@ -14,10 +14,8 @@ function load(file, names) {
 }
 
 const sources = [
-  ...load("pretest.js", ["BANK_PRETEST", "BANK_PRETEST_VARIAN"]).map((x) => ({
-    source: x.name === "BANK_PRETEST" ? "pretest" : "pretest-varian",
-    ...x,
-  })),
+  ...load("pretest.js", ["BANK_PRETEST"]).map((x) => ({ source: "pretest", ...x })),
+  ...load("jfp2025.js", ["BANK_JFP2025"]).map((x) => ({ source: "jfp2025", ...x })),
   ...load("pembahasan2026.js", ["BANK_PEMBAHASAN2026"]).map((x) => ({
     source: "pembahasan2026",
     ...x,

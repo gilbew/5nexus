@@ -1,6 +1,6 @@
 /**
  * Gabungkan parts → soal-bank.js (satu file untuk index.html).
- * Aktif: Pre Test + Pembahasan 2026. Sumber lain ada di parts/archive/.
+ * Aktif: Pre Test + JFP 2025 + Pembahasan 2026.
  * Jalankan: node scripts/merge-bank.mjs
  */
 import fs from "fs";
@@ -39,6 +39,7 @@ function serializeArray(name, bank) {
     o += `    cluster: ${esc(q.cluster)},\n`;
     o += `    level: ${esc(q.level)},\n`;
     if (q.source) o += `    source: ${esc(q.source)},\n`;
+    if (q.formNo != null) o += `    formNo: ${q.formNo},\n`;
     if (q.section) o += `    section: ${esc(q.section)},\n`;
     if (q.sectionNo != null) o += `    sectionNo: ${q.sectionNo},\n`;
     o += `    stem: ${esc(q.stem)},\n`;
@@ -56,19 +57,17 @@ function serializeArray(name, bank) {
   return o;
 }
 
-const pre = loadPart("pretest.js", ["BANK_PRETEST", "BANK_PRETEST_VARIAN"]);
+const pre = loadPart("pretest.js", ["BANK_PRETEST"]);
+const jfp = loadPart("jfp2025.js", ["BANK_JFP2025"]);
 const pb26 = loadPart("pembahasan2026.js", ["BANK_PEMBAHASAN2026"]);
 
-const total =
-  pre.BANK_PRETEST.length +
-  pre.BANK_PRETEST_VARIAN.length +
-  pb26.BANK_PEMBAHASAN2026.length;
+const total = pre.BANK_PRETEST.length + jfp.BANK_JFP2025.length + pb26.BANK_PEMBAHASAN2026.length;
 
 let file =
   "/** Bank soal UKOM — " + total + " butir. Regenerate parts lalu: node scripts/merge-bank.mjs */\n";
 file += serializeArray("BANK_PRETEST", pre.BANK_PRETEST);
 file += "\n";
-file += serializeArray("BANK_PRETEST_VARIAN", pre.BANK_PRETEST_VARIAN);
+file += serializeArray("BANK_JFP2025", jfp.BANK_JFP2025);
 file += "\n";
 file += serializeArray("BANK_PEMBAHASAN2026", pb26.BANK_PEMBAHASAN2026);
 
@@ -77,7 +76,7 @@ fs.writeFileSync(outPath, file, "utf8");
 console.log("OK:", outPath);
 console.log(
   "pretest:", pre.BANK_PRETEST.length,
-  "| varian:", pre.BANK_PRETEST_VARIAN.length,
+  "| jfp2025:", jfp.BANK_JFP2025.length,
   "| pembahasan2026:", pb26.BANK_PEMBAHASAN2026.length,
   "| total:", total
 );

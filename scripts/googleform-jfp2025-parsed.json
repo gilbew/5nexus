@@ -1,0 +1,876 @@
+{
+  "fetchedAt": "2026-08-23T21:38:21.125Z",
+  "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLScScCVf8VsBGmsogreuU-Scg1lVTgFh-M6gGUcs4A3AcCx51g/viewform",
+  "total": 110,
+  "duplicates": 59,
+  "unique": 51,
+  "questions": [
+    {
+      "no": 4,
+      "stem": "Apa manfaat utama dari dilakukannya evaluasi program dalam proses pembangunan",
+      "options": [
+        "Untuk memastikan proyek dapat selesai tanpa perubahan anggaran",
+        "Untuk menilai hasil akhir tanpa melihat proses yang telah dilalui",
+        "Untuk mengidentifikasi kekuatan dan kelemahan dalam pelaksanaan proyek dan mengambil langkah perbaikan",
+        "Untuk menghindari penggunaan sumber daya yang terlalu berlebih dalam proyek",
+        "Untuk hanya mencatat laporan keuangan proyek tanpa evaluasi terhadap kegiatan"
+      ],
+      "match": {
+        "score": 0.5555555555555556,
+        "id": "pb26-per-32",
+        "stem": "Instrumen utama dalam proses evaluasi pembangunan adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 5,
+      "stem": "Apa tujuan utama dari intervensi sosial dalam pembangunan:",
+      "options": [
+        "Untuk memaksimalkan keuntungan ekonomi tanpa memperhatikan kesejahteraan sosial",
+        "Untuk mengatasi ketimpangan sosial dan memastikan bahwa semua kelompok masyarakat dapat merasakan manfaat",
+        "Untuk mengabaikan kebutuhan masyarakat dalam perencanaan pembangunan",
+        "Untuk menyelaraskan dengan agenda pembangunan pemerintah pusat/negara",
+        "Untuk mempercepat pembangunan infrastruktur fisik tanpa memperdulikan dampaknya terhadap masyarakat"
+      ],
+      "match": {
+        "score": 0.7142857142857143,
+        "id": "pb26-sos-24",
+        "stem": "Apa tantangan utama dalam melakukan intervensi sosial dalam pembangunan?"
+      },
+      "isDup": false
+    },
+    {
+      "no": 7,
+      "stem": "Dalam pelaksanaan Musrenbang Nasional, usulan prioritas pembangunan daerah dibahas bersama dengan kementerian/lembaga untuk penyesuaian dengan prioritas nasional dan kemampuan pendanaan. Hal ini merupakan bagian dari pendekatan:",
+      "options": [
+        "Politik",
+        "Partisipatif",
+        "Top-down dan bottom-up",
+        "Teknis",
+        "Evaluatif"
+      ],
+      "match": {
+        "score": 0.3,
+        "id": "pb26-eko-34",
+        "stem": "Dana Alokasi Khusus (DAK) adalah dana yang bersumber dari pendapatan APBN yang dialokasikan kepada daerah tertentu dengan tujuan untuk membantu mendanai kegiatan khusus yang merupakan urusan daerah dan sesuai dengan prioritas nasional. Bidang yang tidak dicakup dalam skema pendanaan DAK adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 8,
+      "stem": "Kinerja pembangunan daerah dapat diukur melalui indikator:",
+      "options": [
+        "Produk Domestik Regional Bruto (PDRB)",
+        "Indeks Pembangunan Manusia (IPM)",
+        "Tingkat kemiskinan",
+        "Hanya (a) dan (b) benar",
+        "Semua benar"
+      ],
+      "match": {
+        "score": 0.375,
+        "id": "pb26-per-78",
+        "stem": "Fungsi utama indikator kinerja dalam perencanaan pembangunan adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 11,
+      "stem": "Jenis perencanaan pembangunan yang dilakukan berdasarkan kondisi nyata dan potensi daerah disebut perencanaan:",
+      "options": [
+        "Partisipatif",
+        "Top-down",
+        "Teknis",
+        "Bottom-up",
+        "Evaluatif"
+      ],
+      "match": {
+        "score": 0.3333333333333333,
+        "id": "pb26-per-16",
+        "stem": "Evaluasi yang dilakukan setelah suatu kegiatan atau program pembangunan selesai dilaksanakan disebut evaluasi:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 12,
+      "stem": "Efektivitas indikator kinerja diukur dengan membandingkan:",
+      "options": [
+        "Biaya dengan hasil",
+        "Waktu dengan target",
+        "Target dengan hasil",
+        "Input dengan output",
+        "Output dengan outcome"
+      ],
+      "match": {
+        "score": 0.2857142857142857,
+        "id": "pb26-per-80",
+        "stem": "Langkah awal dalam menyusun indikator kinerja adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 15,
+      "stem": "Konsep pembangunan berkelanjutan menekankan pada keseimbangan antara:",
+      "options": [
+        "Ekonomi, sosial, dan lingkungan",
+        "Ekonomi dan industri",
+        "Sosial dan budaya",
+        "Pembangunan dan pemerintahan",
+        "Politik dan ekonomi"
+      ],
+      "match": {
+        "score": 0.2857142857142857,
+        "id": "pb26-per-79",
+        "stem": "Konsep pembangunan inklusif bertujuan untuk:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 16,
+      "stem": "Gaya sentrifugal menurut teori Charles Colby terdiri dari:",
+      "options": [
+        "Site, situation, spatial",
+        "Spatial, status, organization",
+        "Social evaluation, organization, occupance, situation",
+        "Situation, social evaluation, spatial",
+        "Semua benar"
+      ],
+      "match": {
+        "score": 0.14285714285714285,
+        "id": "pb26-per-27",
+        "stem": "Menurut pendapat saudara,pernyataan manakah yang paling tepat untuk menggambarkan pernyataan mengenai definisi dari perencanaan :"
+      },
+      "isDup": false
+    },
+    {
+      "no": 17,
+      "stem": "Apa yang menjadi asumsi dasar dari melakukan fasilitasi:",
+      "options": [
+        "Memiliki keterampilan komunikasi, tidak ada orang yang sama (setiap individu unik), proses pembelajaran seseorang berbeda-beda sesuai dengan keunikan mereka, dan setiap orang akan lebih komit dengan keputusannya sendiri",
+        "Proses fasilitasi bertujuan untuk mencapai konsensus dan pemahaman bersama melalui komunikasi terbuka dan kolaborasi",
+        "Setiap peserta dihargai dan diberi kesempatan untuk berbicara, tanpa ada pihak yang didominasi atau diabaikan",
+        "Fasilitator hanya bertugas untuk mengarahkan diskusi dan bukan untuk berpartisipasi dalam memberikan ide atau pendapat",
+        "Semuanya benar"
+      ],
+      "match": {
+        "score": 0.375,
+        "id": "pb26-per-15",
+        "stem": "Pelayanan dasar yang menjadi kewenangan pemerintah daerah, kecuali:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 18,
+      "stem": "Penjaringan aspirasi masyarakat selain Musrenbang dapat dilakukan melalui:",
+      "options": [
+        "Rapat teknis",
+        "Forum konsultasi publik",
+        "Seminar dan lokakarya",
+        "Hanya (a) dan (c) benar",
+        "Semua benar"
+      ],
+      "match": {
+        "score": 0.16666666666666666,
+        "id": "pb26-per-8",
+        "stem": "Salah satu tahapan penting dalam proses finalisasi rencana pembangunan pemerintah adalah penjaringan aspirasi dari para pemangku kepentingan melalui Musyawarah Perencanaan Pembangunan (Musrenbang). Selain itu, proses penjaringan aspirasi lainnya yang umum digunakan sebagai pelengkap Musrenbang antara lain:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 19,
+      "stem": "Unsur pembentuk modal sosial masyarakat antara lain:",
+      "options": [
+        "Kepatuhan terhadap perintah",
+        "Keseimbangan hak dan kewajiban",
+        "Saling percaya",
+        "Penegakan hukum",
+        "Penindasan dan anarki"
+      ],
+      "match": {
+        "score": 0.5714285714285714,
+        "id": "pb26-sos-11",
+        "stem": "Unsur utama dalam modal sosial masyarakat adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 20,
+      "stem": "Dalam kerangka perencanaan pembangunan nasional, RPJMD harus selaras dengan:",
+      "options": [
+        "RPJP Nasional",
+        "RPJM Nasional",
+        "RKP",
+        "Renstra K/L",
+        "Semua benar"
+      ],
+      "match": {
+        "score": 0.3333333333333333,
+        "id": "pb26-per-1",
+        "stem": "Yang bukan merupakan dasar hukum perencanaan pembangunan nasional adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 21,
+      "stem": "Dalam tahapan perencanaan pembangunan, rumusan tujuan dan sasaran pembangunan daerah dituangkan dalam:",
+      "options": [
+        "RPJPD",
+        "RPJMD",
+        "Renstra OPD",
+        "Renja OPD",
+        "RKPD"
+      ],
+      "match": {
+        "score": 0.3333333333333333,
+        "id": "pb26-per-77",
+        "stem": "Kajian teknis dalam perencanaan pembangunan digunakan untuk:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 22,
+      "stem": "Indikator kinerja harus sejalan dengan tujuan dan program yang diukur, hal ini menunjukkan indikator harus bersifat:",
+      "options": [
+        "Spesifik",
+        "Terukur",
+        "Relevan",
+        "Dapat dicapai",
+        "Efektif"
+      ],
+      "match": {
+        "score": 0.3333333333333333,
+        "id": "pb26-per-3",
+        "stem": "Indikator kinerja yang diukur secara tidak langsung menggunakan angka/fenomena yang mendekati, disebut:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 28,
+      "stem": "Isu strategis dalam perencanaan pembangunan daerah biasanya diidentifikasi berdasarkan:",
+      "options": [
+        "Kondisi ekonomi daerah",
+        "Potensi sumber daya alam",
+        "Permasalahan pokok dan tantangan yang dihadapi daerah",
+        "Pendapat masyarakat umum",
+        "Prioritas kepala daerah"
+      ],
+      "match": {
+        "score": 0.375,
+        "id": "pb26-per-77",
+        "stem": "Kajian teknis dalam perencanaan pembangunan digunakan untuk:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 29,
+      "stem": "Dalam penyusunan Rencana Pembangunan Daerah, seorang Kepala Daerah terpilih sangat aktif menentukan kegiatan pembangunan di daerahnya sebagai bukti dalam merealisasikan janji-janji kampanyenya. Pendekatan ini dikenal sebagai:",
+      "options": [
+        "Perencanaan partisipatif",
+        "Perencanaan bottom-up",
+        "Perencanaan top-down",
+        "Perencanaan teknokratik",
+        "Perencanaan sektoral"
+      ],
+      "match": {
+        "score": 0.25,
+        "id": "pb26-per-46",
+        "stem": "Beberapa peraturan perundang-undangan yang saat ini digunakan sebagai landasan hukum dalam penyusunan berbagai produk rencana pembangunan, baik di tingkat nasional maupun daerah, adalah sebagai berikut, kecuali:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 30,
+      "stem": "Penentu baik–buruknya hasil perencanaan adalah:",
+      "options": [
+        "Kesesuaian dengan kondisi yang ada",
+        "Pelaksanaan tidak semestinya",
+        "Penyusunan tidak tepat",
+        "Hanya (a) dan (c) benar",
+        "Semua benar"
+      ],
+      "match": {
+        "score": 0.25,
+        "id": "pb26-per-78",
+        "stem": "Fungsi utama indikator kinerja dalam perencanaan pembangunan adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 31,
+      "stem": "Dalam penyusunan Rencana Pembangunan Jangka Menengah Daerah (RPJMD), tahapan pertama yang harus dilakukan adalah:",
+      "options": [
+        "Analisis situasi dan kondisi daerah",
+        "Penentuan indikator kinerja utama",
+        "Penyusunan program dan kegiatan prioritas",
+        "Penetapan tujuan dan sasaran",
+        "Konsultasi publik"
+      ],
+      "match": {
+        "score": 0.35714285714285715,
+        "id": "pb26-sos-9",
+        "stem": "Program pemerintah yang dilakukan dalam jangka pendek adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 32,
+      "stem": "Kebijakan fiskal yang dilakukan pemerintah dalam rangka menstabilkan perekonomian dapat berupa:",
+      "options": [
+        "Penyesuaian tingkat suku bunga",
+        "Pengendalian jumlah uang beredar",
+        "Penyesuaian pajak dan belanja negara",
+        "Pengawasan kegiatan ekspor-impor",
+        "Penentuan nilai tukar mata uang"
+      ],
+      "match": {
+        "score": 0.36363636363636365,
+        "id": "pb26-sos-9",
+        "stem": "Program pemerintah yang dilakukan dalam jangka pendek adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 33,
+      "stem": "Istilah “trickle down effect” dalam konteks pembangunan ekonomi berarti:",
+      "options": [
+        "Pertumbuhan ekonomi yang tinggi otomatis akan menetes ke bawah dan meningkatkan kesejahteraan masyarakat miskin",
+        "Pengaliran sumber daya dari daerah miskin ke daerah kaya",
+        "Penyebaran efek pembangunan hanya pada sektor industri",
+        "Dampak negatif pembangunan terhadap masyarakat kecil",
+        "Ketergantungan ekonomi antar daerah"
+      ],
+      "match": {
+        "score": 0.2222222222222222,
+        "id": "pb26-per-32",
+        "stem": "Instrumen utama dalam proses evaluasi pembangunan adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 34,
+      "stem": "Berdasarkan data bencana pada tahun 2024, sekitar 93% kejadian bencana yang terjadi di Indonesia merupakan bencana hidrometeorologi seperti banjir, tanah longsor, dan angin puting beliung. Tren ini diperkirakan akan terus meningkat apabila kondisi dasar yang ada tidak diperbaiki. Dalam menginventarisasi masalah bencana, berdasarkan pengamatan saudara, faktor nonalam yang menjadi penyebab terjadinya bencana hidrometeorologi tersebut adalah:",
+      "options": [
+        "Perubahan tata guna lahan yang tidak mengikuti rencana",
+        "Intensitas dan curah hujan yang semakin meningkat",
+        "Penurunan kemampuan permukaan tanah dalam menginfiltrasi (menyerap) air",
+        "Hanya butir (a) dan (c) yang benar",
+        "Semua jawaban benar"
+      ],
+      "match": {
+        "score": 0.19047619047619047,
+        "id": "pb26-per-41",
+        "stem": "Walaupun sebagai kegiatan yang berorientasi ke depan, proses perencanaan tidak mungkin melepaskan diri dari kondisi masa lalu dan saat ini, karena kondisi tersebut merupakan situasi yang akan diubah. Untuk memudahkan memahami kondisi masa lalu, maka data masa lalu perlu disusun dalam bentuk:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 36,
+      "stem": "Pernyataan yang tidak tepat tentang konsep stok dan flow adalah:",
+      "options": [
+        "Kekayaan = stok, pendapatan = flow",
+        "Air bak = stok, air keran = flow",
+        "Pengangguran = stok, kehilangan pekerjaan = flow",
+        "Investasi masuk = stok",
+        "Utang = stok, defisit = flow"
+      ],
+      "match": {
+        "score": 0.3333333333333333,
+        "id": "pb26-eko-1",
+        "stem": "Yang tidak termasuk ke dalam angkatan kerja adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 37,
+      "stem": "Makna pemilihan presiden secara langsung pasca amandemen UUD 1945 adalah:",
+      "options": [
+        "Bentuk pendidikan politik bagi pemilih",
+        "Cerminan faktor emosional dan psikologis pemilih",
+        "Penentu arah pembangunan lima tahun ke depan",
+        "Hanya (a) dan (c) benar",
+        "Semua benar"
+      ],
+      "match": {
+        "score": 0.25925925925925924,
+        "id": "pb26-per-33",
+        "stem": "Setelah Amandemen UUD 1945, pemilihan Presiden dan Wakil Presiden dilaksanakan secara langsung oleh rakyat Rakyat melaksanakan hak konstitusionalnya dalam memilih calon Presiden dan Wakil Presiden seyogyanya didasarkan kepada visi dan misi calon Presiden/Wakil Presiden yang disampaikan pasca saat kampanye, mengingat."
+      },
+      "isDup": false
+    },
+    {
+      "no": 38,
+      "stem": "Langkah yang tidak efektif untuk mengurangi polusi udara di perkotaan adalah:",
+      "options": [
+        "Sosialisasi penggunaan masker",
+        "Edukasi bahaya polusi",
+        "Pembangunan taman hijau",
+        "Pengembangan transportasi ramah lingkungan",
+        "Pengendalian emisi pabrik"
+      ],
+      "match": {
+        "score": 0.3,
+        "id": "pb26-eko-1",
+        "stem": "Yang tidak termasuk ke dalam angkatan kerja adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 39,
+      "stem": "Ketika pemerintah daerah mengalokasikan dana lebih banyak untuk pendidikan dan kesehatan, maka kebijakan tersebut mencerminkan orientasi pada:",
+      "options": [
+        "Pembangunan ekonomi",
+        "Pembangunan sumber daya manusia",
+        "Pembangunan infrastruktur",
+        "Pembangunan industri",
+        "Pembangunan energi"
+      ],
+      "match": {
+        "score": 0.25,
+        "id": "pb26-eko-40",
+        "stem": "Jika tingkat pengangguran di suatu daerah meningkat, maka kebijakan yang tepat untuk diambil adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 40,
+      "stem": "Konsep perencanaan yang melibatkan berbagai pemangku kepentingan dan masyarakat disebut:",
+      "options": [
+        "Top-down planning",
+        "Bottom-up planning",
+        "Partisipatory planning",
+        "Technocratic planning",
+        "Political planning"
+      ],
+      "match": {
+        "score": 0.3,
+        "id": "pb26-per-11",
+        "stem": "Dalam perencanaan, sikap bebas dari tekanan politik atau kepentingan disebut:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 41,
+      "stem": "Konsep “musyawarah perencanaan pembangunan” (Musrenbang) merupakan perwujudan dari pendekatan:",
+      "options": [
+        "Top-down",
+        "Bottom-up",
+        "Partisipatif",
+        "Teknis",
+        "Evaluatif"
+      ],
+      "match": {
+        "score": 0.3333333333333333,
+        "id": "pb26-per-1",
+        "stem": "Yang bukan merupakan dasar hukum perencanaan pembangunan nasional adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 42,
+      "stem": "Jika perencanaan pembangunan dilakukan berdasarkan potensi dan permasalahan daerah, maka pendekatan yang digunakan adalah:",
+      "options": [
+        "Politik",
+        "Teknis",
+        "Partisipatif",
+        "Bottom-up",
+        "Top-down"
+      ],
+      "match": {
+        "score": 0.38461538461538464,
+        "id": "pb26-per-12",
+        "stem": "berdasarkan UU No 25 Tahun 2004, yang tidak termasuk tahapan perencanaan pembangunan nasional adalah sebagai berikut:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 44,
+      "stem": "Jenis indikator kinerja yang menunjukkan masukan sumber daya yang digunakan untuk melaksanakan kegiatan disebut indikator:",
+      "options": [
+        "Input",
+        "Output",
+        "Outcome",
+        "Impact",
+        "Proses"
+      ],
+      "match": {
+        "score": 0.3076923076923077,
+        "id": "pb26-per-3",
+        "stem": "Indikator kinerja yang diukur secara tidak langsung menggunakan angka/fenomena yang mendekati, disebut:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 45,
+      "stem": "Indikator yang mengukur hasil langsung dari pelaksanaan program disebut indikator:",
+      "options": [
+        "Input",
+        "Output",
+        "Outcome",
+        "Impact",
+        "Proses"
+      ],
+      "match": {
+        "score": 0.35714285714285715,
+        "id": "pb26-per-18",
+        "stem": "Evaluasi yang menilai ketepatan materi dan hasil dari pelaksanaan suatu proyek (misalnya proyek pembangunan jalan) disebut evaluasi:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 46,
+      "stem": "Indikator yang menggambarkan dampak jangka panjang dari pelaksanaan program disebut indikator:",
+      "options": [
+        "Input",
+        "Output",
+        "Outcome",
+        "Impact",
+        "Proses"
+      ],
+      "match": {
+        "score": 0.3,
+        "id": "pb26-sos-9",
+        "stem": "Program pemerintah yang dilakukan dalam jangka pendek adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 51,
+      "stem": "Apa yang dimaksud dengan melakukan pendampingan dalam implementasi program pembangunan:",
+      "options": [
+        "Pendampingan adalah proses fasilitasi dalam mengidentifikasi kebutuhan dan memecahkan masalah serta mendorong tumbuhnya inisiatif dalam proses pengambilan keputusan sehingga kemandirian secara berkelanjutan dapat diwujudkan",
+        "Merupakan hal yang berfokus pada pembangunan infrastruktur fisik yang melibatkan masyarakat",
+        "Merupakan pelibatan pihak eksternal untuk memberi dukungan teknis, sosial dan pembelajaran kepada masyarakat pada tahap proses pembangunan tertentu",
+        "Memberikan hibah langsung kepada individu tanpa pelatihan atau pengawasan",
+        "Memprioritaskan pembangunan hanya pada sektor ekonomi tanpa memperhatikan dampak sosial"
+      ],
+      "match": {
+        "score": 0.5555555555555556,
+        "id": "pb26-sos-23",
+        "stem": "Apa yang dimaksud dengan modal sosial dalam proses pembangunan?"
+      },
+      "isDup": false
+    },
+    {
+      "no": 58,
+      "stem": "Tujuan dari UU No. 25 Tahun 2004 tentang SPPN adalah untuk:",
+      "options": [
+        "Menjamin koordinasi antar pelaku pembangunan",
+        "Meningkatkan partisipasi masyarakat",
+        "Menjamin keterkaitan dan konsistensi antar perencanaan",
+        "Hanya (a) dan (c) benar",
+        "Semua benar"
+      ],
+      "match": {
+        "score": 0.25,
+        "id": "pb26-per-72",
+        "stem": "Ciri dari kebijakan desentralistik adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 65,
+      "stem": "Tahapan perencanaan sosial dibandingkan dengan perencanaan ekonomi atau spasial bersifat:",
+      "options": [
+        "Berbeda dengan ekonomi",
+        "Sama dengan spasial",
+        "Lebih sederhana",
+        "Berbeda dengan pembangunan bangsa",
+        "Lebih sedikit dari spasial"
+      ],
+      "match": {
+        "score": 0.29411764705882354,
+        "id": "pb26-per-6",
+        "stem": "Perencanaan merupakan sebuah proses yang melibatkan serangkaian tahapan tertentu. Dalam konteks pembangunan sosial, bagaimana tahapan perencanaan sosial ini dibandingkan dengan perencanaan lainnya?"
+      },
+      "isDup": false
+    },
+    {
+      "no": 66,
+      "stem": "Konsep pembangunan manusia berfokus pada peningkatan:",
+      "options": [
+        "Pendapatan per kapita",
+        "Investasi fisik",
+        "Kualitas hidup masyarakat melalui pendidikan, kesehatan, dan pendapatan",
+        "Pembangunan infrastruktur",
+        "Produktivitas tenaga kerja"
+      ],
+      "match": {
+        "score": 0.3333333333333333,
+        "id": "pb26-per-79",
+        "stem": "Konsep pembangunan inklusif bertujuan untuk:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 67,
+      "stem": "Ketimpangan pembangunan antarwilayah dapat terjadi karena:",
+      "options": [
+        "Perbedaan potensi sumber daya alam",
+        "Ketimpangan investasi",
+        "Ketimpangan infrastruktur",
+        "Hanya (a) dan (b) benar",
+        "Semua benar"
+      ],
+      "match": {
+        "score": 0.7142857142857143,
+        "id": "pb26-eko-38",
+        "stem": "Ketimpangan pembangunan antar wilayah dapat terjadi karena:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 68,
+      "stem": "Yang bukan termasuk permasalahan dalam identifikasi potensi dan masalah daerah adalah:",
+      "options": [
+        "Kemiskinan",
+        "Kesenjangan",
+        "Ketidaksesuaian",
+        "Ketidakpatuhan",
+        "Ketidakcukupan"
+      ],
+      "match": {
+        "score": 0.4,
+        "id": "pb26-eko-1",
+        "stem": "Yang tidak termasuk ke dalam angkatan kerja adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 72,
+      "stem": "Skala peta dalam perencanaan pembangunan berhubungan dengan:",
+      "options": [
+        "Kewenangan daerah",
+        "Kewenangan anggaran",
+        "Kerincian informasi",
+        "Ketentuan menteri",
+        "Ketersediaan peta"
+      ],
+      "match": {
+        "score": 0.42857142857142855,
+        "id": "pb26-per-77",
+        "stem": "Kajian teknis dalam perencanaan pembangunan digunakan untuk:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 75,
+      "stem": "Pernyataan yang tepat tentang konsep stok dan flow adalah:",
+      "options": [
+        "Investasi = stok, modal = flow",
+        "Investasi dan kapital = flow",
+        "Kekayaan = stok, pendapatan = flow",
+        "Pengangguran dan gaji = stok",
+        "Penerimaan dan belanja = stok"
+      ],
+      "match": {
+        "score": 0.3125,
+        "id": "pb26-eko-4",
+        "stem": "Dalam menganalisis variabel ekonomi makro, ada konsep yang disebut sebagai stock dan flow. Tentukan pernyataan yang tepat mengenai konsep tersebut"
+      },
+      "isDup": false
+    },
+    {
+      "no": 79,
+      "stem": "Kemampuan untuk melakukan pemantauan dan pengendalian atas pelaksanaan rencana tergantung pada:",
+      "options": [
+        "Metode yang tepat",
+        "Desain pemantauan",
+        "Instrumen pengumpulan data",
+        "Hanya (a) dan (c) benar",
+        "Semua benar"
+      ],
+      "match": {
+        "score": 0.22580645161290322,
+        "id": "pb26-per-5",
+        "stem": "Agar seorang perencana mampu melakukan pemantauan atas kemajuan pelaksanaan suatu rencana pembangunan yang sesuai dengan ukuran dan tujuan program/kegiatan yang telah ditetapkan, dan diakhiri dengan perumusan rekomendasi tindakan pengendalian/korektif, perlu memiliki kemampuan dalam:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 89,
+      "stem": "Jenis evaluasi pembangunan yang dilakukan selama pelaksanaan program berlangsung disebut evaluasi:",
+      "options": [
+        "Ex-ante",
+        "On-going",
+        "Ex-post",
+        "Mid-term",
+        "Akhir"
+      ],
+      "match": {
+        "score": 0.5,
+        "id": "pb26-per-16",
+        "stem": "Evaluasi yang dilakukan setelah suatu kegiatan atau program pembangunan selesai dilaksanakan disebut evaluasi:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 91,
+      "stem": "Evaluasi yang dilakukan pada tahap awal perencanaan suatu program disebut evaluasi:",
+      "options": [
+        "Ex-ante",
+        "On-going",
+        "Ex-post",
+        "Mid-term",
+        "Akhir"
+      ],
+      "match": {
+        "score": 0.5,
+        "id": "pb26-per-16",
+        "stem": "Evaluasi yang dilakukan setelah suatu kegiatan atau program pembangunan selesai dilaksanakan disebut evaluasi:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 95,
+      "stem": "Bagaimana modal sosial dapat mempengaruhi keberhasilan pembangunan yang berkelanjutan:",
+      "options": [
+        "Dengan mengabaikan kepercayaan antar masyarakat dan hanya fokus pada faktor ekonomi",
+        "Dengan menciptakan persaingan antar kelompok tanpa memperhatikan kerja sama",
+        "Dengan memperkuat jaringan sosial yang mendukung pengambilan keputusan kolektif dan pemecahan masalah secara bersama",
+        "Dengan mengurangi peran masyarakat dalam proses perencanaan dan pelaksanaan pembangunan",
+        "Dengan meningkatkan ketergantungan pada bantuan internasional"
+      ],
+      "match": {
+        "score": 0.4444444444444444,
+        "id": "pb26-sos-23",
+        "stem": "Apa yang dimaksud dengan modal sosial dalam proses pembangunan?"
+      },
+      "isDup": false
+    },
+    {
+      "no": 97,
+      "stem": "Data masa lalu yang disusun dalam urutan waktu disebut:",
+      "options": [
+        "Deret ukur",
+        "Deret hitung",
+        "Data series",
+        "Data paralel",
+        "Data sequential"
+      ],
+      "match": {
+        "score": 0.36363636363636365,
+        "id": "pb26-per-71",
+        "stem": "Data yang menggambarkan keadaan di suatu wilayah pada satu waktu tertentu disebut data:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 98,
+      "stem": "Jika data yang dikumpulkan mencerminkan kondisi rata-rata pendapatan penduduk di suatu daerah, maka data tersebut merupakan contoh dari:",
+      "options": [
+        "Data kualitatif",
+        "Data sekunder",
+        "Data primer",
+        "Data kuantitatif",
+        "Data spasial"
+      ],
+      "match": {
+        "score": 0.3125,
+        "id": "pb26-eko-40",
+        "stem": "Jika tingkat pengangguran di suatu daerah meningkat, maka kebijakan yang tepat untuk diambil adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 99,
+      "stem": "Jenis data yang dikumpulkan melalui wawancara langsung dengan masyarakat disebut:",
+      "options": [
+        "Data sekunder",
+        "Data primer",
+        "Data administratif",
+        "Data agregat",
+        "Data panel"
+      ],
+      "match": {
+        "score": 0.3,
+        "id": "pb26-sos-12",
+        "stem": "Modal sosial yang menghubungkan antara orang dengan di luar komunitasnya disebut"
+      },
+      "isDup": false
+    },
+    {
+      "no": 101,
+      "stem": "Input dalam analisis perkembangan dan perubahan dapat bersifat:",
+      "options": [
+        "Tunggal",
+        "Majemuk",
+        "Biner",
+        "Serial",
+        "Numerik"
+      ],
+      "match": {
+        "score": 0.36363636363636365,
+        "id": "pb26-per-10",
+        "stem": "Terkait dengan analisis perkembangan dan perubahan, maka input yang dibutuhkan adalah data-data:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 104,
+      "stem": "Indikator efisiensi menunjukkan perbandingan antara:",
+      "options": [
+        "Input dengan output",
+        "Target dengan pelaksanaan",
+        "Biaya dengan manfaat",
+        "Biaya dengan waktu",
+        "Biaya dengan hasil"
+      ],
+      "match": {
+        "score": 0.14285714285714285,
+        "id": "pb26-per-80",
+        "stem": "Langkah awal dalam menyusun indikator kinerja adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 105,
+      "stem": "Hasil capaian dari RKP(D) disebut",
+      "options": [
+        "Output",
+        "Outcome",
+        "Benefit",
+        "Impact",
+        "Semua benar"
+      ],
+      "match": {
+        "score": 0.21428571428571427,
+        "id": "pb26-per-18",
+        "stem": "Evaluasi yang menilai ketepatan materi dan hasil dari pelaksanaan suatu proyek (misalnya proyek pembangunan jalan) disebut evaluasi:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 108,
+      "stem": "Yang bukan merupakan metode proyeksi dalam perencanaan adalah:",
+      "options": [
+        "Eksponensial",
+        "Deret ukur",
+        "Algoritma",
+        "Aritmatika",
+        "Least square"
+      ],
+      "match": {
+        "score": 0.5555555555555556,
+        "id": "pb26-per-1",
+        "stem": "Yang bukan merupakan dasar hukum perencanaan pembangunan nasional adalah:"
+      },
+      "isDup": false
+    },
+    {
+      "no": 109,
+      "stem": "Apa tujuan utama dari pendampingan yang dilakukan kepada masyarakat atau pemerintah daerah:",
+      "options": [
+        "Agar masyarakat atau pemerintah daerah dapat mengelola anggaran tanpa pengawasan",
+        "Untuk memastikan proyek pembangunan dapat berjalan tanpa adanya evaluasi",
+        "Agar masyarakat atau pemerintah daerah tidak perlu melibatkan pihak eksternal dalam proses pengambilan keputusan",
+        "Untuk membantu masyarakat atau pemerintah daerah meningkatkan kapasitas dan keterampilan dalam merencanakan, melaksanakan, dan evaluasi program pembangunan",
+        "Agar masyarakat atau pemerintah daerah tidak perlu membuat laporan kemajuan proyek"
+      ],
+      "match": {
+        "score": 0.2727272727272727,
+        "id": "pb26-per-15",
+        "stem": "Pelayanan dasar yang menjadi kewenangan pemerintah daerah, kecuali:"
+      },
+      "isDup": false
+    }
+  ]
+}

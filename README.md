@@ -2,37 +2,27 @@
 
 Aplikasi latihan soal pilihan ganda (statis: `index.html` + `soal-bank.js`).
 
-## Bank soal (244)
+## Bank soal (255)
 
 | Sumber | Jumlah |
 |--------|--------|
-| Pre Test + Varian | 40 + 40 |
+| Pre Test | 40 |
+| JFP 2025 (Google Form, unik) | 51 |
 | Pembahasan 2026 | 164 |
 
-Sumber lama (v1, kasus, simulasi, gap) diarsipkan di `scripts/parts/archive/`.
+Sumber lama (v1, kasus, simulasi, gap, pretest varian) di `scripts/parts/archive/`.
 
 ## Regenerasi bank
 
 ```bash
-node scripts/build-pembahasan2026.mjs   # dari PDF Pembahasan 2026
+node scripts/extract-googleform-jfp2025.mjs   # dari Google Form
+node scripts/build-jfp2025.mjs                # parts/jfp2025.js
+node scripts/build-pembahasan2026.mjs         # dari PDF Pembahasan 2026
 node scripts/merge-bank.mjs
 ```
 
-Sumber aktif: `scripts/parts/pretest.js`, `scripts/parts/pembahasan2026.js`. Audit kualitas: `node scripts/audit-quality.mjs`.
+Sumber aktif: `pretest.js`, `jfp2025.js`, `pembahasan2026.js`.
 
 ## Deploy
 
 Lihat `docs/DEPLOY.md` (Vercel / Netlify / GitHub Pages).
-
-## Struktur
-
-```
-index.html          UI latihan/ujian
-soal-bank.js        bank gabungan (hasil merge)
-scripts/parts/      sumber soal aktif
-scripts/parts/archive/  bank lama (tidak digabung)
-scripts/merge-bank.mjs
-scripts/audit-quality.mjs
-docs/               panduan deploy & screening
-scripts/archive/    skrip sekali-pakai (tidak dipakai runtime)
-```
