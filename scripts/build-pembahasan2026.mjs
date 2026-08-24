@@ -63,6 +63,18 @@ const CORRECTIONS = {
     explainOverride:
       "[Dikoreksi] Menurut UU 23/2014 Pasal 12, urusan konkuren mencakup pekerjaan umum (≈infrastruktur) dan komunikasi & informatika. 'Pengelolaan pelayanan publik' bukan nama urusan resmi. Jawaban terkuat: B.",
   },
+  "EKONOMI|9": {
+    optionFix: {
+      A: "(a) ECBA",
+      B: "(b) Comparative Analysis",
+      C: "(c) EIRR",
+      E: "Semua benar",
+    },
+  },
+  "PERENCANAAN|52": {
+    stemOverride:
+      "Pernyataan tujuan pembangunan nasional sebagaimana yang tercantum dalam Pembukaan UUD 1945 merupakan landasan bagi arah perencanaan pembangunan kedepan. Dari beberapa pernyataan yang ada dibawah ini, menurut saudara manakah pernyataan yang kurang tepat :",
+  },
 };
 
 const SKIP = new Set(["SOSIAL|25", "SPASIAL|21", "SPASIAL|8", "PERENCANAAN|81", "PERENCANAAN|82"]);
@@ -204,6 +216,8 @@ function parseQuestionBlock(qtext) {
       mode = "opt";
       options.push(clean(om[2]));
     } else if (mode === "opt" && options.length) {
+      // Hindari gabung tabel/baris non-opsi ke opsi terakhir (mis. EKONOMI no.9)
+      if (/^Indikator\s+/i.test(line) || /^\d+\.\s/.test(line)) break;
       options[options.length - 1] = clean(options[options.length - 1] + " " + line);
     } else if (mode === "stem") {
       stemParts.push(line);
@@ -265,6 +279,7 @@ function parseAll(text) {
 
     if (corr) {
       if (corr.answer != null) answer = corr.answer;
+      if (corr.stemOverride) q.stem = corr.stemOverride;
       if (corr.optionFix) {
         for (const [k, v] of Object.entries(corr.optionFix)) {
           const idx = letterToIndex(k);

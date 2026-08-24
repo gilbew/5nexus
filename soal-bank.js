@@ -2605,7 +2605,7 @@ const BANK_PEMBAHASAN2026 = [
     source: "pembahasan2026",
     section: "PERENCANAAN",
     sectionNo: 52,
-    stem: "Pernyataan tujuan pembangunan naslonal sebagaimana yang tercantum dalam Pembukaan UUD 1945 merupakan landasan bagi arah perencanaan pembangunan kedepan. Dari beberapa pernyataan yang ada dibawah ini, menurut saudara manakah pernyataan yang kurang tepat :",
+    stem: "Pernyataan tujuan pembangunan nasional sebagaimana yang tercantum dalam Pembukaan UUD 1945 merupakan landasan bagi arah perencanaan pembangunan kedepan. Dari beberapa pernyataan yang ada dibawah ini, menurut saudara manakah pernyataan yang kurang tepat :",
     options: [
       "Pembangunan merupakan suatu proses jangka panjang yang saling berhubungan",
       "Pembangunan nasional dapat dipisahkan dengan pembangunan daerah",
@@ -2615,8 +2615,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 1,
     explain: "● Tujuan pembangunan nasional sebagaimana tercantum dalam Pembukaan UUD 1945 menjadi dasar arah pembangunan Indonesia. Pada hakikatnya, pembangunan merupakan proses yang: ○ berkelanjutan, ○ saling berkaitan antar sektor dan wilayah, ○ meningkatkan kesejahteraan masyarakat, ○ serta mendukung pertumbuhan ekonomi dan pembangunan manusia. ● Dalam sistem pembangunan Indonesia, pembangunan nasional dan pembangunan daerah merupakan satu kesatuan yang tidak dapat dipisahkan. ● Opsi B kurang tepat karena pembangunan daerah merupakan bagian dari pembangunan nasional. Pembangunan nasional membutuhkan: sinkronisasi pusat dan daerah, integrasi program, dan keselarasan kebijakan pembangunan. ○ Contoh: RPJMD provinsi/kabupaten harus mendukung RPJMN nasional. (B)",
-    fixedOptions: true,
-    version: 1
+    version: 2
   },
   {
     id: "pb26-per-53",
@@ -3318,16 +3317,16 @@ const BANK_PEMBAHASAN2026 = [
     sectionNo: 9,
     stem: "Instrumen penilaian proyek sosial dan publik, kecuali:",
     options: [
-      "ECBA",
-      "Comparative Analysis",
-      "EIRR",
+      "(a) ECBA",
+      "(b) Comparative Analysis",
+      "(c) EIRR",
       "Hanya (a) dan (c) benar",
-      "Semua benar Indikator Negara Maju Negara Berkembang IPM Tinggi (umumnya ≥ 0,85) Rendah (umumnya < 0,85) Angka Harapan Hidup Tinggi (umumnya ≥ 80 tahun) Rendah (umumnya < 80 tahun) Rata-Rata Lama Sekolah Tinggi (umumnya ≥ 10 tahun) Rendah (umumnya < 10 tahun) Kemampuan Belanja Tinggi (umumnya ≥ US$ 30.000/tahun) Rendah (umumnya < US$ 30.000/tahun) Dominasi Sektor Mata Pencaharian Jasa dan Industri Pertanian Dominasi Produk Nasional Produk Jasa dan Industri Produk Pertanian Dominasi Produk Ekspor Barang Jadi Bahan Mentah Tingkat Pengangguran Rendah Tinggi",
+      "Semua benar",
     ],
     answer: 1,
-    explain: "● ECBA (Economic Cost Benefit Analysis) → Metode analisis untuk menilai kelayakan proyek dengan membandingkan seluruh biaya dan manfaat dari sudut pandang ekonomi (masyarakat luas). Tidak hanya keuntungan finansial, tapi juga: manfaat sosial; dampak lingkungan; eksternalitas Contoh : Proyek pembangunan jalan: biaya: Rp 100 miliar; manfaat: penghematan waktu; penurunan biaya transportasi; peningkatan ekonomi daerah. Jika manfaat > biaya → proyek layak ● Comparative Analysis → Metode membandingkan beberapa alternatif berdasarkan kriteria tertentu. Fokus memilih alternatif terbaik, bukan menilai kelayakan secara ekonomi mendalam Contoh: Memilih lokasi pembangunan pasar: Lokasi A vs B vs C, dibandingkan dari akses, biaya, jumlah penduduk. Hanya alat bantu keputusan, bukan instrumen kelayakan ● EIRR (Economic Internal Rate of Return) → Tingkat pengembalian ekonomi suatu proyek yang menunjukkan seberapa besar manfaat ekonomi dibandingkan biaya dalam bentuk persentase. Digunakan untuk mengukur kelayakan proyek publik Contoh: Proyek bendungan: EIRR = 12%; Jika lebih tinggi dari standar (misal 10%) → proyek layak Instrumen penilaian proyek publik biasanya: berbasis ekonomi & sosial dan…",
+    explain: "● ECBA (Economic Cost Benefit Analysis) → Metode analisis untuk menilai kelayakan proyek dengan membandingkan seluruh biaya dan manfaat dari sudut pandang ekonomi (masyarakat luas). Tidak hanya keuntungan finansial, tapi juga: manfaat sosial; dampak lingkungan; eksternalitas Contoh : Proyek pembangunan jalan: biaya: Rp 100 miliar; manfaat: penghematan waktu; penurunan biaya transportasi; peningkatan ekonomi daerah. Jika manfaat > biaya → proyek layak ● Comparative Analysis → Metode membandingkan beberapa alternatif berdasarkan kriteria tertentu. Fokus memilih alternatif terbaik, bukan menilai kelayakan secara ekonomi mendalam Contoh: Memilih lokasi pembangunan pasar: Lokasi A vs B vs C, dibandingkan dari akses, biaya, jumlah penduduk. Hanya alat bantu keputusan, bukan instrumen kelayakan ● EIRR (Economic Internal Rate of Return) → Tingkat pengembalian ekonomi suatu proyek yang menunjukkan seberapa besar manfaat ekonomi dibandingkan biaya dalam bentuk persentase. Digunakan untuk mengukur kelayakan proyek publik Contoh: Proyek bendungan: EIRR = 12%; Jika lebih tinggi dari standar (misal 10%) → proyek layak Instrumen penilaian proyek publik biasanya: berbasis ekonomi & sosial dan digunakan untuk menilai kelayakan proyek (B)",
     fixedOptions: true,
-    version: 1
+    version: 2
   },
   {
     id: "pb26-eko-10",
