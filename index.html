@@ -862,8 +862,9 @@
       // Opsi komposit (mis. "Hanya (a) dan (c) benar") tidak boleh diacak — semua sumber
       function hasCompositeOptions(options) {
         return options.some(function (o) {
-          return /hanya\s+(?:butir|pernyataan|jawaban|pertanyaan)/i.test(o) ||
-            /butir\s*\(?[a-e]\)?\s+dan\s*\(?[a-e]\)?/i.test(o);
+          return /hanya\s+(?:butir|\([a-e]\)|pernyataan|jawaban|pertanyaan)/i.test(o) ||
+            /butir\s*\(?[a-e]\)?\s+dan\s*\(?[a-e]\)?/i.test(o) ||
+            /^[a-e]\s+dan\s+[a-e]\s+benar/i.test(o);
         });
       }
 
@@ -875,8 +876,8 @@
         }
         if (labeled < 2) return false;
         return options.some(function (o) {
-          return /semua\s+(?:jawaban|pernyataan)\s+benar/i.test(o) ||
-            /hanya\s+(?:butir|pernyataan|jawaban)/i.test(o);
+          return /semua\s+(?:jawaban|pernyataan)?\s*benar/i.test(o) ||
+            /hanya\s+(?:butir|\([a-e]\)|pernyataan|jawaban)/i.test(o);
         });
       }
 

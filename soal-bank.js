@@ -2474,15 +2474,16 @@ const BANK_PEMBAHASAN2026 = [
     sectionNo: 45,
     stem: "Landasan filosofis yang menyatakan tujuan dan cita-cita bangsa Indonesia dalam bernegara dinyatakan dalam Pembukaan Undang-Undang Dasar 1945. Berikut pernyataan yang termasuk di dalamnya, kecuali:",
     options: [
-      "Melindungi segenap bangsa Indonesia dan seluruh tumpah darah Indonesia",
-      "Perencanaan adalah proses pendefinisian tujuan dan membuat strategi untuk pencapaian tujuan tersebut; memajukan kesejahteraan umum, mencerdaskan kehidupan bangsa, dan ikut melaksanakan ketertiban dunia",
-      "Mewujudkan persatuan Indonesia",
-      "Mewujudkan keadilan sosial bagi seluruh rakyat Indonesia",
-      "a dan d benar",
+      "(a) Melindungi segenap bangsa Indonesia dan seluruh tumpah darah Indonesia",
+      "(b) Perencanaan adalah proses pendefinisian tujuan dan membuat strategi untuk pencapaian tujuan tersebut; memajukan kesejahteraan umum, mencerdaskan kehidupan bangsa, dan ikut melaksanakan ketertiban dunia",
+      "(c) Mewujudkan persatuan Indonesia",
+      "(d) Mewujudkan keadilan sosial bagi seluruh rakyat Indonesia",
+      "Hanya (a) dan (d) benar",
     ],
     answer: 1,
-    explain: "A. → bagian eksplisit tujuan negara, sesuai Pembukaan UUD 1945 ✔️ B. → Bagian awal “perencanaan adalah proses...” → ini bukan isi UUD 1945. Meskipun bagian akhir benar, tapi opsi ini terkontaminasi konsep lain ❌ C. → nilai dasar negara yang terkandung dalam Pembukaan D. → nilai dasar negara yang terkandung dalam Pembukaan✔️ E. → a dan d benar ✔️ Jawaban kecuali adalah opsi (B)",
-    version: 1
+    explain: "A. → bagian eksplisit tujuan negara, sesuai Pembukaan UUD 1945 ✔️ B. → Bagian awal “perencanaan adalah proses...” → ini bukan isi UUD 1945. Meskipun bagian akhir benar, tapi opsi ini terkontaminasi konsep lain ❌ C. → nilai dasar negara yang terkandung dalam Pembukaan D. → nilai dasar negara yang terkandung dalam Pembukaan✔️ E. → Hanya (a) dan (d) benar ✔️ Jawaban kecuali adalah opsi (B)",
+    fixedOptions: true,
+    version: 2
   },
   {
     id: "pb26-per-46",
@@ -3623,15 +3624,16 @@ const BANK_PEMBAHASAN2026 = [
     sectionNo: 25,
     stem: "Contoh eksternalitas positif adalah:",
     options: [
-      "Keindahan dan udara segar karena adanya taman kota",
-      "Peningkatan jumlah pesanan online makanan siap saji karena dibukanya kawasan bisnis baru",
-      "Peningkatan jumlah pesanan online minuman kopi karena dibukanya kawasan perkantoran baru",
-      "Pelatihan gratis untuk guru dan dosen oleh donor yang bekerja di Indonesia",
-      "a dan d benar",
+      "(a) Keindahan dan udara segar karena adanya taman kota",
+      "(b) Peningkatan jumlah pesanan online makanan siap saji karena dibukanya kawasan bisnis baru",
+      "(c) Peningkatan jumlah pesanan online minuman kopi karena dibukanya kawasan perkantoran baru",
+      "(d) Pelatihan gratis untuk guru dan dosen oleh donor yang bekerja di Indonesia",
+      "Hanya (a) dan (d) benar",
     ],
     answer: 4,
-    explain: "Lihat Pembahasan soal Ekonomi no 16 ❖ Bedah Opsi pilihan A. → warga sekitar ikut sehat tanpa bayar taman; Manfaat lingkungan & sosial ✅ B. → Ini mekanisme pasar normal; Ada transaksi langsung (penjual–pembeli)❌ C. → Ini efek ekonomi langsung (demand meningkat) ❌ D. → Penerima manfaat tidak membayar; Dampak lanjut: kualitas pendidikan naik. efek menyebar ke masyarakat ✅ ● Sering tertukar antara: eksternalitas vs multiplier effect / efek ekonomi biasa ● Cara bedakan: ○ Kalau ada transaksi langsung → bukan eksternalitas ○ Kalau pihak lain dapat manfaat tanpa bayar → eksternalitas Pilihan yang benar adalah A dan D (E)",
-    version: 1
+    explain: "Lihat Pembahasan soal Ekonomi no 16 ❖ Bedah Opsi pilihan A. → warga sekitar ikut sehat tanpa bayar taman; Manfaat lingkungan & sosial ✅ B. → Ini mekanisme pasar normal; Ada transaksi langsung (penjual–pembeli)❌ C. → Ini efek ekonomi langsung (demand meningkat) ❌ D. → Penerima manfaat tidak membayar; Dampak lanjut: kualitas pendidikan naik. efek menyebar ke masyarakat ✅ ● Sering tertukar antara: eksternalitas vs multiplier effect / efek ekonomi biasa ● Cara bedakan: ○ Kalau ada transaksi langsung → bukan eksternalitas ○ Kalau pihak lain dapat manfaat tanpa bayar → eksternalitas Pilihan yang benar: Hanya (a) dan (d) benar (E)",
+    fixedOptions: true,
+    version: 2
   },
   {
     id: "pb26-eko-26",

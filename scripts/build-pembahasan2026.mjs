@@ -71,6 +71,24 @@ const CORRECTIONS = {
       E: "Semua benar",
     },
   },
+  "EKONOMI|25": {
+    optionFix: {
+      A: "(a) Keindahan dan udara segar karena adanya taman kota",
+      B: "(b) Peningkatan jumlah pesanan online makanan siap saji karena dibukanya kawasan bisnis baru",
+      C: "(c) Peningkatan jumlah pesanan online minuman kopi karena dibukanya kawasan perkantoran baru",
+      D: "(d) Pelatihan gratis untuk guru dan dosen oleh donor yang bekerja di Indonesia",
+      E: "Hanya (a) dan (d) benar",
+    },
+  },
+  "PERENCANAAN|45": {
+    optionFix: {
+      A: "(a) Melindungi segenap bangsa Indonesia dan seluruh tumpah darah Indonesia",
+      B: "(b) Perencanaan adalah proses pendefinisian tujuan dan membuat strategi untuk pencapaian tujuan tersebut; memajukan kesejahteraan umum, mencerdaskan kehidupan bangsa, dan ikut melaksanakan ketertiban dunia",
+      C: "(c) Mewujudkan persatuan Indonesia",
+      D: "(d) Mewujudkan keadilan sosial bagi seluruh rakyat Indonesia",
+      E: "Hanya (a) dan (d) benar",
+    },
+  },
   "PERENCANAAN|52": {
     stemOverride:
       "Pernyataan tujuan pembangunan nasional sebagaimana yang tercantum dalam Pembukaan UUD 1945 merupakan landasan bagi arah perencanaan pembangunan kedepan. Dari beberapa pernyataan yang ada dibawah ini, menurut saudara manakah pernyataan yang kurang tepat :",
@@ -231,12 +249,11 @@ function parseQuestionBlock(qtext) {
 
 function hasCompoundOptionRefs(options) {
   const patterns = [
-    /hanya\s+.*?(?:butir|pernyataan|pertanyaan|jawaban)?\s*\(?[a-e]\)?/i,
-    /\([a-e]\)\s*(?:dan|atau|&|,)/i,
+    /hanya\s+(?:butir|\([a-e]\)|pernyataan|jawaban)/i,
     /butir\s*\(?[a-e]\)?\s+dan\s*\(?[a-e]\)?/i,
     /butir\s+[a-e]\s+dan\s+[a-e]/i,
-    /hanya\s+\([a-e]\)/i,
-    /,\s*\([a-e]\)\s+dan/i,
+    /^\([a-e]\)\s+dan\s+\([a-e]\)/i,
+    /^[a-e]\s+dan\s+[a-e]\s+benar/i,
   ];
   return options.some((o) => patterns.some((p) => p.test(o)));
 }
