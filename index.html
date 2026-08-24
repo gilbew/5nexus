@@ -859,15 +859,18 @@
         updatePoolInfo();
       }
 
-      // Opsi komposit (mis. "Hanya (a) dan (c) benar") tidak boleh diacak
-      function shouldFixOptions(q) {
-        if (q.fixedOptions) return true;
-        if (q.source !== "pembahasan2026") return false;
-        return q.options.some(function (o) {
+      // Opsi komposit (mis. "Hanya (a) dan (c) benar") tidak boleh diacak — semua sumber
+      function hasCompositeOptions(options) {
+        return options.some(function (o) {
           return /hanya\s+.*?(?:butir|pernyataan|pertanyaan|jawaban)?\s*\(?[a-e]\)?/i.test(o) ||
             /\([a-e]\)\s*(?:dan|atau|&|,)/i.test(o) ||
             /butir\s*\(?[a-e]\)?\s+dan\s*\(?[a-e]\)?/i.test(o);
         });
+      }
+
+      function shouldFixOptions(q) {
+        if (q.fixedOptions) return true;
+        return hasCompositeOptions(q.options);
       }
 
       // Acak posisi opsi sambil menjaga kunci jawaban tetap benar

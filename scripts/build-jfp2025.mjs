@@ -17,6 +17,33 @@ function esc(s) {
   return JSON.stringify(s);
 }
 
+function hasCompositeOptions(options) {
+  return options.some(
+    (o) =>
+      /hanya\s+.*?(?:butir|pernyataan|pertanyaan|jawaban)?\s*\(?[a-e]\)?/i.test(o) ||
+      /\([a-e]\)\s*(?:dan|atau|&|,)/i.test(o) ||
+      /butir\s*\(?[a-e]\)?\s+dan/i.test(o)
+  );
+}
+
+function isMetaOption(text) {
+  return /hanya|semua\s+(?:benar|jawaban\s+benar|pernyataan\s+benar)/i.test(text);
+}
+
+/** Tambah label (a)(b)(c) pada pernyataan agar opsi komposit tetap valid */
+function labelCompositeOptions(options) {
+  if (!hasCompositeOptions(options)) return options;
+  var labels = ["a", "b", "c", "d", "e"];
+  var stmt = 0;
+  return options.map(function (o) {
+    if (isMetaOption(o) || /^\([a-e]\)/i.test(o)) return o;
+    if (stmt >= labels.length) return o;
+    var out = "(" + labels[stmt] + ") " + o;
+    stmt++;
+    return out;
+  });
+}
+
 const parsed = JSON.parse(fs.readFileSync(PARSED, "utf8"));
 const keys = JSON.parse(fs.readFileSync(ANSWERS, "utf8"));
 
@@ -24,6 +51,8 @@ const bank = parsed.questions.map((q) => {
   const k = keys[String(q.no)];
   if (!k) throw new Error("Missing answer for GF-" + q.no);
   if (k.answer < 0 || k.answer > 4) throw new Error("Invalid answer index GF-" + q.no);
+  const options = labelCompositeOptions(q.options);
+  const fixedOptions = hasCompositeOptions(options);
   return {
     id: "JFP-" + String(q.no).padStart(3, "0"),
     cluster: k.cluster,
@@ -31,9 +60,10 @@ const bank = parsed.questions.map((q) => {
     source: "jfp2025",
     formNo: q.no,
     stem: q.stem.endsWith(":") ? q.stem : q.stem + (q.stem.endsWith("?") ? "" : ""),
-    options: q.options,
+    options,
     answer: k.answer,
     explain: k.explain,
+    fixedOptions,
     version: 1,
   };
 });
@@ -53,6 +83,7 @@ bank.forEach((q, idx) => {
   file += "    ],\n";
   file += `    answer: ${q.answer},\n`;
   file += `    explain: ${esc(q.explain)},\n`;
+  if (q.fixedOptions) file += "    fixedOptions: true,\n";
   file += `    version: ${q.version}\n`;
   file += "  }" + (idx < bank.length - 1 ? "," : "") + "\n";
 });

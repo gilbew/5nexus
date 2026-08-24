@@ -691,14 +691,15 @@ const BANK_JFP2025 = [
     formNo: 4,
     stem: "Apa manfaat utama dari dilakukannya evaluasi program dalam proses pembangunan",
     options: [
-      "Untuk memastikan proyek dapat selesai tanpa perubahan anggaran",
-      "Untuk menilai hasil akhir tanpa melihat proses yang telah dilalui",
-      "Untuk mengidentifikasi kekuatan dan kelemahan dalam pelaksanaan proyek dan mengambil langkah perbaikan",
-      "Untuk menghindari penggunaan sumber daya yang terlalu berlebih dalam proyek",
+      "(a) Untuk memastikan proyek dapat selesai tanpa perubahan anggaran",
+      "(b) Untuk menilai hasil akhir tanpa melihat proses yang telah dilalui",
+      "(c) Untuk mengidentifikasi kekuatan dan kelemahan dalam pelaksanaan proyek dan mengambil langkah perbaikan",
+      "(d) Untuk menghindari penggunaan sumber daya yang terlalu berlebih dalam proyek",
       "Untuk hanya mencatat laporan keuangan proyek tanpa evaluasi terhadap kegiatan",
     ],
     answer: 2,
     explain: "Evaluasi program bertujuan menilai pelaksanaan, mengidentifikasi kekuatan dan kelemahan, serta merumuskan perbaikan agar program lebih efektif.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -745,14 +746,15 @@ const BANK_JFP2025 = [
     formNo: 8,
     stem: "Kinerja pembangunan daerah dapat diukur melalui indikator:",
     options: [
-      "Produk Domestik Regional Bruto (PDRB)",
-      "Indeks Pembangunan Manusia (IPM)",
-      "Tingkat kemiskinan",
+      "(a) Produk Domestik Regional Bruto (PDRB)",
+      "(b) Indeks Pembangunan Manusia (IPM)",
+      "(c) Tingkat kemiskinan",
       "Hanya (a) dan (b) benar",
       "Semua benar",
     ],
     answer: 4,
     explain: "Kinerja pembangunan daerah lazim diukur lewat PDRB, IPM, dan tingkat kemiskinan — indikator ekonomi, human development, dan sosial.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -835,14 +837,15 @@ const BANK_JFP2025 = [
     formNo: 17,
     stem: "Apa yang menjadi asumsi dasar dari melakukan fasilitasi:",
     options: [
-      "Memiliki keterampilan komunikasi, tidak ada orang yang sama (setiap individu unik), proses pembelajaran seseorang berbeda-beda sesuai dengan keunikan mereka, dan setiap orang akan lebih komit dengan keputusannya sendiri",
-      "Proses fasilitasi bertujuan untuk mencapai konsensus dan pemahaman bersama melalui komunikasi terbuka dan kolaborasi",
-      "Setiap peserta dihargai dan diberi kesempatan untuk berbicara, tanpa ada pihak yang didominasi atau diabaikan",
+      "(a) Memiliki keterampilan komunikasi, tidak ada orang yang sama (setiap individu unik), proses pembelajaran seseorang berbeda-beda sesuai dengan keunikan mereka, dan setiap orang akan lebih komit dengan keputusannya sendiri",
+      "(b) Proses fasilitasi bertujuan untuk mencapai konsensus dan pemahaman bersama melalui komunikasi terbuka dan kolaborasi",
+      "(c) Setiap peserta dihargai dan diberi kesempatan untuk berbicara, tanpa ada pihak yang didominasi atau diabaikan",
       "Fasilitator hanya bertugas untuk mengarahkan diskusi dan bukan untuk berpartisipasi dalam memberikan ide atau pendapat",
-      "Semuanya benar",
+      "(d) Semuanya benar",
     ],
     answer: 4,
     explain: "Asumsi fasilitasi: individu unik, proses belajar berbeda, partisipasi setara, fasilitator mengarahkan tanpa mendominasi, dan tujuan konsensus — semua pernyataan relevan.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -853,14 +856,15 @@ const BANK_JFP2025 = [
     formNo: 18,
     stem: "Penjaringan aspirasi masyarakat selain Musrenbang dapat dilakukan melalui:",
     options: [
-      "Rapat teknis",
-      "Forum konsultasi publik",
-      "Seminar dan lokakarya",
+      "(a) Rapat teknis",
+      "(b) Forum konsultasi publik",
+      "(c) Seminar dan lokakarya",
       "Hanya (a) dan (c) benar",
       "Semua benar",
     ],
     answer: 4,
     explain: "Penjaringan aspirasi selain Musrenbang dapat melalui rapat teknis, forum konsultasi publik, dan seminar/lokakarya.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -979,14 +983,15 @@ const BANK_JFP2025 = [
     formNo: 30,
     stem: "Penentu baik–buruknya hasil perencanaan adalah:",
     options: [
-      "Kesesuaian dengan kondisi yang ada",
-      "Pelaksanaan tidak semestinya",
-      "Penyusunan tidak tepat",
+      "(a) Kesesuaian dengan kondisi yang ada",
+      "(b) Pelaksanaan tidak semestinya",
+      "(c) Penyusunan tidak tepat",
       "Hanya (a) dan (c) benar",
       "Semua benar",
     ],
     answer: 4,
     explain: "Kualitas perencanaan ditentukan kesesuaian dengan kondisi, ketepatan penyusunan, dan pelaksanaan semestinya.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1033,14 +1038,15 @@ const BANK_JFP2025 = [
     formNo: 33,
     stem: "Istilah “trickle down effect” dalam konteks pembangunan ekonomi berarti:",
     options: [
-      "Pertumbuhan ekonomi yang tinggi otomatis akan menetes ke bawah dan meningkatkan kesejahteraan masyarakat miskin",
-      "Pengaliran sumber daya dari daerah miskin ke daerah kaya",
+      "(a) Pertumbuhan ekonomi yang tinggi otomatis akan menetes ke bawah dan meningkatkan kesejahteraan masyarakat miskin",
+      "(b) Pengaliran sumber daya dari daerah miskin ke daerah kaya",
       "Penyebaran efek pembangunan hanya pada sektor industri",
-      "Dampak negatif pembangunan terhadap masyarakat kecil",
-      "Ketergantungan ekonomi antar daerah",
+      "(c) Dampak negatif pembangunan terhadap masyarakat kecil",
+      "(d) Ketergantungan ekonomi antar daerah",
     ],
     answer: 0,
     explain: "Trickle-down effect: manfaat pertumbuhan ekonomi diharapkan menetes ke lapisan bawah meski kritik teori ini menekankan keterbatasan redistribusi otomatis.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1051,14 +1057,15 @@ const BANK_JFP2025 = [
     formNo: 34,
     stem: "Berdasarkan data bencana pada tahun 2024, sekitar 93% kejadian bencana yang terjadi di Indonesia merupakan bencana hidrometeorologi seperti banjir, tanah longsor, dan angin puting beliung. Tren ini diperkirakan akan terus meningkat apabila kondisi dasar yang ada tidak diperbaiki. Dalam menginventarisasi masalah bencana, berdasarkan pengamatan saudara, faktor nonalam yang menjadi penyebab terjadinya bencana hidrometeorologi tersebut adalah:",
     options: [
-      "Perubahan tata guna lahan yang tidak mengikuti rencana",
-      "Intensitas dan curah hujan yang semakin meningkat",
-      "Penurunan kemampuan permukaan tanah dalam menginfiltrasi (menyerap) air",
+      "(a) Perubahan tata guna lahan yang tidak mengikuti rencana",
+      "(b) Intensitas dan curah hujan yang semakin meningkat",
+      "(c) Penurunan kemampuan permukaan tanah dalam menginfiltrasi (menyerap) air",
       "Hanya butir (a) dan (c) yang benar",
       "Semua jawaban benar",
     ],
     answer: 3,
-    explain: "Faktor non-alam bencana hidrometeorologi: perubahan tata guna lahan (a) dan penurunan infiltrasi tanah (c). Curah hujan (b) bersifat alamiah.",
+    explain: "Butir (a) tata guna lahan dan (c) penurunan infiltrasi tanah adalah faktor non-alam (anthropogenic). Butir (b) curah hujan bersifat alamiah. Jawaban tunggal (a) saja tidak lengkap — pilih opsi yang menyatakan (a) dan (c) benar.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1087,14 +1094,15 @@ const BANK_JFP2025 = [
     formNo: 37,
     stem: "Makna pemilihan presiden secara langsung pasca amandemen UUD 1945 adalah:",
     options: [
-      "Bentuk pendidikan politik bagi pemilih",
-      "Cerminan faktor emosional dan psikologis pemilih",
-      "Penentu arah pembangunan lima tahun ke depan",
+      "(a) Bentuk pendidikan politik bagi pemilih",
+      "(b) Cerminan faktor emosional dan psikologis pemilih",
+      "(c) Penentu arah pembangunan lima tahun ke depan",
       "Hanya (a) dan (c) benar",
       "Semua benar",
     ],
     answer: 4,
     explain: "Pemilu presiden langsung pasca-amandemen UUD 1945 berimplikasi pendidikan politik, dinamika psikologis pemilih, dan penentuan arah pembangunan lima tahun.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1249,14 +1257,15 @@ const BANK_JFP2025 = [
     formNo: 51,
     stem: "Apa yang dimaksud dengan melakukan pendampingan dalam implementasi program pembangunan:",
     options: [
-      "Pendampingan adalah proses fasilitasi dalam mengidentifikasi kebutuhan dan memecahkan masalah serta mendorong tumbuhnya inisiatif dalam proses pengambilan keputusan sehingga kemandirian secara berkelanjutan dapat diwujudkan",
-      "Merupakan hal yang berfokus pada pembangunan infrastruktur fisik yang melibatkan masyarakat",
-      "Merupakan pelibatan pihak eksternal untuk memberi dukungan teknis, sosial dan pembelajaran kepada masyarakat pada tahap proses pembangunan tertentu",
-      "Memberikan hibah langsung kepada individu tanpa pelatihan atau pengawasan",
+      "(a) Pendampingan adalah proses fasilitasi dalam mengidentifikasi kebutuhan dan memecahkan masalah serta mendorong tumbuhnya inisiatif dalam proses pengambilan keputusan sehingga kemandirian secara berkelanjutan dapat diwujudkan",
+      "(b) Merupakan hal yang berfokus pada pembangunan infrastruktur fisik yang melibatkan masyarakat",
+      "(c) Merupakan pelibatan pihak eksternal untuk memberi dukungan teknis, sosial dan pembelajaran kepada masyarakat pada tahap proses pembangunan tertentu",
+      "(d) Memberikan hibah langsung kepada individu tanpa pelatihan atau pengawasan",
       "Memprioritaskan pembangunan hanya pada sektor ekonomi tanpa memperhatikan dampak sosial",
     ],
     answer: 0,
     explain: "Pendampingan adalah proses fasilitasi identifikasi kebutuhan, pemecahan masalah, dan penguatan kemandirian berkelanjutan — bukan hibah atau intervensi semata.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1267,14 +1276,15 @@ const BANK_JFP2025 = [
     formNo: 58,
     stem: "Tujuan dari UU No. 25 Tahun 2004 tentang SPPN adalah untuk:",
     options: [
-      "Menjamin koordinasi antar pelaku pembangunan",
-      "Meningkatkan partisipasi masyarakat",
-      "Menjamin keterkaitan dan konsistensi antar perencanaan",
+      "(a) Menjamin koordinasi antar pelaku pembangunan",
+      "(b) Meningkatkan partisipasi masyarakat",
+      "(c) Menjamin keterkaitan dan konsistensi antar perencanaan",
       "Hanya (a) dan (c) benar",
       "Semua benar",
     ],
     answer: 4,
     explain: "UU 25/2004 SPPN: koordinasi pelaku pembangunan, partisipasi masyarakat, dan keterkaitan antar perencanaan — ketiganya tujuan utama.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1321,14 +1331,15 @@ const BANK_JFP2025 = [
     formNo: 67,
     stem: "Ketimpangan pembangunan antarwilayah dapat terjadi karena:",
     options: [
-      "Perbedaan potensi sumber daya alam",
-      "Ketimpangan investasi",
-      "Ketimpangan infrastruktur",
+      "(a) Perbedaan potensi sumber daya alam",
+      "(b) Ketimpangan investasi",
+      "(c) Ketimpangan infrastruktur",
       "Hanya (a) dan (b) benar",
       "Semua benar",
     ],
     answer: 4,
     explain: "Ketimpangan antarwilayah disebabkan perbedaan SDA, investasi, dan infrastruktur — semua benar.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1393,14 +1404,15 @@ const BANK_JFP2025 = [
     formNo: 79,
     stem: "Kemampuan untuk melakukan pemantauan dan pengendalian atas pelaksanaan rencana tergantung pada:",
     options: [
-      "Metode yang tepat",
-      "Desain pemantauan",
-      "Instrumen pengumpulan data",
+      "(a) Metode yang tepat",
+      "(b) Desain pemantauan",
+      "(c) Instrumen pengumpulan data",
       "Hanya (a) dan (c) benar",
       "Semua benar",
     ],
     answer: 4,
     explain: "Pemantauan-pengendalian efektif memerlukan metode tepat, desain pemantauan, dan instrumen pengumpulan data.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1448,13 +1460,14 @@ const BANK_JFP2025 = [
     stem: "Bagaimana modal sosial dapat mempengaruhi keberhasilan pembangunan yang berkelanjutan:",
     options: [
       "Dengan mengabaikan kepercayaan antar masyarakat dan hanya fokus pada faktor ekonomi",
-      "Dengan menciptakan persaingan antar kelompok tanpa memperhatikan kerja sama",
-      "Dengan memperkuat jaringan sosial yang mendukung pengambilan keputusan kolektif dan pemecahan masalah secara bersama",
-      "Dengan mengurangi peran masyarakat dalam proses perencanaan dan pelaksanaan pembangunan",
-      "Dengan meningkatkan ketergantungan pada bantuan internasional",
+      "(a) Dengan menciptakan persaingan antar kelompok tanpa memperhatikan kerja sama",
+      "(b) Dengan memperkuat jaringan sosial yang mendukung pengambilan keputusan kolektif dan pemecahan masalah secara bersama",
+      "(c) Dengan mengurangi peran masyarakat dalam proses perencanaan dan pelaksanaan pembangunan",
+      "(d) Dengan meningkatkan ketergantungan pada bantuan internasional",
     ],
     answer: 2,
     explain: "Modal sosial memperkuat jaringan kepercayaan dan kerja sama kolektif — kunci pembangunan berkelanjutan.",
+    fixedOptions: true,
     version: 1
   },
   {
