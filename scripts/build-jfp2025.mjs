@@ -20,9 +20,18 @@ function esc(s) {
 function hasCompositeOptions(options) {
   return options.some(
     (o) =>
-      /hanya\s+.*?(?:butir|pernyataan|pertanyaan|jawaban)?\s*\(?[a-e]\)?/i.test(o) ||
-      /\([a-e]\)\s*(?:dan|atau|&|,)/i.test(o) ||
+      /hanya\s+(?:butir|pernyataan|jawaban|pertanyaan)/i.test(o) ||
       /butir\s*\(?[a-e]\)?\s+dan/i.test(o)
+  );
+}
+
+function hasLabeledCompositeFormat(options) {
+  const labeled = options.filter((o) => /^\([a-e]\)\s/.test(o)).length;
+  if (labeled < 2) return false;
+  return options.some(
+    (o) =>
+      /semua\s+(?:jawaban|pernyataan)\s+benar/i.test(o) ||
+      /hanya\s+(?:butir|pernyataan|jawaban)/i.test(o)
   );
 }
 
@@ -52,7 +61,7 @@ const bank = parsed.questions.map((q) => {
   if (!k) throw new Error("Missing answer for GF-" + q.no);
   if (k.answer < 0 || k.answer > 4) throw new Error("Invalid answer index GF-" + q.no);
   const options = labelCompositeOptions(q.options);
-  const fixedOptions = hasCompositeOptions(options);
+  const fixedOptions = hasCompositeOptions(options) || hasLabeledCompositeFormat(options);
   return {
     id: "JFP-" + String(q.no).padStart(3, "0"),
     cluster: k.cluster,

@@ -862,14 +862,27 @@
       // Opsi komposit (mis. "Hanya (a) dan (c) benar") tidak boleh diacak — semua sumber
       function hasCompositeOptions(options) {
         return options.some(function (o) {
-          return /hanya\s+.*?(?:butir|pernyataan|pertanyaan|jawaban)?\s*\(?[a-e]\)?/i.test(o) ||
-            /\([a-e]\)\s*(?:dan|atau|&|,)/i.test(o) ||
+          return /hanya\s+(?:butir|pernyataan|jawaban|pertanyaan)/i.test(o) ||
             /butir\s*\(?[a-e]\)?\s+dan\s*\(?[a-e]\)?/i.test(o);
+        });
+      }
+
+      // Format UKOM: pernyataan berlabel (a)(b)(c) + opsi meta "Hanya…" / "Semua benar"
+      function hasLabeledCompositeFormat(options) {
+        var labeled = 0;
+        for (var i = 0; i < options.length; i++) {
+          if (/^\([a-e]\)\s/.test(options[i])) labeled++;
+        }
+        if (labeled < 2) return false;
+        return options.some(function (o) {
+          return /semua\s+(?:jawaban|pernyataan)\s+benar/i.test(o) ||
+            /hanya\s+(?:butir|pernyataan|jawaban)/i.test(o);
         });
       }
 
       function shouldFixOptions(q) {
         if (q.fixedOptions) return true;
+        if (hasLabeledCompositeFormat(q.options)) return true;
         return hasCompositeOptions(q.options);
       }
 

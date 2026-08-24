@@ -381,7 +381,7 @@ const BANK_JFP2025 = [
       "Semua jawaban benar",
     ],
     answer: 3,
-    explain: "Butir (a) tata guna lahan dan (c) penurunan infiltrasi tanah adalah faktor non-alam (anthropogenic). Butir (b) curah hujan bersifat alamiah. Jawaban tunggal (a) saja tidak lengkap — pilih opsi yang menyatakan (a) dan (c) benar.",
+    explain: "Faktor non-alam: (a) perubahan tata guna lahan dan (c) penurunan infiltrasi tanah. (b) curah hujan bersifat alamiah. Butir (a) benar tapi tidak lengkap — pilih opsi meta \"Hanya butir (a) dan (c) yang benar\", bukan butir tunggal.",
     fixedOptions: true,
     version: 1
   },
