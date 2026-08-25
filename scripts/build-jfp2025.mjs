@@ -20,18 +20,13 @@ function esc(s) {
 function hasCompositeOptions(options) {
   return options.some(
     (o) =>
-      /hanya\s+(?:butir|pernyataan|jawaban|pertanyaan)/i.test(o) ||
-      /butir\s*\(?[a-e]\)?\s+dan/i.test(o)
-  );
-}
-
-function hasLabeledCompositeFormat(options) {
-  const labeled = options.filter((o) => /^\([a-e]\)\s/.test(o)).length;
-  if (labeled < 2) return false;
-  return options.some(
-    (o) =>
-      /semua\s+(?:jawaban|pernyataan)\s+benar/i.test(o) ||
-      /hanya\s+(?:butir|pernyataan|jawaban)/i.test(o)
+      /semua\s+(?:pernyataan|jawaban)?\s*benar/i.test(o) ||
+      /^semua\s+benar\.?$/i.test(o) ||
+      /hanya\s+(?:butir|\([a-e]\)|pernyataan|jawaban)/i.test(o) ||
+      /butir\s*\(?[a-e]\)?\s+dan/i.test(o) ||
+      /^[a-e]\s+dan\s+[a-e]\s+benar/i.test(o) ||
+      /pernyataan\s+[A-Ea-e]\s+dan\s+[A-Ea-e]\s+benar/i.test(o) ||
+      /tidak\s+ada\s+yang\s+benar/i.test(o)
   );
 }
 
@@ -61,7 +56,7 @@ const bank = parsed.questions.map((q) => {
   if (!k) throw new Error("Missing answer for GF-" + q.no);
   if (k.answer < 0 || k.answer > 4) throw new Error("Invalid answer index GF-" + q.no);
   const options = labelCompositeOptions(q.options);
-  const fixedOptions = hasCompositeOptions(options) || hasLabeledCompositeFormat(options);
+  const fixedOptions = hasCompositeOptions(options);
   return {
     id: "JFP-" + String(q.no).padStart(3, "0"),
     cluster: k.cluster,

@@ -249,11 +249,13 @@ function parseQuestionBlock(qtext) {
 
 function hasCompoundOptionRefs(options) {
   const patterns = [
+    /semua\s+(?:pernyataan|jawaban)?\s*benar/i,
+    /^semua\s+benar\.?$/i,
     /hanya\s+(?:butir|\([a-e]\)|pernyataan|jawaban)/i,
     /butir\s*\(?[a-e]\)?\s+dan\s*\(?[a-e]\)?/i,
-    /butir\s+[a-e]\s+dan\s+[a-e]/i,
-    /^\([a-e]\)\s+dan\s+\([a-e]\)/i,
     /^[a-e]\s+dan\s+[a-e]\s+benar/i,
+    /pernyataan\s+[A-Ea-e]\s+dan\s+[A-Ea-e]\s+benar/i,
+    /tidak\s+ada\s+yang\s+benar/i,
   ];
   return options.some((o) => patterns.some((p) => p.test(o)));
 }

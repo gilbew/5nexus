@@ -1,3 +1,4 @@
+// Bank Pembahasan 2026 — node scripts/build-pembahasan2026.mjs
 const BANK_PEMBAHASAN2026 = [
   {
     id: "pb26-per-1",
@@ -35,6 +36,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 2,
     explain: "DPR/DPRD punya 3 fungsi utama: Legislasi; Anggaran; Pengawasan. Fungsi pengawasan ini berlaku untuk: “pelaksanaan undang-undang dan kebijakan pemerintah”. Adapun bentuk pengawasan DPR/DPRD dalam kebijakan fiskal dan moneter adalah UU Keuangan negara (kuat) dan UU Bank Indonesia (terbatas). DPR melakukan pengawasan melalui fungsi pengawasan terhadap pelaksanaan APBN/APBD untuk kebijakan fiskal secara langsung, sedangkan terhadap kebijakan moneter yang dilaksanakan oleh Bank Indonesia dilakukan secara tidak langsung melalui mekanisme rapat kerja, evaluasi laporan, dan fungsi check and balance. (C)",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -555,6 +557,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 1,
     explain: "Yang ditanya adalah indikator fleksibilitas dalam perencanaan (SPPN): ● mampu menyesuaikan diri terhadap perubahan ● tidak kaku ● punya opsi/alternatif A → terkait pendekatan politik, bukan fleksibilitas ❌ B → adaptif terhadap perubahan ✅ C → fleksibel ≠ tidak konsisten; perencanaan tetap harus terarah dan konsisten ❌ D → Ini indikator partisipatif, bukan fleksibilitas ❌ (B)",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -903,6 +906,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 2,
     explain: "● Pada Pasal 2 UU 25/2004 → Perencanaan pembangunan disusun secara sistematis, terarah, terpadu, menyeluruh, dan tanggap terhadap perubahan. ❖ Perencanaan Strategik → Perencanaan strategik berfokus pada penentuan arah, prioritas, sasaran, strategi, dan penggunaan sumber daya untuk mencapai tujuan tertentu. ❖ Perencanaan Sektoral → Perencanaan sektoral adalah perencanaan yang berfokus pada satu sektor tertentu (Parsial), ❖ Perencanaan Comprehensive → perencanaan yang bersifat menyeluruh, terpadu, dan melihat keterkaitan antar unsur pembangunan. ❖ Perencanaan Kolaboratif → Perencanaan kolaboratif menekankan keterlibatan banyak pihak ● Jawaban terbaik adalah c. Comprehensive, karena kalimat UU menekankan perencanaan yang menyeluruh dan terpadu, bukan parsial, bukan hanya sektoral, dan bukan sekadar kolaboratif. (C)",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -960,6 +964,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 3,
     explain: "● “tidak menyimpang dari tujuan perencanaan” → Artinya: bagaimana memastikan kebijakan tetap rasional, efisien, dan tepat sasaran. A. Analisis kapasitas fiskal → Penting untuk mengetahui kemampuan anggaran. Tapi tidak menjamin apakah alokasi tepat guna/tepat sasaran ❌ B. Analisis geopolitik → Relevan untuk kebijakan luar negeri/strategis, Tidak relevan langsung dengan refocusing anggaran domestik ❌ C. Analisis aspirasi masyarakat → Penting dalam perencanaan partisipatif, Tapi tidak cukup untuk menjamin kebijakan efisien dan tidak menyimpang tujuan ❌ D. Analisis biaya-manfaat → Digunakan untuk memastikan: efisiensi; efektivitas; konsistensi dengan tujuan. ✅ E. Semua benar → Tidak semua opsi langsung menjamin kesesuaian dengan tujuan ❌ Jawaban: (D). Analisis biaya-manfaat",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1115,6 +1120,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 0,
     explain: "● Dalam sistem perencanaan pembangunan: ○ RPJP → jangka panjang, ○ RPJM → jangka menengah, ○ RKP → tahunan. ● Karena RKP/RKPD bersifat tahunan, operasional, dan lebih dekat pada pelaksanaan program/kegiatan → maka capaian yang paling terkait adalah output. ● Output merupakan: ○ hasil langsung kegiatan, ○ barang/jasa yang dihasilkan, ○ dan capaian jangka pendek. ● sedangkan outcome, benefit, impact, → lebih terlihat pada jangka menengah dan panjang. (A)",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1248,6 +1254,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 3,
     explain: "● Evaluasi RKPD pada dasarnya dilakukan untuk: ○ Menilai capaian RKPD tahun berjalan ○ Menjadi bahan penyusunan RKPD tahun berikutnya ○ Mengukur keterkaitan terhadap target RPJMD ○ Menilai konsistensi program/kegiatan dan kinerja pembangunan daerah ● Hal ini sejalan dengan prinsip monitoring dan evaluasi pembangunan dalam sistem perencanaan pembangunan daerah sebagaimana diatur dalam Permendagri 86 Tahun 2017. ● Komponen yang lazim dievaluasi: ○ capaian RKPD tahun berjalan, ○ kinerja tahun sebelumnya, ○ ketercapaian target RPJMD, ○ efektivitas program/kegiatan. ● Karena istilah “kinerja RKPD yang berdekatan” tidak dikenal dalam sistem evaluasi pembangunan daerah, maka ini adalah jawaban yang benar (D)",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1305,6 +1312,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 2,
     explain: "● Evaluasi Konvensional, biasanya: ○ top-down, berbasis indikator formal, fokus pada target dokumen, evaluator berasal dari luar. ● Evaluasi Partisipatif, Melibatkan: ○ pelaksana, penerima manfaat, masyarakat, stakeholder lapangan. ● Karena berbasis pengalaman nyata di lapangan maka evaluasi partisipatif dapat menemukan: ○ unintended impacts, masalah baru, kebutuhan baru, dan dinamika sosial yang sebelumnya tidak diprediksi. ● Evaluasi partisipatif mampu melihat isu dan indikator di luar dokumen proyek karena dalam pelaksanaan program sering muncul dinamika, masalah, dan kebutuhan baru yang sebelumnya belum terpikirkan pada tahap perencanaan. Oleh sebab itu evaluasi partisipatif lebih kaya terhadap realitas lapangan dibanding evaluasi konvensional. (C)",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1422,6 +1430,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 3,
     explain: "● Dalam Sistem Perencanaan Pembangunan Nasional (SPPN): dokumen pusat dan daerah harus: selaras,terintegrasi, berjenjang. ● Tujuannya untuk menghindari tumpang tindih,meningkatkan efektivitas pembangunan dan menjaga prioritas nasional tetap tercapai. ● Pembahasan Pilihan : A. → Jika daerah tidak mengikuti arah pembangunan nasional, maka bisa terjadi: target berbeda, prioritas tidak sinkron, kebijakan pusat dan daerah bertabrakan. ✅ ex: pusat fokus ketahanan pangan, daerah justru fokus sektor lain tanpa dukungan nasional. akibatnya terjadi policy gap/kesenjangan kebijakan. B. → Tanpa sinkronisasi: pusat dan daerah bisa membuat program serupa, kegiatan tumpang tindih, sasaran program sama. ✅ ex: kementerian membangun program pelatihan, daerah membuat program identik, output menjadi tidak efisien. C. → Karena: program tumpang tindih, prioritas tidak terintegrasi,penggunaan anggaran tidak optimal. Akibatnya: belanja pembangunan tidak efektif ✅ ● Jawaban : Semua Benar (D)",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1881,6 +1890,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 3,
     explain: "● PDB hanya menghitung nilai barang dan jasa akhir yang diproduksi dalam suatu periode. Tidak menghitung transaksi keuangan (saham, obligasi) / jual beli aset finansial. ● A,B,C Tidak ada produksi barang/jasa baru ● D → Membayar manajer keuangan → Ada jasa yang diberikan, Ada nilai ekonomi (fee) → Produksi Jasa → Masuk PDB (D)",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -1976,6 +1986,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 0,
     explain: "● Lihat Pembahasan soal Ekonomi no 10 Club goods (barang klub) memiliki 2 ciri utama: 1) Non-rivalry (Tidak saling Berebut) → Kalau kamu pakai, orang lain tetap bisa pakai tanpa berkurang 2) excludability (Bisa Dilarang) → Orang bisa dilarang mengakses kalau tidak bayar (A)",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -2073,6 +2084,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 2,
     explain: "● Soal ini menguji konsep dasar fungsi produksi (production function): Output (produksi) ditentukan oleh faktor produksi utama: lahan, tenaga kerja, modal, teknologi. ● yang sudah ada : ○ Teknologi ✔ (sudah ada) ○ Input produksi ✔ (benih, pupuk, dll tersedia) ● Jadi tinggal cari faktor paling menentukan yang tersisa A. → Permintaan mempengaruhi keputusan produksi, bukan kapasitas produksi langsung. Ini faktor eksternal (demand side), bukan penentu output fisik. ❌ B. → Harga mempengaruhi insentif petani, bukan kemampuan produksi secara langsung. Ini juga faktor pasar, bukan faktor produksi utama ❌ C. → Ini faktor produksi paling fundamental untuk pangan, Produksi pangan sangat bergantung pada luas dan kualitas lahan. ✅ D. → Gudang berpengaruh pada: distribusi; penyimpanan; stabilitas harga. Tapi tidak menentukan jumlah produksi di hulu ❌ E. → Tidak semua opsi berperan langsung pada produksi (output). Perlu dibedakan: ● Produksi (supply side) → lahan, tenaga kerja, modal ● Pasar (demand side) → harga, permintaan (C)",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -2437,6 +2449,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 4,
     explain: "Pembahasan: Fenomena over capacity (melebihi daya tampung) dapat termanifestasi dalam berbagai bentuk: ● kemacetan (Volume kendaraan > kapasitas jalan), ● polusi (Emisi limbah > kemampuan lingkungan menyerap), ● bencana (daya dukung lingkungan terlampaui), dan ● konflik sosial (tekanan sosial > kapasitas adaptasi masyarakat) (E)",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -2793,15 +2806,16 @@ const BANK_PEMBAHASAN2026 = [
     sectionNo: 1,
     stem: "Kebijakan pengembangan kawasan ekonomi khusus (KEK) merupakan langkah terobosan untuk menarik para investor dan mempercepat aliran investasi ke daerah. Namun demikian, perkembangannya belum berjalan sebagaimana yang diinginkan. Menurut saudara, beberapa rekomendasi yang dapat diusulkan ke pemerintah pusat adalah:",
     options: [
-      "Perbaikan koordinasi antar lembaga pemerintah di tingkat pusat dan pemerintah daerah yang terkait dengan pengembangan iklim usaha.",
-      "Penataan struktur kelembagaan terkait dengan penguatan kewenangan perizinan di tingkat pusat.",
-      "Membantu pembangunan infrastruktur mengingat kemampuan sumber daya pemerintah daerah yang terbatas.",
-      "Pernyataan A dan C benar.",
+      "(a) Perbaikan koordinasi antar lembaga pemerintah di tingkat pusat dan pemerintah daerah yang terkait dengan pengembangan iklim usaha.",
+      "(b) Penataan struktur kelembagaan terkait dengan penguatan kewenangan perizinan di tingkat pusat.",
+      "(c) Membantu pembangunan infrastruktur mengingat kemampuan sumber daya pemerintah daerah yang terbatas.",
+      "Hanya (a) dan (c) benar",
       "Semua pernyataan benar.",
     ],
     answer: 3,
     explain: "Kawasan Ekonomi Khusus (KEK) adalah kebijakan strategis Pemerintah sebagai pengembangan pusat pertumbuhan ekonomi, pemerataan ekonomi nasional, mendukung industrialisasi, dan memperbesar penyerapan tenaga kerja di Indonesia. Kawasan dengan fasilitas dan kemudahan yang ultimate dihadirkan bagi investor dalam dan luar negeri. (https://kek.go.id/id) dengan menggunakan konsep Collaborative Planning -> Perencanaan berbasis dialog & partisipasi Governance -> Jaringan aktor, bukan hanya pemerintah Multi-level Governance -> Kewenangan tersebar antar level pemerintahan A. BENAR Karena Banyak KEK gagal karena disharmoni pusat–daerah B. MENJEBAK karena Tren kebijakan sekarang → desentralisasi + simplifikasi (OSS, risk-based approach). Kalau semua ditarik ke pusat akan berpotensi: mengurangi fleksibilitas daerah memperpanjang birokrasi dan bertentangan dengan semangat otonomi daerah (UU 23/2014) C. BENAR - Banyak KEK yang Sepi Karena Infrastruktur Belum siap (D) a dan c benar",
-    version: 1
+    fixedOptions: true,
+    version: 2
   },
   {
     id: "pb26-spa-2",
@@ -2812,15 +2826,16 @@ const BANK_PEMBAHASAN2026 = [
     sectionNo: 2,
     stem: "Kebijakan pengembangan kawasan ekonomi khusus merupakan langkah terobosan untuk menarik para investor dan mempercepat aliran investasi ke daerah. Namun demikian, perkembangannya belum berjalan sebagaimana yang diinginkan. Menurut saudara, beberapa rekomendasi yang dapat diusulkan ke pemerintah pusat adalah",
     options: [
-      "Perbaikan koordinasi antar lembaga pemerintah di tingkat pusat dan pemerintah daerah yang terkait dengan pengembangan iklim usaha.",
-      "Membantu dalam melakukan promosi kegiatan KEK",
-      "Membantu pembangunan infrastruktur mengingat kemampuan sumber daya pemerintah daerah yang terbatas.",
-      "Pernyataan A dan C benar.",
+      "(a) Perbaikan koordinasi antar lembaga pemerintah di tingkat pusat dan pemerintah daerah yang terkait dengan pengembangan iklim usaha.",
+      "(b) Membantu dalam melakukan promosi kegiatan KEK",
+      "(c) Membantu pembangunan infrastruktur mengingat kemampuan sumber daya pemerintah daerah yang terbatas.",
+      "Hanya (a) dan (c) benar",
       "Semua pernyataan benar.",
     ],
     answer: 4,
     explain: "lihat pembahasan diatas. (E) Semua pernyataan benar",
-    version: 1
+    fixedOptions: true,
+    version: 2
   },
   {
     id: "pb26-spa-3",
@@ -2877,6 +2892,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 1,
     explain: "Tiga undang-undang itu berbicara tentang hal yang saling terhubung: ● UU 26/2007: penataan ruang ● UU 1/2014: Pengelolaan Wilayah Pesisir dan Pulau-Pulau Kecil ● UU 23/2014: pemerintahan daerah Kalau digabung, ketiganya sama-sama membutuhkan kejelasan wilayah hukum/kewenangan. Dalam konteks hukum tata ruang Indonesia, bentuk paling formal dari itu adalah wilayah administratif. ❖ UU 26/2007 menyebut bahwa wilayah ditentukan berdasarkan aspek administratif dan/atau fungsional, dan penataan ruang juga diklasifikasikan berdasarkan wilayah administratif . ❖ UU 23/2014 menegaskan pembagian negara ke dalam provinsi serta kabupaten/kota sebagai dasar penyelenggaraan pemerintahan daerah dan kewenangannya . ❖ Dalam rezim pesisir, perencanaan dan zonasi juga ditetapkan dalam kerangka kewenangan pemerintahan dan kemudian diintegrasikan ke rencana tata ruang wilayah provinsi . Jebakan utama soal ini adalah membaurkan batas alam/fisik dengan batas hukum/administratif. Sungai, gunung, atau laut bisa saja menjadi penanda batas, tetapi ketika ruang wilayah dikaitkan dengan: ● tata ruang, ● zonasi, ● kewenangan pusat-daerah, ● dan integrasi antar peraturan, maka yang dipakai sebagai basis formal…",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -3124,6 +3140,7 @@ const BANK_PEMBAHASAN2026 = [
     ],
     answer: 1,
     explain: "● Karena RTRW berbasis: ○ lokasi, ○ ruang, ○ distribusi wilayah, ○ zonasi. ● Contoh: ○ peta struktur ruang, ○ peta pola ruang, ○ peta kawasan lindung, ○ peta rawan bencana. ● Penjelasan Pilihan : ○ Data digital memang penting dalam RTRW modern, misalnya: GIS, shapefile,citra satelit. Namun: “digital” hanya format media, bukan bentuk utama penyajian informasi tata ruang. ○ Grafik digunakan untuk: statistik,tren, perbandingan angka. Tetapi tidak dapat menunjukkan: lokasi spasial, zonasi, hubungan antar ruang. Jadi bukan bentuk utama RTRW. ○ Narasi tetap ada dalam dokumen RTRW, tetapi sifatnya:penjelasan,interpretasi,kebijakan. Sedangkan inti tata ruang adalah representasi spasial dalam peta. ● Dalam rencana tata ruang, seluruh informasi dan input spasial sedapat mungkin disajikan dalam bentuk peta karena tata ruang berkaitan dengan lokasi, distribusi, dan hubungan antar ruang yang hanya dapat direpresentasikan secara optimal melalui peta. (B)",
+    fixedOptions: true,
     version: 1
   },
   {

@@ -859,31 +859,23 @@
         updatePoolInfo();
       }
 
-      // Opsi komposit (mis. "Hanya (a) dan (c) benar") tidak boleh diacak — semua sumber
-      function hasCompositeOptions(options) {
-        return options.some(function (o) {
-          return /hanya\s+(?:butir|\([a-e]\)|pernyataan|jawaban|pertanyaan)/i.test(o) ||
-            /butir\s*\(?[a-e]\)?\s+dan\s*\(?[a-e]\)?/i.test(o) ||
-            /^[a-e]\s+dan\s+[a-e]\s+benar/i.test(o);
-        });
+      // Opsi komposit ("Semua benar", "Hanya (a) dan (c)", "Pernyataan A dan C benar") tidak boleh diacak
+      function isMetaCompositeOption(text) {
+        return /semua\s+(?:pernyataan|jawaban)?\s*benar/i.test(text) ||
+          /^semua\s+benar\.?$/i.test(text) ||
+          /hanya\s+(?:butir|\([a-e]\)|pernyataan|jawaban)/i.test(text) ||
+          /butir\s*\(?[a-e]\)?\s+dan\s*\(?[a-e]\)?/i.test(text) ||
+          /^[a-e]\s+dan\s+[a-e]\s+benar/i.test(text) ||
+          /pernyataan\s+[A-Ea-e]\s+dan\s+[A-Ea-e]\s+benar/i.test(text) ||
+          /tidak\s+ada\s+yang\s+benar/i.test(text);
       }
 
-      // Format UKOM: pernyataan berlabel (a)(b)(c) + opsi meta "Hanya…" / "Semua benar"
-      function hasLabeledCompositeFormat(options) {
-        var labeled = 0;
-        for (var i = 0; i < options.length; i++) {
-          if (/^\([a-e]\)\s/.test(options[i])) labeled++;
-        }
-        if (labeled < 2) return false;
-        return options.some(function (o) {
-          return /semua\s+(?:jawaban|pernyataan)?\s*benar/i.test(o) ||
-            /hanya\s+(?:butir|\([a-e]\)|pernyataan|jawaban)/i.test(o);
-        });
+      function hasCompositeOptions(options) {
+        return options.some(isMetaCompositeOption);
       }
 
       function shouldFixOptions(q) {
         if (q.fixedOptions) return true;
-        if (hasLabeledCompositeFormat(q.options)) return true;
         return hasCompositeOptions(q.options);
       }
 

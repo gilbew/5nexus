@@ -144,6 +144,7 @@ const BANK_JFP2025 = [
     ],
     answer: 4,
     explain: "Menurut Charles Colby, gaya sentrifugal meliputi spatial, site, situational, social evaluation, status & organization of occupance, serta human equation — opsi A–D masing-masing mencakup sebagian komponen.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -218,6 +219,7 @@ const BANK_JFP2025 = [
     ],
     answer: 1,
     explain: "RPJMD daerah harus selaras dengan Rencana Pembangunan Jangka Menengah (RPJM) Nasional agar integrasi pusat–daerah terjaga.",
+    fixedOptions: true,
     version: 1
   },
   {
@@ -893,6 +895,7 @@ const BANK_JFP2025 = [
     ],
     answer: 0,
     explain: "RKP/RKPD bersifat tahunan-operasional; capaian langsung kegiatan = output.",
+    fixedOptions: true,
     version: 1
   },
   {
