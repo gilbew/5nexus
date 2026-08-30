@@ -1,1 +1,10 @@
-{"buildCommand":"node scripts/merge-bank.mjs","outputDirectory":".","installCommand":""}
+{
+  "outputDirectory": ".",
+  "installCommand": "",
+  "routes": [
+    {
+      "src": "/archive/(.*)",
+      "status": 404
+    }
+  ]
+}
