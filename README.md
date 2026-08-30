@@ -1,8 +1,12 @@
-# Latihan UKOM — Perencana Ahli Muda
+# 5nexus
+
+Situs publik (`5nexus.diaidia.id`) saat ini menampilkan **404**. App latihan UKOM diarsipkan di `archive/ukom/` (lihat README di sana untuk **aktifkan kembali**).
+
+## Latihan UKOM — Perencana Ahli Muda (arsip)
 
 Aplikasi latihan soal pilihan ganda (statis: `index.html` + `soal-bank.js`).
 
-## Bank soal (255)
+### Bank soal (255)
 
 | Sumber | Jumlah |
 |--------|--------|
@@ -12,7 +16,7 @@ Aplikasi latihan soal pilihan ganda (statis: `index.html` + `soal-bank.js`).
 
 Sumber lama (v1, kasus, simulasi, gap, pretest varian) di `scripts/parts/archive/`.
 
-## Regenerasi bank
+### Regenerasi bank
 
 ```bash
 node scripts/extract-googleform-jfp2025.mjs   # dari Google Form
@@ -23,6 +27,6 @@ node scripts/merge-bank.mjs
 
 Sumber aktif: `pretest.js`, `jfp2025.js`, `pembahasan2026.js`.
 
-## Deploy
+### Deploy
 
-Lihat `docs/DEPLOY.md` (Vercel / Netlify / GitHub Pages).
+Lihat `docs/DEPLOY.md`. Mode arsip: root = 404; `/archive/*` diblokir di `vercel.json`.
