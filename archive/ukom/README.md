@@ -1,6 +1,6 @@
 # Latihan UKOM (arsip)
 
-Aplikasi latihan soal UKOM Perencana Ahli Muda — **tidak aktif di web publik** (root site menampilkan 404).
+Aplikasi latihan soal UKOM Perencana Ahli Muda — **tidak aktif di web publik** (root site = landing 5nexus).
 
 Bank soal & skrip regenerasi tetap ada di repo root (`scripts/`, `soal-bank.js` salinan di folder ini).
 
@@ -27,12 +27,12 @@ Bank soal & skrip regenerasi tetap ada di repo root (`scripts/`, `soal-bank.js` 
 
 4. **Commit & push** → Vercel redeploy otomatis.
 
-5. **Uji:** buka `/` — harus tampil Latihan UKOM, bukan 404.
+5. **Uji:** buka `/` — harus tampil Latihan UKOM, bukan landing.
 
 ## Nonaktifkan lagi
 
 1. `cp index.html soal-bank.js archive/ukom/`
-2. Ganti root `index.html` dengan halaman 404 (lihat commit arsip).
+2. Ganti root `index.html` dengan landing (lihat commit repurpose) atau salinan landing tersimpan.
 3. Kembalikan blokir `/archive/*` di `vercel.json`.
 4. Push.
 

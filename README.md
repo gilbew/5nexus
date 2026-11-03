@@ -1,6 +1,6 @@
 # 5nexus
 
-Situs publik (`5nexus.diaidia.id`) saat ini menampilkan **404**. App latihan UKOM diarsipkan di `archive/ukom/` (lihat README di sana untuk **aktifkan kembali**).
+Situs publik (`5nexus.diaidia.id`) menampilkan **landing** (`index.html` di root). App latihan UKOM diarsipkan di `archive/ukom/` (lihat README di sana untuk **aktifkan kembali**). Folder `scripts/`, `scripts/parts/archive/`, dan isi arsip **tidak dihapus**.
 
 ## Latihan UKOM — Perencana Ahli Muda (arsip)
 
@@ -29,4 +29,4 @@ Sumber aktif: `pretest.js`, `jfp2025.js`, `pembahasan2026.js`.
 
 ### Deploy
 
-Lihat `docs/DEPLOY.md`. Mode arsip: root = 404; `/archive/*` diblokir di `vercel.json`.
+Lihat `docs/DEPLOY.md`. Mode repurpose: root = landing; `/archive/*` diblokir di `vercel.json`.
